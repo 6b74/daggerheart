@@ -129,9 +129,11 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .damage-text{color:var(--accent);font-weight:600}
 .card-meta{font-size:11px;color:var(--text-muted);margin-top:4px;font-family:var(--font-body)}
 .card-feature{font-size:12px;color:var(--text-muted);margin-top:6px;font-style:italic;font-family:var(--font-body);line-height:1.4}
-.exp-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;justify-content:space-between;align-items:center}
+.exp-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px}
+.exp-header{display:flex;justify-content:space-between;align-items:center}
 .exp-name{font-size:15px;font-weight:600}
 .exp-mod{font-size:20px;font-weight:700;color:var(--gold);font-family:var(--font-body)}
+.exp-desc{font-size:12px;color:var(--text-muted);font-family:var(--font-body);margin-top:6px;line-height:1.4;font-style:italic}
 .exp-reminder{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:8px;font-family:var(--font-body)}
 .domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
 .domain-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer}
@@ -155,17 +157,43 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .inventory-list{display:flex;flex-direction:column;gap:6px}
 .inventory-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:13px;font-family:var(--font-body)}
 .notes-area{width:100%;min-height:100px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:13px;font-family:var(--font-display);resize:vertical;outline:none}
+.map-container{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.map-img{width:100%;display:block;cursor:pointer}
+.map-hint{position:absolute;bottom:8px;right:12px;font-size:10px;color:var(--text-muted);font-family:var(--font-body);background:rgba(26,26,31,.8);padding:2px 8px;border-radius:4px}
+.map-fullscreen{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;cursor:zoom-out;overflow:auto;-webkit-overflow-scrolling:touch}
+.map-fullscreen img{max-width:100%;max-height:100%;object-fit:contain}
+.map-fullscreen.zoomed img{max-width:none;max-height:none;width:150%}
 .level-up-banner{background:var(--gold);color:#1a1a1f;padding:12px 16px;border-radius:8px;margin-top:12px;font-family:var(--font-body);font-size:13px;line-height:1.5;display:none}
 .level-up-banner.visible{display:block}
 .level-up-banner h3{font-size:15px;margin-bottom:4px}
 .level-up-banner ul{margin:6px 0 0 16px}
 
+/* Tablet portrait (iPad ~768px) */
+@media(max-width:768px){
+  .tracker-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .card-grid{grid-template-columns:1fr}
+  .domain-grid{grid-template-columns:1fr}
+  .quick-actions{justify-content:center}
+}
+/* Mobile portrait (~480px) */
 @media(max-width:480px){
   .header{flex-direction:column}
   .char-name{font-size:26px}
   .header-right{width:100%;justify-content:space-around}
+  .header-right .defense-box{flex:1}
   .trait-grid{grid-template-columns:repeat(3,1fr)}
   .trait-row{grid-template-columns:repeat(3,1fr)}
+  .tracker-grid{grid-template-columns:1fr}
+  .form-row{flex-direction:column}
+  .form-field.small,.form-field.med{max-width:none}
+  .quick-actions{flex-direction:column}
+  .quick-actions button{width:100%}
+  .action-btn-danger{margin-left:0}
+  .slot{width:32px;height:32px;font-size:14px}
+  .gold-row{gap:10px}
+  .exp-header{flex-wrap:wrap;gap:4px}
+  .song-grid{flex-direction:column}
+  .song-btn{min-width:unset}
 }
 </style>
 </head>
@@ -416,7 +444,8 @@ function extractFromText(rawText){
   const expLines=[...expText.matchAll(/[-*]\s*(.+?)\s*\+(\d+)\s*(?:[-\u2014\u2013]\s*(.*))?$/gm)];
   for(const m of expLines){
     const name=m[1].replace(/\*\*/g,'').replace(/\*/g,'').trim();
-    if(name.length>2&&name.length<60)exps.push({name,modifier:parseInt(m[2])});
+    const desc=(m[3]||'').replace(/\*\*/g,'').replace(/\*/g,'').trim();
+    if(name.length>2&&name.length<60)exps.push({name,modifier:parseInt(m[2]),description:desc});
   }
   if(exps.length)p.experiences=exps;
 
@@ -569,7 +598,9 @@ function showReviewForm(parsed,rawText){
   // Experiences
   h+=`<div class="form-section"><h3>Experiences</h3>
     <div class="form-row"><div class="form-field"><label>Experience 1</label><input id="rv-exp1" value="${esc((p.experiences||[])[0]?.name||'')}"></div><div class="form-field small"><label>Mod</label><input id="rv-exp1-mod" type="number" value="${(p.experiences||[])[0]?.modifier||2}"></div></div>
+    <div class="form-row"><div class="form-field"><label>Exp 1 Description</label><input id="rv-exp1-desc" value="${esc((p.experiences||[])[0]?.description||'')}" placeholder="When/how does this apply?"></div></div>
     <div class="form-row"><div class="form-field"><label>Experience 2</label><input id="rv-exp2" value="${esc((p.experiences||[])[1]?.name||'')}"></div><div class="form-field small"><label>Mod</label><input id="rv-exp2-mod" type="number" value="${(p.experiences||[])[1]?.modifier||2}"></div></div>
+    <div class="form-row"><div class="form-field"><label>Exp 2 Description</label><input id="rv-exp2-desc" value="${esc((p.experiences||[])[1]?.description||'')}" placeholder="When/how does this apply?"></div></div>
   </div>`;
 
   // Freeform sections
@@ -675,7 +706,7 @@ function buildFromReview(){
     damageThresholds:{minor:{label:'Minor',hpCost:1,base:n('rv-thresh-minor')},major:{label:'Major',hpCost:2,base:n('rv-thresh-major')},severe:{label:'Severe',hpCost:3,base:null}},
     weapons:{primary:parseWpn('rv-wpn1'),secondary:parseWpn('rv-wpn2')},
     armor:{name:v('rv-armor-name'),thresholds:v('rv-armor-thresh'),score:n('rv-armor-score'),feature:v('rv-armor-feat')},
-    experiences:[{name:v('rv-exp1'),modifier:n('rv-exp1-mod')||2},{name:v('rv-exp2'),modifier:n('rv-exp2-mod')||2}].filter(e=>e.name),
+    experiences:[{name:v('rv-exp1'),modifier:n('rv-exp1-mod')||2,description:v('rv-exp1-desc')},{name:v('rv-exp2'),modifier:n('rv-exp2-mod')||2,description:v('rv-exp2-desc')}].filter(e=>e.name),
     classFeatures:parseFeatureLines(v('rv-features')),
     subclassFeatures:[],
     domainCards:parseDomainCards(v('rv-domaincards')),
@@ -811,7 +842,7 @@ function renderSheet(){
 
   // Experiences
   if(c.experiences?.length){
-    h+=`<section class="section"><h2 class="section-title">Experiences</h2><div class="card-grid">${c.experiences.map(e=>`<div class="exp-card"><span class="exp-name">${e.name}</span><span class="exp-mod">+${e.modifier}</span></div>`).join('')}</div><div class="exp-reminder">Spend a Hope to add the modifier to an action or reaction roll</div></section>`;
+    h+=`<section class="section"><h2 class="section-title">Experiences</h2><div class="card-grid">${c.experiences.map(e=>`<div class="exp-card"><div class="exp-header"><span class="exp-name">${e.name}</span><span class="exp-mod">+${e.modifier}</span></div>${e.description?`<div class="exp-desc">${e.description}</div>`:''}</div>`).join('')}</div><div class="exp-reminder">Spend a Hope to add the modifier to an action or reaction roll</div></section>`;
   }
 
   // Domain Cards
@@ -844,6 +875,17 @@ function renderSheet(){
   // Notes
   h+=`<section class="section"><h2 class="section-title">Session Notes</h2><textarea class="notes-area" oninput="state.notes=this.value;saveState()" placeholder="Jot down anything mid-session...">${state.notes||''}</textarea></section>`;
 
+  // Campaign Map
+  const mapData=getMap();
+  h+=`<section class="section"><h2 class="section-title">Campaign Map</h2>`;
+  if(mapData){
+    h+=`<div class="map-container"><img src="${mapData}" class="map-img" onclick="openMapFullscreen()" alt="Campaign Map"><div class="map-hint">Tap to view fullscreen</div></div>
+    <button class="reset-btn" style="margin-top:8px" onclick="removeMap()">Remove Map</button>`;
+  }else{
+    h+=`<label class="land-btn secondary" style="max-width:260px;font-size:12px;padding:10px 16px">Upload Map Image<input type="file" accept="image/*" onchange="uploadMap(this)" style="display:none"></label>`;
+  }
+  h+=`</section>`;
+
   document.getElementById('sheet').innerHTML=h;
 }
 
@@ -865,6 +907,37 @@ function toggleDomain(i){const el=document.getElementById('dc-'+i),h=document.ge
 function resetSession(){state.rallyUsed=false;for(const k in state.songs)state.songs[k]=false;saveState();renderSheet()}
 function resetRest(type){state.armorSlots=Array(CHAR.armorScore||0).fill(false);if(type==='long'){for(const k in state.songs)state.songs[k]=false}saveState();renderSheet()}
 function dismissLevelUp(){state.levelUpDismissed=true;saveState();renderSheet()}
+
+// ══════════════════════════════════════════════════
+// CAMPAIGN MAP
+// ══════════════════════════════════════════════════
+function mapKey(){return storageKey()+'-map'}
+function getMap(){try{return localStorage.getItem(mapKey())}catch(e){return null}}
+function uploadMap(input){
+  const file=input.files[0];if(!file)return;
+  // Warn if file is very large (localStorage has ~5-10MB limit)
+  if(file.size>4*1024*1024){alert('Image is over 4MB. Try a compressed or lower-resolution version.');return}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{localStorage.setItem(mapKey(),e.target.result);renderSheet()}
+    catch(err){alert('Image too large for browser storage. Try a smaller file.')}
+  };
+  reader.readAsDataURL(file);
+}
+function removeMap(){localStorage.removeItem(mapKey());renderSheet()}
+function openMapFullscreen(){
+  const mapData=getMap();if(!mapData)return;
+  const overlay=document.createElement('div');
+  overlay.className='map-fullscreen';
+  overlay.innerHTML=`<img src="${mapData}" alt="Campaign Map">`;
+  let zoomed=false;
+  overlay.addEventListener('click',function(e){
+    if(e.target===overlay){overlay.remove();return}
+    zoomed=!zoomed;
+    overlay.classList.toggle('zoomed',zoomed);
+  });
+  document.body.appendChild(overlay);
+}
 
 // ══════════════════════════════════════════════════
 // AUTO-LOAD LAST CHARACTER
