@@ -1,0 +1,179 @@
+{
+  "_template": "Rogue Character Template",
+  "_notes": "Rogues have the highest starting Evasion (12). Sneak Attack is passive and doesn't need tracking. Rogue's Dodge duration can be noted in session notes.",
+  "_classItems": "A set of forgery tools or a grappling hook",
+  "_suggestedSubclasses": [
+    "Nightwalker",
+    "Syndicate"
+  ],
+  "name": "",
+  "pronouns": "",
+  "heritage": "",
+  "class": "Rogue",
+  "subclass": "",
+  "level": 1,
+  "domains": [
+    "Midnight",
+    "Grace"
+  ],
+  "traits": {
+    "Agility": {
+      "value": 1,
+      "actions": [
+        "Sprint",
+        "Leap",
+        "Maneuver"
+      ]
+    },
+    "Strength": {
+      "value": -1,
+      "actions": [
+        "Lift",
+        "Smash",
+        "Grapple"
+      ]
+    },
+    "Finesse": {
+      "value": 2,
+      "actions": [
+        "Control",
+        "Hide",
+        "Tinker"
+      ]
+    },
+    "Instinct": {
+      "value": 0,
+      "actions": [
+        "Perceive",
+        "Sense",
+        "Navigate"
+      ]
+    },
+    "Presence": {
+      "value": 1,
+      "actions": [
+        "Charm",
+        "Perform",
+        "Deceive"
+      ]
+    },
+    "Knowledge": {
+      "value": 0,
+      "actions": [
+        "Recall",
+        "Analyze",
+        "Comprehend"
+      ]
+    }
+  },
+  "evasion": 12,
+  "armorScore": 0,
+  "proficiency": 1,
+  "maxHP": 6,
+  "maxStress": 6,
+  "maxHope": 6,
+  "startingHope": 2,
+  "damageThresholds": {
+    "minor": {
+      "label": "Minor",
+      "hpCost": 1,
+      "base": 0
+    },
+    "major": {
+      "label": "Major",
+      "hpCost": 2,
+      "base": 0
+    },
+    "severe": {
+      "label": "Severe",
+      "hpCost": 3,
+      "base": null
+    }
+  },
+  "weapons": {
+    "primary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    },
+    "secondary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    }
+  },
+  "armor": {
+    "name": "",
+    "thresholds": "0 / 0",
+    "score": 0,
+    "feature": ""
+  },
+  "experiences": [
+    {
+      "name": "",
+      "modifier": 2
+    },
+    {
+      "name": "",
+      "modifier": 2
+    }
+  ],
+  "classFeatures": [
+    {
+      "title": "Sneak Attack",
+      "text": "When you succeed on an attack against a target who is unaware of you or who is being attacked by one of your allies this turn, add additional damage to your damage roll equal to your Proficiency. At level 5, this increases to your Proficiency times 2."
+    },
+    {
+      "title": "Rogue's Dodge",
+      "text": "Spend 3 Hope to gain a +2 bonus to your Evasion until the next time an attack succeeds against you. Otherwise, this bonus lasts until your next rest."
+    }
+  ],
+  "subclassFeatures": [
+    {
+      "title": "",
+      "text": "",
+      "sub": [],
+      "tier": null
+    }
+  ],
+  "domainCards": [
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    },
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    }
+  ],
+  "ancestryFeatures": [
+    {
+      "title": "",
+      "text": ""
+    },
+    {
+      "title": "",
+      "text": ""
+    }
+  ],
+  "communityFeature": {
+    "title": "",
+    "text": ""
+  },
+  "inventory": [],
+  "songs": []
+}

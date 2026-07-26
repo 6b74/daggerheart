@@ -1,0 +1,179 @@
+{
+  "_template": "Sorcerer Character Template",
+  "_notes": "Overcharge is once per rest. Add it to the songs array if you want a tracker button. Elemental Origin sorcerers choose an element at creation.",
+  "_classItems": "A whispering orb or a family heirloom",
+  "_suggestedSubclasses": [
+    "Elemental Origin",
+    "Primal Origin"
+  ],
+  "name": "",
+  "pronouns": "",
+  "heritage": "",
+  "class": "Sorcerer",
+  "subclass": "",
+  "level": 1,
+  "domains": [
+    "Arcana",
+    "Midnight"
+  ],
+  "traits": {
+    "Agility": {
+      "value": 0,
+      "actions": [
+        "Sprint",
+        "Leap",
+        "Maneuver"
+      ]
+    },
+    "Strength": {
+      "value": -1,
+      "actions": [
+        "Lift",
+        "Smash",
+        "Grapple"
+      ]
+    },
+    "Finesse": {
+      "value": 1,
+      "actions": [
+        "Control",
+        "Hide",
+        "Tinker"
+      ]
+    },
+    "Instinct": {
+      "value": 2,
+      "actions": [
+        "Perceive",
+        "Sense",
+        "Navigate"
+      ]
+    },
+    "Presence": {
+      "value": 1,
+      "actions": [
+        "Charm",
+        "Perform",
+        "Deceive"
+      ]
+    },
+    "Knowledge": {
+      "value": 0,
+      "actions": [
+        "Recall",
+        "Analyze",
+        "Comprehend"
+      ]
+    }
+  },
+  "evasion": 10,
+  "armorScore": 0,
+  "proficiency": 1,
+  "maxHP": 6,
+  "maxStress": 6,
+  "maxHope": 6,
+  "startingHope": 2,
+  "damageThresholds": {
+    "minor": {
+      "label": "Minor",
+      "hpCost": 1,
+      "base": 0
+    },
+    "major": {
+      "label": "Major",
+      "hpCost": 2,
+      "base": 0
+    },
+    "severe": {
+      "label": "Severe",
+      "hpCost": 3,
+      "base": null
+    }
+  },
+  "weapons": {
+    "primary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    },
+    "secondary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    }
+  },
+  "armor": {
+    "name": "",
+    "thresholds": "0 / 0",
+    "score": 0,
+    "feature": ""
+  },
+  "experiences": [
+    {
+      "name": "",
+      "modifier": 2
+    },
+    {
+      "name": "",
+      "modifier": 2
+    }
+  ],
+  "classFeatures": [
+    {
+      "title": "Overcharge",
+      "text": "Once per rest when you deal magic damage, you can mark a Stress to roll your damage with an extra die, then drop the lowest result."
+    },
+    {
+      "title": "Volatile Magic",
+      "text": "Spend 3 Hope to reroll any number of your damage dice on an attack that deals magic damage."
+    }
+  ],
+  "subclassFeatures": [
+    {
+      "title": "",
+      "text": "",
+      "sub": [],
+      "tier": null
+    }
+  ],
+  "domainCards": [
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    },
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    }
+  ],
+  "ancestryFeatures": [
+    {
+      "title": "",
+      "text": ""
+    },
+    {
+      "title": "",
+      "text": ""
+    }
+  ],
+  "communityFeature": {
+    "title": "",
+    "text": ""
+  },
+  "inventory": [],
+  "songs": []
+}

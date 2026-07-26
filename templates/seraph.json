@@ -1,0 +1,179 @@
+{
+  "_template": "Seraph Character Template",
+  "_notes": "Seraphs are divine fighters and healers. Channel Divinity is once per rest. Add it to the songs array as a single entry if you want a tracker button for it.",
+  "_classItems": "A bundle of offerings or a sigil of your god",
+  "_suggestedSubclasses": [
+    "Divine Wielder",
+    "Winged Sentinel"
+  ],
+  "name": "",
+  "pronouns": "",
+  "heritage": "",
+  "class": "Seraph",
+  "subclass": "",
+  "level": 1,
+  "domains": [
+    "Splendor",
+    "Valor"
+  ],
+  "traits": {
+    "Agility": {
+      "value": 0,
+      "actions": [
+        "Sprint",
+        "Leap",
+        "Maneuver"
+      ]
+    },
+    "Strength": {
+      "value": 2,
+      "actions": [
+        "Lift",
+        "Smash",
+        "Grapple"
+      ]
+    },
+    "Finesse": {
+      "value": 0,
+      "actions": [
+        "Control",
+        "Hide",
+        "Tinker"
+      ]
+    },
+    "Instinct": {
+      "value": 1,
+      "actions": [
+        "Perceive",
+        "Sense",
+        "Navigate"
+      ]
+    },
+    "Presence": {
+      "value": 1,
+      "actions": [
+        "Charm",
+        "Perform",
+        "Deceive"
+      ]
+    },
+    "Knowledge": {
+      "value": -1,
+      "actions": [
+        "Recall",
+        "Analyze",
+        "Comprehend"
+      ]
+    }
+  },
+  "evasion": 9,
+  "armorScore": 0,
+  "proficiency": 1,
+  "maxHP": 7,
+  "maxStress": 6,
+  "maxHope": 6,
+  "startingHope": 2,
+  "damageThresholds": {
+    "minor": {
+      "label": "Minor",
+      "hpCost": 1,
+      "base": 0
+    },
+    "major": {
+      "label": "Major",
+      "hpCost": 2,
+      "base": 0
+    },
+    "severe": {
+      "label": "Severe",
+      "hpCost": 3,
+      "base": null
+    }
+  },
+  "weapons": {
+    "primary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    },
+    "secondary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    }
+  },
+  "armor": {
+    "name": "",
+    "thresholds": "0 / 0",
+    "score": 0,
+    "feature": ""
+  },
+  "experiences": [
+    {
+      "name": "",
+      "modifier": 2
+    },
+    {
+      "name": "",
+      "modifier": 2
+    }
+  ],
+  "classFeatures": [
+    {
+      "title": "Channel Divinity",
+      "text": "Once per rest, you can channel divine energy to activate a powerful effect determined by your subclass."
+    },
+    {
+      "title": "Life Support",
+      "text": "Spend 3 Hope to clear a Hit Point on an ally within Close range."
+    }
+  ],
+  "subclassFeatures": [
+    {
+      "title": "",
+      "text": "",
+      "sub": [],
+      "tier": null
+    }
+  ],
+  "domainCards": [
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    },
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    }
+  ],
+  "ancestryFeatures": [
+    {
+      "title": "",
+      "text": ""
+    },
+    {
+      "title": "",
+      "text": ""
+    }
+  ],
+  "communityFeature": {
+    "title": "",
+    "text": ""
+  },
+  "inventory": [],
+  "songs": []
+}

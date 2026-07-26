@@ -1,0 +1,179 @@
+{
+  "_template": "Warrior Character Template",
+  "_notes": "Weapon Mastery is passive. No Mercy duration lasts until next rest, track in session notes if needed.",
+  "_classItems": "The drawing of a lover or a sharpening stone",
+  "_suggestedSubclasses": [
+    "Call of the Brave",
+    "Call of the Slayer"
+  ],
+  "name": "",
+  "pronouns": "",
+  "heritage": "",
+  "class": "Warrior",
+  "subclass": "",
+  "level": 1,
+  "domains": [
+    "Blade",
+    "Bone"
+  ],
+  "traits": {
+    "Agility": {
+      "value": 2,
+      "actions": [
+        "Sprint",
+        "Leap",
+        "Maneuver"
+      ]
+    },
+    "Strength": {
+      "value": 1,
+      "actions": [
+        "Lift",
+        "Smash",
+        "Grapple"
+      ]
+    },
+    "Finesse": {
+      "value": 0,
+      "actions": [
+        "Control",
+        "Hide",
+        "Tinker"
+      ]
+    },
+    "Instinct": {
+      "value": 1,
+      "actions": [
+        "Perceive",
+        "Sense",
+        "Navigate"
+      ]
+    },
+    "Presence": {
+      "value": -1,
+      "actions": [
+        "Charm",
+        "Perform",
+        "Deceive"
+      ]
+    },
+    "Knowledge": {
+      "value": 0,
+      "actions": [
+        "Recall",
+        "Analyze",
+        "Comprehend"
+      ]
+    }
+  },
+  "evasion": 11,
+  "armorScore": 0,
+  "proficiency": 1,
+  "maxHP": 6,
+  "maxStress": 6,
+  "maxHope": 6,
+  "startingHope": 2,
+  "damageThresholds": {
+    "minor": {
+      "label": "Minor",
+      "hpCost": 1,
+      "base": 0
+    },
+    "major": {
+      "label": "Major",
+      "hpCost": 2,
+      "base": 0
+    },
+    "severe": {
+      "label": "Severe",
+      "hpCost": 3,
+      "base": null
+    }
+  },
+  "weapons": {
+    "primary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    },
+    "secondary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    }
+  },
+  "armor": {
+    "name": "",
+    "thresholds": "0 / 0",
+    "score": 0,
+    "feature": ""
+  },
+  "experiences": [
+    {
+      "name": "",
+      "modifier": 2
+    },
+    {
+      "name": "",
+      "modifier": 2
+    }
+  ],
+  "classFeatures": [
+    {
+      "title": "Weapon Mastery",
+      "text": "Choose a weapon type (e.g., swords, axes, bows). You gain a +1 bonus to attack rolls with weapons of that type. At level 5, this bonus increases to +2."
+    },
+    {
+      "title": "No Mercy",
+      "text": "Spend 3 Hope to gain a +1 bonus to your attack rolls until your next rest."
+    }
+  ],
+  "subclassFeatures": [
+    {
+      "title": "",
+      "text": "",
+      "sub": [],
+      "tier": null
+    }
+  ],
+  "domainCards": [
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    },
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    }
+  ],
+  "ancestryFeatures": [
+    {
+      "title": "",
+      "text": ""
+    },
+    {
+      "title": "",
+      "text": ""
+    }
+  ],
+  "communityFeature": {
+    "title": "",
+    "text": ""
+  },
+  "inventory": [],
+  "songs": []
+}

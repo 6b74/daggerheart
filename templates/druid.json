@@ -1,0 +1,179 @@
+{
+  "_template": "Druid Character Template",
+  "_notes": "Druids track Beastform transformations. Add your Beastform names to the songs array if you want per-rest buttons for them, or track them manually in session notes.",
+  "_classItems": "A small bag of rocks and bones or a strange pendant found in the dirt",
+  "_suggestedSubclasses": [
+    "Warden of the Elements",
+    "Warden of Renewal"
+  ],
+  "name": "",
+  "pronouns": "",
+  "heritage": "",
+  "class": "Druid",
+  "subclass": "",
+  "level": 1,
+  "domains": [
+    "Sage",
+    "Arcana"
+  ],
+  "traits": {
+    "Agility": {
+      "value": 1,
+      "actions": [
+        "Sprint",
+        "Leap",
+        "Maneuver"
+      ]
+    },
+    "Strength": {
+      "value": 0,
+      "actions": [
+        "Lift",
+        "Smash",
+        "Grapple"
+      ]
+    },
+    "Finesse": {
+      "value": 1,
+      "actions": [
+        "Control",
+        "Hide",
+        "Tinker"
+      ]
+    },
+    "Instinct": {
+      "value": 2,
+      "actions": [
+        "Perceive",
+        "Sense",
+        "Navigate"
+      ]
+    },
+    "Presence": {
+      "value": -1,
+      "actions": [
+        "Charm",
+        "Perform",
+        "Deceive"
+      ]
+    },
+    "Knowledge": {
+      "value": 0,
+      "actions": [
+        "Recall",
+        "Analyze",
+        "Comprehend"
+      ]
+    }
+  },
+  "evasion": 10,
+  "armorScore": 0,
+  "proficiency": 1,
+  "maxHP": 6,
+  "maxStress": 6,
+  "maxHope": 6,
+  "startingHope": 2,
+  "damageThresholds": {
+    "minor": {
+      "label": "Minor",
+      "hpCost": 1,
+      "base": 0
+    },
+    "major": {
+      "label": "Major",
+      "hpCost": 2,
+      "base": 0
+    },
+    "severe": {
+      "label": "Severe",
+      "hpCost": 3,
+      "base": null
+    }
+  },
+  "weapons": {
+    "primary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    },
+    "secondary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    }
+  },
+  "armor": {
+    "name": "",
+    "thresholds": "0 / 0",
+    "score": 0,
+    "feature": ""
+  },
+  "experiences": [
+    {
+      "name": "",
+      "modifier": 2
+    },
+    {
+      "name": "",
+      "modifier": 2
+    }
+  ],
+  "classFeatures": [
+    {
+      "title": "Wildtouch",
+      "text": "You have two Beastform cards. Mark a Stress to transform into a Beastform or drop out of one. While in a Beastform, you can't use weapons, armor, class features, or domain cards unless the Beastform says otherwise. Beastforms have their own Evasion, damage, and features."
+    },
+    {
+      "title": "Evolution",
+      "text": "Spend 3 Hope to transform into a Beastform without marking a Stress. When you do, choose one trait to raise by +1 until you drop out of that Beastform."
+    }
+  ],
+  "subclassFeatures": [
+    {
+      "title": "",
+      "text": "",
+      "sub": [],
+      "tier": null
+    }
+  ],
+  "domainCards": [
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    },
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    }
+  ],
+  "ancestryFeatures": [
+    {
+      "title": "",
+      "text": ""
+    },
+    {
+      "title": "",
+      "text": ""
+    }
+  ],
+  "communityFeature": {
+    "title": "",
+    "text": ""
+  },
+  "inventory": [],
+  "songs": []
+}

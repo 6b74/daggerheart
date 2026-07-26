@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Daggerheart Sheet</title>
+<style>
+:root{--bg:#1a1a1f;--surface:#242429;--surface-alt:#2c2c33;--border:#3a3a44;--text:#e8e6e1;--text-muted:#9a9890;--accent:#4a9e8e;--accent-dim:#2a6b5e;--gold:#c4933f;--hp:#c45454;--stress:#8b6cc4;--armor-c:#5488a8;--used:#555;--font-display:'Georgia','Times New Roman',serif;--font-body:-apple-system,'Helvetica Neue',Arial,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-display);background:var(--bg);color:var(--text);line-height:1.5;-webkit-text-size-adjust:100%}
+
+/* Screens */
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex}
+
+/* Landing */
+#landing{flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+#landing h1{font-size:28px;margin-bottom:4px}
+#landing .sub{color:var(--text-muted);font-family:var(--font-body);font-size:14px;margin-bottom:32px}
+.land-actions{display:flex;flex-direction:column;gap:10px;width:100%;max-width:420px}
+.land-btn{display:block;padding:14px 20px;border-radius:8px;font-size:14px;font-family:var(--font-body);font-weight:600;cursor:pointer;text-align:center;border:none;width:100%;transition:opacity .15s}
+.land-btn:hover{opacity:.85}
+.land-btn.primary{background:var(--accent);color:#fff}
+.land-btn.secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.land-btn input[type=file]{display:none}
+.error-msg{color:var(--hp);font-size:13px;font-family:var(--font-body);margin-top:8px;min-height:20px}
+
+/* Paste modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:18px;margin-bottom:12px}
+.modal textarea{width:100%;height:200px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:12px;resize:vertical}
+.modal-actions{display:flex;gap:8px;margin-top:12px}
+.modal-actions button{flex:1;padding:10px;border-radius:6px;border:none;font-family:var(--font-body);font-weight:600;cursor:pointer;font-size:13px}
+.modal-actions .confirm{background:var(--accent);color:#fff}
+.modal-actions .cancel{background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border)}
+
+/* Review form */
+#review{flex-direction:column;padding:16px;max-width:700px;margin:0 auto;width:100%}
+#review h1{font-size:22px;margin-bottom:4px}
+#review .review-sub{font-size:13px;color:var(--text-muted);font-family:var(--font-body);margin-bottom:20px}
+.form-section{margin-bottom:20px}
+.form-section h3{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-family:var(--font-body);font-weight:600;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.form-row{display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.form-field{flex:1;min-width:120px}
+.form-field label{display:block;font-size:11px;color:var(--text-muted);font-family:var(--font-body);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
+.form-field input,.form-field select,.form-field textarea{width:100%;padding:8px 10px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font-body)}
+.form-field textarea{min-height:60px;resize:vertical;font-size:12px}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--accent)}
+.form-field.small{max-width:80px;min-width:60px}
+.form-field.med{max-width:140px;min-width:100px}
+.trait-row{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.trait-input{text-align:center}
+.trait-input label{font-size:10px}
+.trait-input input{text-align:center;padding:6px}
+.add-btn{background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:var(--font-body)}
+.review-actions{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.review-actions button{flex:1;padding:12px;border-radius:8px;border:none;font-family:var(--font-body);font-weight:600;cursor:pointer;font-size:14px}
+.review-actions .confirm{background:var(--accent);color:#fff}
+.review-actions .back{background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border)}
+
+/* Sheet (reuse most styles from v1) */
+#sheet{flex-direction:column;max-width:900px;margin:0 auto;padding:0 16px 80px;width:100%}
+.header{display:flex;justify-content:space-between;align-items:flex-start;padding:24px 0 20px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap}
+.header-left{flex:1;min-width:200px}
+.char-name{font-size:32px;font-weight:700;letter-spacing:.02em}
+.header-meta{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:14px;color:var(--text-muted);font-family:var(--font-body)}
+.header-meta span{font-style:italic}
+.header-meta .dot{opacity:.4;font-style:normal}
+.header-sub{margin-top:6px;font-size:13px;color:var(--text-muted);font-family:var(--font-body);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.domain-pills{display:flex;gap:6px}
+.domain-pill{background:var(--accent-dim);color:var(--text);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.header-right{display:flex;gap:12px;flex-wrap:wrap}
+.defense-box{text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;min-width:56px}
+.defense-val{font-size:24px;font-weight:700;color:var(--accent)}
+.defense-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-family:var(--font-body)}
+.section{margin-top:32px}
+.section-title{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);font-family:var(--font-body);font-weight:600;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.sub-section-title{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-family:var(--font-body);font-weight:600;margin:20px 0 8px}
+.tracker-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.tracker-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.tracker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.tracker-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-family:var(--font-body)}
+.tracker-count{font-size:13px;color:var(--text-muted);font-family:var(--font-body)}
+.slot-row{display:flex;gap:6px;flex-wrap:wrap}
+.slot{width:36px;height:36px;border-radius:6px;border:2px solid var(--border);background:transparent;color:var(--text);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.slot.marked-hp{background:var(--hp);border-color:var(--hp);color:#fff}
+.slot.marked-stress{background:var(--stress);border-color:var(--stress);color:#fff}
+.slot.marked-armor{background:var(--armor-c);border-color:var(--armor-c);color:#fff}
+.thresh-row{margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
+.thresh-label,.thresh-note{font-size:11px;color:var(--text-muted);font-family:var(--font-body)}
+.thresh-note{font-style:italic}
+.hope-row{display:flex;align-items:center;gap:8px;justify-content:center}
+.hope-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.hope-btn:disabled{opacity:.3;cursor:default}
+.counter-btn-sm{width:24px;height:24px;font-size:14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.diamonds{display:flex;gap:6px}
+.diamond{width:20px;height:20px;transform:rotate(45deg);border:2px solid var(--gold);border-radius:3px;transition:all .15s}
+.diamond.filled{background:var(--gold)}
+.toggle-btn{width:100%;padding:8px 12px;border-radius:6px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);margin-bottom:8px;-webkit-tap-highlight-color:transparent}
+.toggle-btn.ready{background:var(--accent);color:#fff}
+.toggle-btn.used{background:var(--used);color:#aaa}
+.song-grid{display:flex;gap:6px;flex-wrap:wrap}
+.song-btn{flex:1;min-width:70px;padding:6px 8px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--font-body);-webkit-tap-highlight-color:transparent}
+.song-btn.ready{background:var(--accent-dim);color:var(--text)}
+.song-btn.used{background:var(--surface-alt);color:#777}
+.song-status{font-size:9px;opacity:.7}
+.gold-row{display:flex;gap:16px;justify-content:center;align-items:flex-start}
+.gold-label{font-size:11px;color:var(--text-muted);text-align:center;font-family:var(--font-body);display:flex;flex-direction:column;align-items:center;gap:4px}
+.gold-num{font-size:16px;font-weight:700;color:var(--gold);min-width:20px;text-align:center}
+.tide-count{font-size:20px;font-weight:700;color:var(--accent);min-width:30px;text-align:center}
+.chest-btn{padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text-muted);font-size:11px;cursor:pointer}
+.chest-btn.full{background:var(--gold);color:#1a1a1f;border-color:var(--gold);font-weight:700}
+.quick-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.reset-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text-muted);font-size:11px;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent}
+.action-btn-gold{padding:6px 14px;border-radius:6px;border:1px solid var(--gold);background:transparent;color:var(--gold);font-size:11px;cursor:pointer;font-family:var(--font-body)}
+.action-btn-danger{padding:6px 14px;border-radius:6px;border:1px solid var(--hp);background:transparent;color:var(--hp);font-size:11px;cursor:pointer;font-family:var(--font-body);margin-left:auto}
+.trait-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.trait-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.trait-val{font-size:24px;font-weight:700;color:var(--accent)}
+.trait-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;font-family:var(--font-body)}
+.trait-actions{font-size:11px;color:var(--text-muted);margin-top:4px;font-family:var(--font-body)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px}
+.card-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-family:var(--font-body);margin-bottom:4px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.stat-row{display:flex;gap:12px;font-size:13px;color:var(--text-muted);font-family:var(--font-body);flex-wrap:wrap}
+.damage-text{color:var(--accent);font-weight:600}
+.card-meta{font-size:11px;color:var(--text-muted);margin-top:4px;font-family:var(--font-body)}
+.card-feature{font-size:12px;color:var(--text-muted);margin-top:6px;font-style:italic;font-family:var(--font-body);line-height:1.4}
+.exp-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;justify-content:space-between;align-items:center}
+.exp-name{font-size:15px;font-weight:600}
+.exp-mod{font-size:20px;font-weight:700;color:var(--gold);font-family:var(--font-body)}
+.exp-reminder{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:8px;font-family:var(--font-body)}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.domain-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer}
+.domain-card-header{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.domain-badge{background:var(--accent-dim);color:var(--text);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-family:var(--font-body)}
+.domain-level{font-size:11px;color:var(--text-muted);font-family:var(--font-body)}
+.recall-cost{font-size:11px;color:var(--gold);font-family:var(--font-body);margin-left:auto}
+.domain-card-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.domain-card-text{font-size:13px;color:var(--text-muted);line-height:1.5;font-family:var(--font-body);overflow:hidden;transition:max-height .3s}
+.domain-card-text.collapsed{max-height:60px}
+.additional-spells{margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.spell-line{margin-top:6px;font-size:12px;line-height:1.5}
+.expand-hint{font-size:10px;color:var(--text-muted);opacity:.5;margin-top:6px;text-align:center;font-family:var(--font-body)}
+.feature-list{display:flex;flex-direction:column;gap:10px}
+.feature-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px}
+.feature-title{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.feature-text{font-size:13px;color:var(--text-muted);line-height:1.5;font-family:var(--font-body)}
+.tier-badge{font-size:10px;background:var(--surface-alt);color:var(--text-muted);padding:2px 8px;border-radius:10px;font-weight:600;font-family:var(--font-body)}
+.sub-list{margin-top:8px;padding-left:12px;border-left:2px solid var(--accent);display:flex;flex-direction:column;gap:6px}
+.sub-item{font-size:12px;color:var(--text-muted);line-height:1.4;font-family:var(--font-body)}
+.inventory-list{display:flex;flex-direction:column;gap:6px}
+.inventory-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:13px;font-family:var(--font-body)}
+.notes-area{width:100%;min-height:100px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:13px;font-family:var(--font-display);resize:vertical;outline:none}
+.level-up-banner{background:var(--gold);color:#1a1a1f;padding:12px 16px;border-radius:8px;margin-top:12px;font-family:var(--font-body);font-size:13px;line-height:1.5;display:none}
+.level-up-banner.visible{display:block}
+.level-up-banner h3{font-size:15px;margin-bottom:4px}
+.level-up-banner ul{margin:6px 0 0 16px}
+
+@media(max-width:480px){
+  .header{flex-direction:column}
+  .char-name{font-size:26px}
+  .header-right{width:100%;justify-content:space-around}
+  .trait-grid{grid-template-columns:repeat(3,1fr)}
+  .trait-row{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ LANDING ══════ -->
+<div id="landing" class="screen active">
+  <h1>Daggerheart</h1>
+  <div class="sub">Interactive character sheet for play sessions</div>
+  <div class="land-actions">
+    <label class="land-btn primary">Upload Character JSON<input type="file" id="file-input" accept=".json"></label>
+    <button class="land-btn secondary" onclick="openModal('json-modal')">Paste JSON</button>
+    <button class="land-btn secondary" onclick="openModal('summary-modal')">Paste Character Summary</button>
+  </div>
+  <div id="landing-error" class="error-msg"></div>
+</div>
+
+<!-- ══════ JSON PASTE MODAL ══════ -->
+<div id="json-modal" class="modal-overlay">
+  <div class="modal">
+    <h2>Paste Character JSON</h2>
+    <textarea id="json-textarea" placeholder="Paste your character JSON here..."></textarea>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeModal('json-modal')">Cancel</button>
+      <button class="confirm" onclick="loadFromJsonPaste()">Load</button>
+    </div>
+    <div id="json-error" class="error-msg"></div>
+  </div>
+</div>
+
+<!-- ══════ SUMMARY PASTE MODAL ══════ -->
+<div id="summary-modal" class="modal-overlay">
+  <div class="modal">
+    <h2>Paste Character Summary</h2>
+    <p style="font-size:12px;color:var(--text-muted);font-family:var(--font-body);margin-bottom:8px">
+      Paste your character notes, builder export, or any text summary. The parser will extract what it can and let you review before loading.
+    </p>
+    <textarea id="summary-textarea" placeholder="Paste character notes, builder export, or any description..."></textarea>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeModal('summary-modal')">Cancel</button>
+      <button class="confirm" onclick="parseSummary()">Parse & Review</button>
+    </div>
+    <div id="summary-error" class="error-msg"></div>
+  </div>
+</div>
+
+<!-- ══════ REVIEW FORM ══════ -->
+<div id="review" class="screen"></div>
+
+<!-- ══════ CHARACTER SHEET ══════ -->
+<div id="sheet" class="screen"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════════════════
+const CLASSES = {
+  'Bard':     {domains:['Grace','Codex'],     evasion:10, hp:5, songs:['Relaxing','Epic','Heartbreaking']},
+  'Druid':    {domains:['Sage','Arcana'],     evasion:10, hp:6, songs:[]},
+  'Guardian': {domains:['Valor','Blade'],     evasion:9,  hp:7, songs:[]},
+  'Ranger':   {domains:['Bone','Sage'],       evasion:12, hp:6, songs:[]},
+  'Rogue':    {domains:['Midnight','Grace'],  evasion:12, hp:6, songs:[]},
+  'Seraph':   {domains:['Splendor','Valor'],  evasion:9,  hp:7, songs:[]},
+  'Sorcerer': {domains:['Arcana','Midnight'], evasion:10, hp:6, songs:[]},
+  'Warrior':  {domains:['Blade','Bone'],      evasion:11, hp:6, songs:[]},
+  'Wizard':   {domains:['Codex','Splendor'],  evasion:11, hp:5, songs:[]},
+};
+const CLASS_NAMES = Object.keys(CLASSES);
+const SUBCLASSES = ['Troubadour','Wordsmith','Warden of the Elements','Warden of Renewal','Stalwart','Vengeance','Beastbound','Wayfinder','Nightwalker','Syndicate','Divine Wielder','Winged Sentinel','Elemental Origin','Primal Origin','Call of the Brave','Call of the Slayer','School of Knowledge','School of War'];
+const ANCESTRIES = ['Clank','Drakona','Dwarf','Elf','Faerie','Firbolg','Fungril','Galapa','Giant','Goblin','Halfling','Human','Infernis','Katari','Orc','Ribbet','Simiah'];
+const COMMUNITIES = ['Highborne','Loreborne','Orderborne','Ridgeborne','Seaborne','Slyborne','Underborne','Wanderborne','Wildborne'];
+const TRAIT_NAMES = ['Agility','Strength','Finesse','Instinct','Presence','Knowledge'];
+const TRAIT_ACTIONS = {Agility:['Sprint','Leap','Maneuver'],Strength:['Lift','Smash','Grapple'],Finesse:['Control','Hide','Tinker'],Instinct:['Perceive','Sense','Navigate'],Presence:['Charm','Perform','Deceive'],Knowledge:['Recall','Analyze','Comprehend']};
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let CHAR = null, state = {};
+function storageKey(){return 'dh-'+(CHAR?.name||'x').toLowerCase().replace(/\s+/g,'-')}
+function defaultState(){
+  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,goldHandfuls:1,goldBags:0,goldChest:false,tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false};
+}
+function saveState(){try{localStorage.setItem(storageKey(),JSON.stringify(state))}catch(e){}}
+function loadState(){
+  try{const r=localStorage.getItem(storageKey());if(r){state={...defaultState(),...JSON.parse(r)};if(state.hp.length!==CHAR.maxHP)state.hp=Array(CHAR.maxHP).fill(false);if(state.stress.length!==(CHAR.maxStress||6))state.stress=Array(CHAR.maxStress||6).fill(false);if(state.armorSlots.length!==(CHAR.armorScore||0))state.armorSlots=Array(CHAR.armorScore||0).fill(false)}else{state=defaultState()}}catch(e){state=defaultState()}
+}
+function saveChar(){try{localStorage.setItem(storageKey()+'-char',JSON.stringify(CHAR))}catch(e){}}
+
+// ══════════════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════════════
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function openModal(id){document.getElementById(id).classList.add('active')}
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+
+// ══════════════════════════════════════════════════
+// LOADING
+// ══════════════════════════════════════════════════
+document.getElementById('file-input').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>{try{loadCharacter(JSON.parse(ev.target.result))}catch(e){document.getElementById('landing-error').textContent='Invalid JSON: '+e.message}};r.readAsText(f);
+});
+function loadFromJsonPaste(){
+  try{loadCharacter(JSON.parse(document.getElementById('json-textarea').value));closeModal('json-modal')}catch(e){document.getElementById('json-error').textContent='Invalid JSON: '+e.message}
+}
+function loadCharacter(json){
+  CHAR=json;if(!CHAR.name&&!CHAR.class){document.getElementById('landing-error').textContent='Missing name or class';return}
+  if(!CHAR.maxStress)CHAR.maxStress=6;if(!CHAR.maxHope)CHAR.maxHope=6;if(!CHAR.startingHope)CHAR.startingHope=2;
+  if(!CHAR.traits){CHAR.traits={};TRAIT_NAMES.forEach(t=>{CHAR.traits[t]={value:0,actions:TRAIT_ACTIONS[t]}})}
+  TRAIT_NAMES.forEach(t=>{if(CHAR.traits[t]&&!CHAR.traits[t].actions)CHAR.traits[t].actions=TRAIT_ACTIONS[t]});
+  loadState();saveChar();renderSheet();showScreen('sheet');
+}
+
+function exportJson(){
+  const blob=new Blob([JSON.stringify(CHAR,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(CHAR.name||'character').toLowerCase().replace(/\s+/g,'-')+'.json';
+  a.click();URL.revokeObjectURL(a.href);
+}
+
+function loadNewChar(){CHAR=null;state={};showScreen('landing')}
+
+// ══════════════════════════════════════════════════
+// PARSER
+// ══════════════════════════════════════════════════
+function parseSummary(){
+  const raw=document.getElementById('summary-textarea').value.trim();
+  if(!raw){document.getElementById('summary-error').textContent='Paste something first';return}
+  closeModal('summary-modal');
+  const parsed=extractFromText(raw);
+  showReviewForm(parsed,raw);
+}
+
+function extractFromText(rawText){
+  // Strip markdown formatting for cleaner matching
+  const strip=s=>s.replace(/\*\*([^*]+)\*\*/g,'$1').replace(/\*([^*]+)\*/g,'$1').replace(/_([^_]+)_/g,'$1').replace(/`([^`]+)`/g,'$1');
+  const t=strip(rawText);
+  const tl=t.toLowerCase();
+  const p={};
+
+  // Name - handle "Name: X" with possible markdown, TBD, or empty
+  const nm=t.match(/(?:^|\n)\s*name\s*[:=]\s*(.+)/i);
+  if(nm){const v=nm[1].trim();if(v&&!v.match(/^\(?tbd\)?$/i))p.name=v}
+
+  // Class - look for "Class: Ranger" or "Class: Ranger - Beastbound" patterns first, then fallback to keyword scan
+  const clsLine=t.match(/class\s*[:=]\s*([^\n]+)/i);
+  if(clsLine){
+    const cl=clsLine[1].trim();
+    for(const c of CLASS_NAMES){if(cl.toLowerCase().includes(c.toLowerCase())){p.class=c;break}}
+    // Subclass from same line (after dash, em-dash, parens, or comma)
+    for(const s of SUBCLASSES){if(cl.toLowerCase().includes(s.toLowerCase())){p.subclass=s;break}}
+  }
+  if(!p.class){for(const c of CLASS_NAMES){if(tl.includes(c.toLowerCase())){p.class=c;break}}}
+  if(!p.subclass){for(const s of SUBCLASSES){if(tl.includes(s.toLowerCase())){p.subclass=s;break}}}
+
+  // Level
+  const lv=t.match(/level\s*[:=]?\s*(\d+)/i);
+  if(lv)p.level=parseInt(lv[1]);
+
+  // Heritage line - "Heritage: Mixed Ancestry (Human / Elf) - Wildborne"
+  const herLine=t.match(/heritage\s*[:=]\s*([^\n]+)/i);
+  if(herLine)p.heritageFull=herLine[1].trim();
+
+  // Ancestry - check known list with word boundaries to avoid matching "elf" in "yourself"
+  const searchText=p.heritageFull?p.heritageFull+' '+t:t;
+  const foundAnc=[];
+  for(const a of ANCESTRIES){
+    const re=new RegExp('\\b'+a+'s?\\b','i');
+    if(re.test(searchText))foundAnc.push(a);
+  }
+  if(foundAnc.length)p.ancestry=foundAnc.join(' / ');
+  // Check for "Mixed Ancestry" or "Mixed" keyword
+  if(foundAnc.length>1||/mixed\s*(?:ancestry)?/i.test(t))p.ancestryNote='Mixed';
+
+  // Community - word boundary match
+  for(const c of COMMUNITIES){
+    const re=new RegExp('\\b'+c+'\\b','i');
+    if(re.test(searchText)){p.community=c;break}
+  }
+
+  // Traits - multiple patterns
+  p.traits={};
+  // Pattern 1: "Agility: +2" or "Agility +2" (with optional bold/colon)
+  for(const tn of TRAIT_NAMES){
+    const tr=t.match(new RegExp(tn+'\\s*[:=]?\\s*([+\\-\u2212]?\\s*\\d+)','i'));
+    if(tr)p.traits[tn]=parseInt(tr[1].replace(/[\s\u2212]/g,m=>m==='\u2212'?'-':''));
+  }
+  // Pattern 2: Markdown table row with values in order: | +2 | 0 | +1 | +1 | -1 | 0 |
+  if(Object.keys(p.traits).length<6){
+    // Check if there's a header row with trait names, then a data row
+    const tableHeader=rawText.match(/\|\s*agility\s*\|\s*strength\s*\|\s*finesse\s*\|\s*instinct\s*\|\s*presence\s*\|\s*knowledge\s*\|/i);
+    if(tableHeader){
+      // Find the next row with numbers (skip separator row |:---:|)
+      const afterHeader=rawText.substring(rawText.indexOf(tableHeader[0])+tableHeader[0].length);
+      const dataRow=afterHeader.match(/\|([^|]*\d[^|]*\|){6}/);
+      if(dataRow){
+        const cells=dataRow[0].split('|').filter(c=>c.trim()).map(c=>{
+          const cleaned=strip(c).replace(/[\u2212]/g,'-').trim();
+          const num=cleaned.match(/([+-]?\d+)/);
+          return num?parseInt(num[1]):0;
+        });
+        if(cells.length>=6){
+          ['Agility','Strength','Finesse','Instinct','Presence','Knowledge'].forEach((n,i)=>{p.traits[n]=cells[i]});
+        }
+      }
+    }
+  }
+  // Pattern 3: "A 0, S -1, F +1, I 0, P +2, K +1"
+  const abbrMatch=t.match(/A\s*([+\-]?\d+)\s*[,;]\s*S\s*([+\-]?\d+)\s*[,;]\s*F\s*([+\-]?\d+)\s*[,;]\s*I\s*([+\-]?\d+)\s*[,;]\s*P\s*([+\-]?\d+)\s*[,;]\s*K\s*([+\-]?\d+)/i);
+  if(abbrMatch&&Object.keys(p.traits).length<6){
+    ['Agility','Strength','Finesse','Instinct','Presence','Knowledge'].forEach((n,i)=>{p.traits[n]=parseInt(abbrMatch[i+1])});
+  }
+
+  // Evasion - first standalone mention (not "Companion Evasion")
+  const evAll=[...t.matchAll(/(?<!companion\s)evasion\s*[:=]?\s*(\d+)/gi)];
+  if(evAll.length)p.evasion=parseInt(evAll[0][1]);
+
+  // Armor Score
+  const armSc=t.match(/armor\s*score\s*[:=]?\s*(\d+)/i);
+  if(armSc)p.armorScore=parseInt(armSc[1]);
+
+  // HP
+  const hp=t.match(/(?:starting\s*)?(?:hp|hit\s*points?)\s*[:=]?\s*(\d+)/i);
+  if(hp)p.maxHP=parseInt(hp[1]);
+
+  // Stress (custom values like 7 from human bonus)
+  const stressMatch=t.match(/stress\s*[:=]?\s*(\d+)/i);
+  if(stressMatch)p.maxStress=parseInt(stressMatch[1]);
+
+  // Proficiency
+  const prof=t.match(/proficiency\s*[:=]?\s*(\d+)/i);
+  if(prof)p.proficiency=parseInt(prof[1]);
+
+  // Hope starting value
+  const hopeMatch=t.match(/hope\s*[:=]?\s*(\d+)/i);
+  if(hopeMatch)p.startingHope=parseInt(hopeMatch[1]);
+
+  // Damage Thresholds - "Minor 1 / Major 6 / Severe 13" or "Thresholds 6/13"
+  const threshFull=t.match(/(?:minor|threshold)\s*[:=]?\s*(\d+)\s*[\/|]\s*(?:major\s*[:=]?\s*)?(\d+)\s*[\/|]\s*(?:severe\s*[:=]?\s*)?(\d+)/i);
+  if(threshFull){p.threshMinorBase=parseInt(threshFull[1]);p.threshMajorBase=parseInt(threshFull[2])}
+  const threshShort=t.match(/thresholds?\s*[:=]?\s*(\d+)\s*[\/|]\s*(\d+)/i);
+  if(threshShort&&!threshFull){p.threshMajorBase=parseInt(threshShort[1]);p.threshSevereBase=parseInt(threshShort[2])}
+
+  // Experiences - "Between Two Worlds +2" or "- Between Two Worlds +2 - description"
+  const exps=[];
+  const expSection=t.match(/experiences?\s*\n([\s\S]*?)(?=\n\s*(?:#{1,3}\s|---|\n\n\s*#{1,3}))/i);
+  const expText=expSection?expSection[1]:t;
+  const expLines=[...expText.matchAll(/[-*]\s*(.+?)\s*\+(\d+)\s*(?:[-\u2014\u2013]\s*(.*))?$/gm)];
+  for(const m of expLines){
+    const name=m[1].replace(/\*\*/g,'').replace(/\*/g,'').trim();
+    if(name.length>2&&name.length<60)exps.push({name,modifier:parseInt(m[2])});
+  }
+  if(exps.length)p.experiences=exps;
+
+  // Domains - find from "Domain Cards" section header or parenthetical mentions
+  const allDomains=['Grace','Codex','Sage','Arcana','Valor','Blade','Bone','Midnight','Splendor'];
+  const domSection=t.match(/domain\s*cards?\s*(?:\([^)]*\))?\s*\n([\s\S]*?)(?=\n\s*(?:#{1,3}\s|---\s*\n|equipment|experience))/i);
+  const domText=domSection?domSection[1]:t;
+  // Look for domain names in parens: "(Bone, Recall 1)" or "(Sage, Recall 1)"
+  const domInParens=[...domText.matchAll(/\(\s*(Grace|Codex|Sage|Arcana|Valor|Blade|Bone|Midnight|Splendor)\b/gi)];
+  const foundDomains=[];
+  for(const m of domInParens){const d=m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase();if(!foundDomains.includes(d))foundDomains.push(d)}
+  // Fallback: domain names in header like "Domain Cards (Bone & Sage)"
+  if(foundDomains.length<2){
+    const domHeader=t.match(/domain\s*cards?\s*\(([^)]+)\)/i);
+    if(domHeader){for(const d of allDomains){const re=new RegExp('\\b'+d+'\\b','i');if(re.test(domHeader[1])&&!foundDomains.includes(d))foundDomains.push(d)}}
+  }
+  // Fallback 2: look for "Domains:" section with domain names on nearby lines
+  if(foundDomains.length<2){
+    const domSec=t.match(/domains?\s*[:=]?\s*\n?([\s\S]{0,300})/i);
+    if(domSec){for(const d of allDomains){const re=new RegExp('\\b'+d+'\\b','i');if(re.test(domSec[1])&&!foundDomains.includes(d))foundDomains.push(d)}}
+  }
+  if(foundDomains.length>=2)p.domains=foundDomains.slice(0,2);
+
+  // Weapons - "Primary Weapon: Shortbow - Agility, Far range, d6+3 phy, Two-Handed"
+  const wpnPri=t.match(/primary\s*weapon\s*[:=]\s*([^\n]+)/i);
+  if(wpnPri){
+    const parts=wpnPri[1].split(/\s*[-\u2014\u2013,]\s*/);
+    p.primaryWeapon=parts[0]?.trim();
+    p.primaryWeaponFull=wpnPri[1].trim();
+  }
+  const wpnSec=t.match(/secondary\s*weapon\s*[:=]\s*([^\n]+)/i);
+  if(wpnSec){p.secondaryWeapon=wpnSec[1].trim()}
+
+  // Armor name and details
+  const armLine=t.match(/(?:^|\n)\s*armor\s*[:=]\s*([^\n]+)/im);
+  if(armLine)p.armorName=armLine[1].trim();
+
+  // ── EXTRACT FREEFORM SECTIONS for textarea pre-population ──
+  function extractSection(headerPattern){
+    const re=new RegExp('(?:^|\\n)\\s*(?:#{1,3}\\s*)?'+headerPattern+'[^\\n]*\\n([\\s\\S]*?)(?=\\n\\s*(?:#{1,3}\\s|---\\s*$))', 'im');
+    const m=rawText.match(re);
+    return m?m[1].trim():'';
+  }
+
+  // Class features
+  const cfSections=[];
+  const cfText=extractSection('class\\s*features?');
+  if(cfText)cfSections.push(cfText);
+  const scfText=extractSection('subclass\\s*features?');
+  if(scfText)cfSections.push(scfText);
+  // Also grab hope feature lines
+  const hopeFeature=t.match(/hope\s*feature\s*[-\u2014\u2013:]\s*([^\n]+(?:\n(?![-*#\n]).*)*)/i);
+  if(hopeFeature)cfSections.push(hopeFeature[0].trim());
+  p.featuresText=cfSections.join('\n\n');
+
+  // Domain cards text
+  p.domainCardsText=extractSection('domain\\s*cards?');
+
+  // Ancestry & Community features
+  const ancParts=[];
+  const ancText=extractSection('ancestry');
+  if(ancText)ancParts.push(ancText);
+  const comText=extractSection('community');
+  if(comText)ancParts.push(comText);
+  p.ancestryFeaturesText=ancParts.join('\n');
+
+  // Inventory
+  const invSection=extractSection('(?:equipment|inventory)');
+  if(invSection){
+    p.inventoryText=invSection.split('\n')
+      .map(l=>strip(l).replace(/^[-*]\s*/,'').trim())
+      .filter(l=>l&&!l.match(/^#{1,3}\s/))
+      .join('\n');
+  }
+
+  // Backstory
+  p.backstoryText=extractSection('backstory');
+
+  return p;
+}
+
+// ══════════════════════════════════════════════════
+// REVIEW FORM
+// ══════════════════════════════════════════════════
+function showReviewForm(parsed,rawText){
+  const p=parsed;
+  const cls=p.class||'';
+  const ci=CLASSES[cls]||{};
+
+  let h=`<h1>Review & Complete</h1><div class="review-sub">We extracted what we could. Fill in anything missing, then load.</div>`;
+
+  // Identity
+  h+=`<div class="form-section"><h3>Identity</h3>
+    <div class="form-row">
+      <div class="form-field"><label>Name</label><input id="rv-name" value="${esc(p.name||'')}"></div>
+      <div class="form-field"><label>Pronouns</label><input id="rv-pronouns" value=""></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Class</label><select id="rv-class" onchange="onClassChange()"><option value="">--</option>${CLASS_NAMES.map(c=>`<option${c===cls?' selected':''}>${c}</option>`).join('')}<option value="Multi">Multi-class</option></select></div>
+      <div class="form-field"><label>Subclass</label><input id="rv-subclass" value="${esc(p.subclass||'')}"></div>
+      <div class="form-field small"><label>Level</label><input id="rv-level" type="number" min="1" max="10" value="${p.level||1}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Ancestry${p.ancestryNote?' ('+p.ancestryNote+')':''}</label><input id="rv-ancestry" value="${esc(p.ancestry||'')}" list="dl-ancestry"><datalist id="dl-ancestry">${ANCESTRIES.map(a=>`<option value="${a}">`).join('')}</datalist></div>
+      <div class="form-field"><label>Community</label><input id="rv-community" value="${esc(p.community||'')}" list="dl-comm"><datalist id="dl-comm">${COMMUNITIES.map(c=>`<option value="${c}">`).join('')}</datalist></div>
+    </div>
+    <div class="form-row" id="rv-multi-row" style="display:none">
+      <div class="form-field"><label>Secondary Class</label><select id="rv-class2"><option value="">--</option>${CLASS_NAMES.map(c=>`<option>${c}</option>`).join('')}</select></div>
+      <div class="form-field"><label>Secondary Subclass</label><input id="rv-subclass2" value=""></div>
+    </div>
+  </div>`;
+
+  // Stats
+  h+=`<div class="form-section"><h3>Stats</h3>
+    <div class="form-row">
+      <div class="form-field small"><label>Evasion</label><input id="rv-evasion" type="number" value="${p.evasion||ci.evasion||10}"></div>
+      <div class="form-field small"><label>Armor Score</label><input id="rv-armorscore" type="number" value="${p.armorScore||0}"></div>
+      <div class="form-field small"><label>Prof</label><input id="rv-prof" type="number" value="${p.proficiency||1}"></div>
+      <div class="form-field small"><label>Max HP</label><input id="rv-maxhp" type="number" value="${p.maxHP||ci.hp||6}"></div>
+      <div class="form-field small"><label>Stress</label><input id="rv-maxstress" type="number" value="${p.maxStress||6}"></div>
+    </div>
+    <div class="trait-row">${TRAIT_NAMES.map(t=>`<div class="trait-input"><label>${t.slice(0,3).toUpperCase()}</label><input id="rv-trait-${t}" type="number" value="${p.traits[t]!==undefined?p.traits[t]:0}"></div>`).join('')}</div>
+  </div>`;
+
+  // Domains
+  h+=`<div class="form-section"><h3>Domains</h3>
+    <div class="form-row">
+      <div class="form-field"><label>Domain 1</label><input id="rv-domain1" value="${(p.domains||ci.domains||[])[0]||''}"></div>
+      <div class="form-field"><label>Domain 2</label><input id="rv-domain2" value="${(p.domains||ci.domains||[])[1]||''}"></div>
+    </div>
+    <div class="form-row"><div class="form-field small"><label>Thresh Minor</label><input id="rv-thresh-minor" type="number" value="${p.threshMajorBase||0}"></div>
+      <div class="form-field small"><label>Thresh Major</label><input id="rv-thresh-major" type="number" value="${p.threshSevereBase||p.threshMajorBase||0}"></div>
+    </div>
+  </div>`;
+
+  // Weapons
+  h+=`<div class="form-section"><h3>Weapons</h3>
+    <div class="form-row"><div class="form-field"><label>Primary Name</label><input id="rv-wpn1-name" value="${esc(p.primaryWeapon||'')}"></div><div class="form-field"><label>Trait & Range</label><input id="rv-wpn1-tr" value=""></div><div class="form-field med"><label>Damage</label><input id="rv-wpn1-dmg" value=""></div></div>
+    <div class="form-row"><div class="form-field"><label>Primary Feature</label><input id="rv-wpn1-feat" value=""></div><div class="form-field med"><label>Burden</label><input id="rv-wpn1-burden" value="One-Handed"></div></div>
+    <div class="form-row"><div class="form-field"><label>Secondary Name</label><input id="rv-wpn2-name" value="${esc(p.secondaryWeapon||'')}"></div><div class="form-field"><label>Trait & Range</label><input id="rv-wpn2-tr" value=""></div><div class="form-field med"><label>Damage</label><input id="rv-wpn2-dmg" value=""></div></div>
+    <div class="form-row"><div class="form-field"><label>Secondary Feature</label><input id="rv-wpn2-feat" value=""></div><div class="form-field med"><label>Burden</label><input id="rv-wpn2-burden" value="One-Handed"></div></div>
+  </div>`;
+
+  // Armor
+  h+=`<div class="form-section"><h3>Armor</h3>
+    <div class="form-row"><div class="form-field"><label>Name</label><input id="rv-armor-name" value="${esc(p.armorName||'')}"></div><div class="form-field"><label>Thresholds</label><input id="rv-armor-thresh" value="" placeholder="e.g. 5 / 11"></div><div class="form-field small"><label>Score</label><input id="rv-armor-score" type="number" value="0"></div></div>
+    <div class="form-row"><div class="form-field"><label>Armor Feature</label><input id="rv-armor-feat" value=""></div></div>
+  </div>`;
+
+  // Experiences
+  h+=`<div class="form-section"><h3>Experiences</h3>
+    <div class="form-row"><div class="form-field"><label>Experience 1</label><input id="rv-exp1" value="${esc((p.experiences||[])[0]?.name||'')}"></div><div class="form-field small"><label>Mod</label><input id="rv-exp1-mod" type="number" value="${(p.experiences||[])[0]?.modifier||2}"></div></div>
+    <div class="form-row"><div class="form-field"><label>Experience 2</label><input id="rv-exp2" value="${esc((p.experiences||[])[1]?.name||'')}"></div><div class="form-field small"><label>Mod</label><input id="rv-exp2-mod" type="number" value="${(p.experiences||[])[1]?.modifier||2}"></div></div>
+  </div>`;
+
+  // Freeform sections
+  h+=`<div class="form-section"><h3>Class & Subclass Features</h3>
+    <div class="form-field"><label>Paste or type all class/subclass features (one per line)</label><textarea id="rv-features" rows="6" placeholder="Rally: Once per session...\nMake a Scene: Spend 3 Hope...\nGifted Performer: Play three songs...">${esc(p.featuresText||'')}</textarea></div></div>`;
+
+  h+=`<div class="form-section"><h3>Domain Cards</h3>
+    <div class="form-field"><label>Paste or type domain card names and descriptions (one card per paragraph)</label><textarea id="rv-domaincards" rows="6" placeholder="Enrapture (Grace, Lvl 1, Recall 1): Make a Spellcast Roll...">${esc(p.domainCardsText||'')}</textarea></div></div>`;
+
+  h+=`<div class="form-section"><h3>Ancestry & Community Features</h3>
+    <div class="form-field"><label>Paste or type ancestry and community features</label><textarea id="rv-ancfeatures" rows="4" placeholder="Amphibious: You can breathe underwater...\nKnow the Tide: When you roll with Fear...">${esc(p.ancestryFeaturesText||'')}</textarea></div></div>`;
+
+  h+=`<div class="form-section"><h3>Inventory</h3>
+    <div class="form-field"><label>Items, one per line</label><textarea id="rv-inventory" rows="4" placeholder="Torch\n50 ft rope\nMinor Health Potion">${esc(p.inventoryText||'')}</textarea></div></div>`;
+
+  h+=`<div class="form-section"><h3>Per-Rest Trackable Abilities</h3>
+    <div class="form-field"><label>Names of abilities you want tracker buttons for (comma-separated). Bards: Relaxing, Epic, Heartbreaking</label><input id="rv-songs" value="${(ci.songs||[]).join(', ')}"></div></div>`;
+
+  h+=`<div class="form-section"><h3>Raw Summary (reference)</h3>
+    <div class="form-field"><textarea id="rv-raw" rows="4" readonly style="opacity:.6">${esc(rawText)}</textarea></div></div>`;
+
+  h+=`<div class="review-actions"><button class="back" onclick="showScreen('landing')">Back</button><button class="confirm" onclick="buildFromReview()">Load Character Sheet</button></div>`;
+
+  document.getElementById('review').innerHTML=h;
+  showScreen('review');
+  onClassChange();
+}
+
+function onClassChange(){
+  const cls=document.getElementById('rv-class').value;
+  document.getElementById('rv-multi-row').style.display=cls==='Multi'?'flex':'none';
+  if(CLASSES[cls]){
+    const ci=CLASSES[cls];
+    document.getElementById('rv-evasion').value=document.getElementById('rv-evasion').value||ci.evasion;
+    document.getElementById('rv-maxhp').value=document.getElementById('rv-maxhp').value||ci.hp;
+    document.getElementById('rv-domain1').value=document.getElementById('rv-domain1').value||ci.domains[0];
+    document.getElementById('rv-domain2').value=document.getElementById('rv-domain2').value||ci.domains[1];
+    document.getElementById('rv-songs').value=document.getElementById('rv-songs').value||ci.songs.join(', ');
+  }
+}
+
+function buildFromReview(){
+  const v=id=>document.getElementById(id)?.value?.trim()||'';
+  const n=id=>parseInt(document.getElementById(id)?.value)||0;
+
+  const traits={};
+  TRAIT_NAMES.forEach(t=>{traits[t]={value:n('rv-trait-'+t),actions:TRAIT_ACTIONS[t]}});
+
+  const cls=v('rv-class')==='Multi'?v('rv-class2')||'Multi':v('rv-class');
+  const parseWpn=(pre)=>{const nm=v(pre+'-name');if(!nm)return null;const tr=v(pre+'-tr').split(',').map(s=>s.trim());return{name:nm,trait:tr[0]||'',range:tr[1]||'',damage:v(pre+'-dmg'),burden:v(pre+'-burden'),feature:v(pre+'-feat')||null}};
+
+  // Parse features from freeform text
+  const parseFeatureLines=(text)=>{
+    if(!text)return[];
+    return text.split('\n').filter(l=>l.trim()).map(l=>{
+      const m=l.match(/^([^:]+):\s*(.*)/);
+      if(m)return{title:m[1].trim(),text:m[2].trim()};
+      return{title:'',text:l.trim()};
+    });
+  };
+
+  // Parse domain cards
+  const parseDomainCards=(text)=>{
+    if(!text)return[];
+    const cards=[];
+    const paras=text.split(/\n\n+/);
+    for(const para of paras){
+      if(!para.trim())continue;
+      const m=para.match(/^([^(:\n]+?)(?:\s*\(([^)]*)\))?\s*[:]\s*([\s\S]*)/);
+      if(m){
+        const meta=m[2]||'';
+        const domMatch=meta.match(/(Grace|Codex|Sage|Arcana|Valor|Blade|Bone|Midnight|Splendor)/i);
+        const lvlMatch=meta.match(/(?:Lvl?|Level)\s*(\d+)/i);
+        const rcMatch=meta.match(/Recall\s*(\d+)/i);
+        cards.push({domain:domMatch?domMatch[1]:'',name:m[1].trim(),level:lvlMatch?parseInt(lvlMatch[1]):1,recallCost:rcMatch?parseInt(rcMatch[1]):0,text:m[3].trim(),additionalSpells:[]});
+      }else{
+        const firstLine=para.split('\n')[0].trim();
+        cards.push({domain:'',name:firstLine,level:1,recallCost:0,text:para.trim(),additionalSpells:[]});
+      }
+    }
+    return cards;
+  };
+
+  // Parse ancestry features
+  const parseAncFeatures=(text)=>{
+    if(!text)return[];
+    return text.split('\n').filter(l=>l.trim()).map(l=>{
+      const m=l.match(/^([^:]+):\s*(.*)/);
+      if(m)return{title:m[1].trim(),text:m[2].trim()};
+      return{title:'Feature',text:l.trim()};
+    });
+  };
+
+  const songs=v('rv-songs').split(',').map(s=>s.trim()).filter(Boolean);
+
+  const char={
+    name:v('rv-name'),pronouns:v('rv-pronouns'),
+    heritage:(v('rv-ancestry')+(v('rv-community')?', '+v('rv-community'):'')).trim(),
+    class:cls,subclass:v('rv-subclass'),level:n('rv-level')||1,
+    domains:[v('rv-domain1'),v('rv-domain2')].filter(Boolean),
+    traits,evasion:n('rv-evasion'),armorScore:n('rv-armor-score')||n('rv-armorscore'),proficiency:n('rv-prof')||1,
+    maxHP:n('rv-maxhp')||6,maxStress:n('rv-maxstress')||6,maxHope:6,startingHope:2,
+    damageThresholds:{minor:{label:'Minor',hpCost:1,base:n('rv-thresh-minor')},major:{label:'Major',hpCost:2,base:n('rv-thresh-major')},severe:{label:'Severe',hpCost:3,base:null}},
+    weapons:{primary:parseWpn('rv-wpn1'),secondary:parseWpn('rv-wpn2')},
+    armor:{name:v('rv-armor-name'),thresholds:v('rv-armor-thresh'),score:n('rv-armor-score'),feature:v('rv-armor-feat')},
+    experiences:[{name:v('rv-exp1'),modifier:n('rv-exp1-mod')||2},{name:v('rv-exp2'),modifier:n('rv-exp2-mod')||2}].filter(e=>e.name),
+    classFeatures:parseFeatureLines(v('rv-features')),
+    subclassFeatures:[],
+    domainCards:parseDomainCards(v('rv-domaincards')),
+    ancestryFeatures:parseAncFeatures(v('rv-ancfeatures')),
+    communityFeature:{title:'',text:''},
+    inventory:v('rv-inventory').split('\n').map(l=>l.trim()).filter(Boolean),
+    songs,
+  };
+
+  // Multi-class secondary info
+  if(v('rv-class')==='Multi'){
+    char.secondaryClass={class:v('rv-class2'),subclass:v('rv-subclass2')};
+    char.class=v('rv-class2')||'Multi';
+  }
+
+  loadCharacter(char);
+}
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// ══════════════════════════════════════════════════
+// LEVEL UP
+// ══════════════════════════════════════════════════
+function levelUp(){
+  if(!CHAR)return;
+  CHAR.level=(CHAR.level||1)+1;
+  // Proficiency bumps at 2, 5, 8
+  if([2,5,8].includes(CHAR.level))CHAR.proficiency=(CHAR.proficiency||1)+1;
+  saveChar();saveState();renderSheet();
+}
+
+function getTierInfo(level){
+  if(level<=1)return null;
+  const tier=level<=4?2:level<=7?3:4;
+  const tierLabel=`Tier ${tier} (Levels ${tier===2?'2-4':tier===3?'5-7':'8-10'})`;
+  let notes=[];
+  if([2,5,8].includes(level))notes.push('Gain a new Experience at +2, +1 Proficiency');
+  if([5,8].includes(level))notes.push('Clear all marked traits');
+  notes.push('Choose 2 advancements: +1 to two traits, +1 HP slot, +1 Stress slot, +1 to two Experiences, new domain card, +1 Evasion, upgraded subclass, or (Tier 3+) multiclass');
+  notes.push('Gain a new domain card at your level or lower');
+  notes.push('Add your new level to damage thresholds');
+  return{tier,tierLabel,notes};
+}
+
+// ══════════════════════════════════════════════════
+// RENDER SHEET
+// ══════════════════════════════════════════════════
+function renderSheet(){
+  const c=CHAR;if(!c)return;
+  const fmtMod=v=>v>=0?'+'+v:''+v;
+  const mc=a=>a.filter(Boolean).length;
+  const threshMinor=(c.damageThresholds?.minor?.base||0)+c.level;
+  const threshMajor=(c.damageThresholds?.major?.base||0)+c.level;
+
+  let h='';
+
+  // Header
+  h+=`<header class="header"><div class="header-left">
+    <h1 class="char-name">${c.name||'Unnamed'}</h1>
+    <div class="header-meta"><span>${c.class||''}</span><span class="dot">&middot;</span><span>${c.subclass||''}</span><span class="dot">&middot;</span><span>Lvl ${c.level||1}</span></div>
+    <div class="header-sub">${c.heritage||''}
+      <span class="domain-pills">${(c.domains||[]).map(d=>`<span class="domain-pill">${d}</span>`).join('')}</span>
+    </div></div><div class="header-right">
+    <div class="defense-box"><div class="defense-val">${c.evasion||10}</div><div class="defense-lbl">Evasion</div></div>
+    <div class="defense-box"><div class="defense-val">${c.armorScore||0}</div><div class="defense-lbl">Armor</div></div>
+    <div class="defense-box"><div class="defense-val">${c.proficiency||1}</div><div class="defense-lbl">Prof</div></div>
+  </div></header>`;
+
+  // Trackers
+  h+=`<section class="section"><h2 class="section-title">Trackers</h2><div class="tracker-grid">`;
+  // HP
+  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Hit Points</span><span class="tracker-count">${mc(state.hp)} / ${c.maxHP}</span></div>
+    <div class="slot-row">${state.hp.map((_,i)=>`<button class="slot${state.hp[i]?' marked-hp':''}" onclick="toggleSlot('hp',${i})">${state.hp[i]?'✕':''}</button>`).join('')}</div>
+    <div class="thresh-row"><span class="thresh-label">Minor (1 HP): ${threshMinor}+</span><span class="thresh-label">Major (2 HP): ${threshMajor}+</span><span class="thresh-label">Severe: 3 HP</span></div></div>`;
+  // Stress
+  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Stress</span><span class="tracker-count">${mc(state.stress)} / ${c.maxStress||6}</span></div>
+    <div class="slot-row">${state.stress.map((_,i)=>`<button class="slot${state.stress[i]?' marked-stress':''}" onclick="toggleSlot('stress',${i})">${state.stress[i]?'✕':''}</button>`).join('')}</div>
+    <div class="thresh-row"><span class="thresh-note">If out of Stress, mark HP instead</span></div></div>`;
+  // Hope
+  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Hope</span><span class="tracker-count">${state.hope} / ${c.maxHope}</span></div>
+    <div class="hope-row"><button class="hope-btn" onclick="adjHope(-1)"${state.hope===0?' disabled':''}>-</button>
+    <div class="diamonds">${Array(c.maxHope).fill(0).map((_,i)=>`<div class="diamond${i<state.hope?' filled':''}"></div>`).join('')}</div>
+    <button class="hope-btn" onclick="adjHope(1)"${state.hope>=c.maxHope?' disabled':''}>+</button></div>
+    <div class="thresh-row"><span class="thresh-note">Spend to use an Experience or help an ally</span></div></div>`;
+  // Armor slots
+  if((c.armorScore||0)>0){
+    h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Armor Slots</span><span class="tracker-count">${mc(state.armorSlots)} / ${c.armorScore}</span></div>
+      <div class="slot-row">${state.armorSlots.map((_,i)=>`<button class="slot${state.armorSlots[i]?' marked-armor':''}" onclick="toggleSlot('armorSlots',${i})">${state.armorSlots[i]?'✕':''}</button>`).join('')}</div></div>`;
+  }
+  // Rally & Songs
+  const songKeys=Object.keys(state.songs||{});
+  if(songKeys.length||c.class==='Bard'){
+    h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Rally & Abilities</span></div>
+      <button class="toggle-btn ${state.rallyUsed?'used':'ready'}" onclick="toggleRally()">Rally (d${(c.level||1)>=5?8:6}) ${state.rallyUsed?'- Used':'- Ready'}</button>
+      ${songKeys.length?`<div class="song-grid">${songKeys.map(k=>`<button class="song-btn ${state.songs[k]?'used':'ready'}" onclick="toggleSong('${k}')">${k}<span class="song-status">${state.songs[k]?'Used':'Ready'}</span></button>`).join('')}</div>`:''}</div>`;
+  }
+  // Tide & Gold
+  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Tokens & Gold</span></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--font-body);font-size:12px;color:var(--text-muted)"><span>Tide Tokens:</span>
+    <button class="counter-btn-sm" onclick="adjTide(-1)"${state.tideTokens===0?' disabled':''}>-</button><span class="tide-count">${state.tideTokens}</span><button class="counter-btn-sm" onclick="adjTide(1)">+</button></div>
+    <div class="gold-row"><label class="gold-label">Handfuls<div class="hope-row"><button class="counter-btn-sm" onclick="adjGold('h',-1)"${state.goldHandfuls===0?' disabled':''}>-</button><span class="gold-num">${state.goldHandfuls}</span><button class="counter-btn-sm" onclick="adjGold('h',1)">+</button></div></label>
+    <label class="gold-label">Bags<div class="hope-row"><button class="counter-btn-sm" onclick="adjGold('b',-1)"${state.goldBags===0?' disabled':''}>-</button><span class="gold-num">${state.goldBags}</span><button class="counter-btn-sm" onclick="adjGold('b',1)">+</button></div></label>
+    <label class="gold-label">Chest<button class="chest-btn${state.goldChest?' full':''}" onclick="toggleChest()">${state.goldChest?'Full':'Empty'}</button></label></div></div>`;
+  h+=`</div>`; // close tracker-grid
+
+  // Quick actions
+  h+=`<div class="quick-actions">
+    <button class="reset-btn" onclick="resetSession()">New Session</button>
+    <button class="reset-btn" onclick="resetRest('short')">Short Rest</button>
+    <button class="reset-btn" onclick="resetRest('long')">Long Rest</button>
+    <button class="action-btn-gold" onclick="levelUp()">Level Up</button>
+    <button class="action-btn-gold" onclick="exportJson()">Export JSON</button>
+    <button class="action-btn-danger" onclick="loadNewChar()">Switch Character</button>
+  </div>`;
+
+  // Level up banner
+  const ti=getTierInfo(c.level);
+  if(ti&&!state.levelUpDismissed){
+    h+=`<div class="level-up-banner visible"><h3>Level ${c.level} - ${ti.tierLabel}</h3><ul>${ti.notes.map(n=>`<li>${n}</li>`).join('')}</ul>
+    <button style="margin-top:8px;padding:4px 12px;border:none;border-radius:4px;cursor:pointer;font-size:11px;background:rgba(0,0,0,.2);color:#1a1a1f" onclick="dismissLevelUp()">Dismiss</button></div>`;
+  }
+  h+=`</section>`;
+
+  // Traits
+  h+=`<section class="section"><h2 class="section-title">Traits</h2><div class="trait-grid">${Object.entries(c.traits||{}).map(([n,t])=>`<div class="trait-card"><div class="trait-val">${fmtMod(t.value)}</div><div class="trait-name">${n}</div><div class="trait-actions">${(t.actions||[]).join(', ')}</div></div>`).join('')}</div></section>`;
+
+  // Weapons & Armor
+  h+=`<section class="section"><h2 class="section-title">Weapons & Armor</h2><div class="card-grid">`;
+  if(c.weapons?.primary?.name)h+=weaponCard('Primary',c.weapons.primary);
+  if(c.weapons?.secondary?.name)h+=weaponCard('Secondary',c.weapons.secondary);
+  if(c.armor?.name)h+=`<div class="card"><div class="card-label">Armor</div><div class="card-title">${c.armor.name}</div><div class="stat-row"><span>Thresholds: ${c.armor.thresholds||''}</span><span>Score: ${c.armor.score||0}</span></div>${c.armor.feature?`<div class="card-feature">${c.armor.feature}</div>`:''}</div>`;
+  h+=`</div></section>`;
+
+  // Experiences
+  if(c.experiences?.length){
+    h+=`<section class="section"><h2 class="section-title">Experiences</h2><div class="card-grid">${c.experiences.map(e=>`<div class="exp-card"><span class="exp-name">${e.name}</span><span class="exp-mod">+${e.modifier}</span></div>`).join('')}</div><div class="exp-reminder">Spend a Hope to add the modifier to an action or reaction roll</div></section>`;
+  }
+
+  // Domain Cards
+  if(c.domainCards?.length){
+    h+=`<section class="section"><h2 class="section-title">Domain Cards</h2><div class="domain-grid">${c.domainCards.map((dc,i)=>`<div class="domain-card" onclick="toggleDomain(${i})"><div class="domain-card-header"><span class="domain-badge">${dc.domain||'?'}</span><span class="domain-level">Lvl ${dc.level||1}</span><span class="recall-cost">Recall: ${dc.recallCost||0}</span></div><div class="domain-card-title">${dc.name}</div><div class="domain-card-text collapsed" id="dc-${i}">${dc.text||''}${dc.additionalSpells?.length?`<div class="additional-spells">${dc.additionalSpells.map(s=>`<div class="spell-line">${s}</div>`).join('')}</div>`:''}</div><div class="expand-hint" id="dh-${i}">tap to expand</div></div>`).join('')}</div></section>`;
+  }
+
+  // Class Features
+  if(c.classFeatures?.length){
+    h+=`<section class="section"><h2 class="section-title">Class Features</h2><div class="feature-list">${c.classFeatures.map(f=>`<div class="feature-item"><div class="feature-title">${f.title||'Feature'}</div><div class="feature-text">${f.text||''}</div></div>`).join('')}</div>`;
+    if(c.subclassFeatures?.length){
+      h+=`<div class="sub-section-title">Subclass Features</div><div class="feature-list">${c.subclassFeatures.map(f=>`<div class="feature-item"><div class="feature-title">${f.title||''}${f.tier?`<span class="tier-badge">${f.tier}</span>`:''}</div><div class="feature-text">${f.text||''}</div>${f.sub?`<div class="sub-list">${f.sub.map(s=>`<div class="sub-item">${s}</div>`).join('')}</div>`:''}</div>`).join('')}</div>`;
+    }
+    h+=`</section>`;
+  }
+
+  // Ancestry & Community
+  if(c.ancestryFeatures?.length||c.communityFeature?.title){
+    h+=`<section class="section"><h2 class="section-title">Ancestry & Community</h2><div class="feature-list">`;
+    (c.ancestryFeatures||[]).forEach(f=>{h+=`<div class="feature-item"><div class="feature-title">${f.title}</div><div class="feature-text">${f.text}</div></div>`});
+    if(c.communityFeature?.title)h+=`<div class="feature-item"><div class="feature-title">${c.communityFeature.title}</div><div class="feature-text">${c.communityFeature.text}</div></div>`;
+    h+=`</div></section>`;
+  }
+
+  // Inventory
+  if(c.inventory?.length){
+    h+=`<section class="section"><h2 class="section-title">Inventory</h2><div class="inventory-list">${c.inventory.map(i=>`<div class="inventory-item">${i}</div>`).join('')}</div></section>`;
+  }
+
+  // Notes
+  h+=`<section class="section"><h2 class="section-title">Session Notes</h2><textarea class="notes-area" oninput="state.notes=this.value;saveState()" placeholder="Jot down anything mid-session...">${state.notes||''}</textarea></section>`;
+
+  document.getElementById('sheet').innerHTML=h;
+}
+
+function weaponCard(label,w){
+  return`<div class="card"><div class="card-label">${label}</div><div class="card-title">${w.name}</div><div class="stat-row"><span>${w.trait||''}</span><span>${w.range||''}</span><span class="damage-text">${w.damage||''}</span></div><div class="card-meta">${w.burden||''}</div>${w.feature?`<div class="card-feature">${w.feature}</div>`:''}</div>`;
+}
+
+// ══════════════════════════════════════════════════
+// INTERACTIVE HANDLERS
+// ══════════════════════════════════════════════════
+function toggleSlot(key,i){state[key][i]=!state[key][i];saveState();renderSheet()}
+function adjHope(d){state.hope=Math.max(0,Math.min(CHAR.maxHope,state.hope+d));saveState();renderSheet()}
+function toggleRally(){state.rallyUsed=!state.rallyUsed;saveState();renderSheet()}
+function toggleSong(k){state.songs[k]=!state.songs[k];saveState();renderSheet()}
+function adjTide(d){state.tideTokens=Math.max(0,state.tideTokens+d);saveState();renderSheet()}
+function adjGold(t,d){if(t==='h')state.goldHandfuls=Math.max(0,Math.min(10,state.goldHandfuls+d));if(t==='b')state.goldBags=Math.max(0,Math.min(10,state.goldBags+d));saveState();renderSheet()}
+function toggleChest(){state.goldChest=!state.goldChest;saveState();renderSheet()}
+function toggleDomain(i){const el=document.getElementById('dc-'+i),h=document.getElementById('dh-'+i);if(!el)return;el.classList.toggle('collapsed');h.textContent=el.classList.contains('collapsed')?'tap to expand':'tap to collapse'}
+function resetSession(){state.rallyUsed=false;for(const k in state.songs)state.songs[k]=false;saveState();renderSheet()}
+function resetRest(type){state.armorSlots=Array(CHAR.armorScore||0).fill(false);if(type==='long'){for(const k in state.songs)state.songs[k]=false}saveState();renderSheet()}
+function dismissLevelUp(){state.levelUpDismissed=true;saveState();renderSheet()}
+
+// ══════════════════════════════════════════════════
+// AUTO-LOAD LAST CHARACTER
+// ══════════════════════════════════════════════════
+(function(){
+  try{
+    const lastKey=localStorage.getItem('dh-last-char');
+    if(lastKey){const raw=localStorage.getItem(lastKey+'-char');if(raw){CHAR=JSON.parse(raw);loadState();renderSheet();showScreen('sheet');return}}
+  }catch(e){}
+})();
+// Override saveChar to track last loaded
+const _origSaveChar=saveChar;
+saveChar=function(){_origSaveChar();try{localStorage.setItem('dh-last-char',storageKey())}catch(e){}}
+</script>
+</body>
+</html>

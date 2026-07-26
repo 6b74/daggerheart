@@ -1,0 +1,183 @@
+{
+  "_template": "Bard Character Template",
+  "_notes": "The 'songs' array creates per-rest tracker buttons. Troubadour subclass grants Gifted Performer songs. Wordsmith subclass uses different abilities. Adjust the songs array to match your chosen subclass features.",
+  "_classItems": "A romance novel or a letter never opened",
+  "_suggestedSubclasses": [
+    "Troubadour",
+    "Wordsmith"
+  ],
+  "name": "",
+  "pronouns": "",
+  "heritage": "",
+  "class": "Bard",
+  "subclass": "",
+  "level": 1,
+  "domains": [
+    "Grace",
+    "Codex"
+  ],
+  "traits": {
+    "Agility": {
+      "value": 0,
+      "actions": [
+        "Sprint",
+        "Leap",
+        "Maneuver"
+      ]
+    },
+    "Strength": {
+      "value": -1,
+      "actions": [
+        "Lift",
+        "Smash",
+        "Grapple"
+      ]
+    },
+    "Finesse": {
+      "value": 1,
+      "actions": [
+        "Control",
+        "Hide",
+        "Tinker"
+      ]
+    },
+    "Instinct": {
+      "value": 0,
+      "actions": [
+        "Perceive",
+        "Sense",
+        "Navigate"
+      ]
+    },
+    "Presence": {
+      "value": 2,
+      "actions": [
+        "Charm",
+        "Perform",
+        "Deceive"
+      ]
+    },
+    "Knowledge": {
+      "value": 1,
+      "actions": [
+        "Recall",
+        "Analyze",
+        "Comprehend"
+      ]
+    }
+  },
+  "evasion": 10,
+  "armorScore": 0,
+  "proficiency": 1,
+  "maxHP": 5,
+  "maxStress": 6,
+  "maxHope": 6,
+  "startingHope": 2,
+  "damageThresholds": {
+    "minor": {
+      "label": "Minor",
+      "hpCost": 1,
+      "base": 0
+    },
+    "major": {
+      "label": "Major",
+      "hpCost": 2,
+      "base": 0
+    },
+    "severe": {
+      "label": "Severe",
+      "hpCost": 3,
+      "base": null
+    }
+  },
+  "weapons": {
+    "primary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    },
+    "secondary": {
+      "name": "",
+      "trait": "",
+      "range": "",
+      "damage": "",
+      "burden": "",
+      "feature": null
+    }
+  },
+  "armor": {
+    "name": "",
+    "thresholds": "0 / 0",
+    "score": 0,
+    "feature": ""
+  },
+  "experiences": [
+    {
+      "name": "",
+      "modifier": 2
+    },
+    {
+      "name": "",
+      "modifier": 2
+    }
+  ],
+  "classFeatures": [
+    {
+      "title": "Rally",
+      "text": "Once per session, describe how you rally the party and give yourself and each of your allies a Rally Die (d6). A PC can spend their Rally Die to roll it, adding the result to their action roll, reaction roll, damage roll, or to clear a number of Stress equal to the result. Clear all unspent Rally Dice at end of session. At level 5, Rally Die increases to d8."
+    },
+    {
+      "title": "Make a Scene",
+      "text": "Spend 3 Hope to temporarily Distract a target within Close range, giving them a -2 penalty to their Difficulty."
+    }
+  ],
+  "subclassFeatures": [
+    {
+      "title": "",
+      "text": "",
+      "sub": [],
+      "tier": null
+    }
+  ],
+  "domainCards": [
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    },
+    {
+      "domain": "",
+      "name": "",
+      "level": 1,
+      "recallCost": 0,
+      "text": "",
+      "additionalSpells": []
+    }
+  ],
+  "ancestryFeatures": [
+    {
+      "title": "",
+      "text": ""
+    },
+    {
+      "title": "",
+      "text": ""
+    }
+  ],
+  "communityFeature": {
+    "title": "",
+    "text": ""
+  },
+  "inventory": [],
+  "songs": [
+    "Relaxing",
+    "Epic",
+    "Heartbreaking"
+  ]
+}
