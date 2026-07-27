@@ -184,7 +184,9 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 
 /* Header with image */
 .header-with-image{display:flex;gap:16px;align-items:flex-start}
-.header-portrait{width:80px;height:80px;border-radius:8px;object-fit:cover;border:2px solid var(--border);flex-shrink:0}
+.header-portrait{width:80px;height:80px;border-radius:8px;object-fit:cover;border:2px solid var(--border);flex-shrink:0;cursor:pointer}
+.header-portrait-upload{width:80px;height:80px;border-radius:8px;border:2px dashed var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;color:var(--text-muted);transition:border-color .15s;font-family:var(--font-body)}
+.header-portrait-upload:hover{border-color:var(--accent);color:var(--accent)}
 
 /* Sidebar cards */
 .sidebar-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
@@ -345,7 +347,7 @@ const TRAIT_ACTIONS = {Agility:['Sprint','Leap','Maneuver'],Strength:['Lift','Sm
 let CHAR = null, state = {};
 function storageKey(){return 'dh-'+(CHAR?.name||'x').toLowerCase().replace(/\s+/g,'-')}
 function defaultState(){
-  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,goldHandfuls:1,goldBags:0,goldChest:false,tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false,sessionHistory:[],currentSessionDate:new Date().toISOString().slice(0,10)};
+  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,goldHandfuls:1,goldBags:0,goldChest:false,tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false,sessionHistory:[],currentSessionDate:new Date().toISOString().slice(0,10),sidebarState:{'sb-map':true,'sb-primer':false,'sb-hist':false,'sb-rules':false}};
 }
 function saveState(){try{localStorage.setItem(storageKey(),JSON.stringify(state))}catch(e){}}
 function loadState(){
@@ -803,9 +805,18 @@ function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 // ══════════════════════════════════════════════════
 function levelUp(){
   if(!CHAR)return;
-  CHAR.level=(CHAR.level||1)+1;
-  // Proficiency bumps at 2, 5, 8
+  const next=(CHAR.level||1)+1;
+  if(!confirm('Level up to '+next+'?'))return;
+  CHAR.level=next;
   if([2,5,8].includes(CHAR.level))CHAR.proficiency=(CHAR.proficiency||1)+1;
+  state.levelUpDismissed=false;
+  saveChar();saveState();renderSheet();
+}
+function levelDown(){
+  if(!CHAR||CHAR.level<=1)return;
+  if(!confirm('Revert to level '+(CHAR.level-1)+'?'))return;
+  if([2,5,8].includes(CHAR.level))CHAR.proficiency=Math.max(1,(CHAR.proficiency||1)-1);
+  CHAR.level--;
   saveChar();saveState();renderSheet();
 }
 
@@ -837,7 +848,11 @@ function renderSheet(){
 
   // Header with optional portrait
   h+=`<header class="header"><div class="header-with-image">`;
-  if(imgData)h+=`<img src="${imgData}" class="header-portrait" alt="${c.name}" onclick="openImgFullscreen()">`;
+  if(imgData){
+    h+=`<img src="${imgData}" class="header-portrait" alt="${c.name}" onclick="openImgFullscreen()" title="Click to view full size">`;
+  }else{
+    h+=`<label class="header-portrait-upload" title="Upload character image"><input type="file" accept="image/*" onchange="uploadImg(this)" style="display:none">+</label>`;
+  }
   h+=`<div class="header-left">
     <h1 class="char-name">${c.name||'Unnamed'}</h1>
     <div class="header-meta"><span>${c.class||''}</span><span class="dot">&middot;</span><span>${c.subclass||''}</span><span class="dot">&middot;</span><span>Lvl ${c.level||1}</span></div>
@@ -895,9 +910,11 @@ function renderSheet(){
     <button class="reset-btn" onclick="resetRest('short')">Short Rest</button>
     <button class="reset-btn" onclick="resetRest('long')">Long Rest</button>
     <button class="action-btn-gold" onclick="levelUp()">Level Up</button>
+    <button class="reset-btn" onclick="levelDown()"${(CHAR.level||1)<=1?' disabled':''}>Level Down</button>
     <button class="action-btn-gold" onclick="exportJson()">Export JSON</button>
     <button class="action-btn-danger" onclick="loadNewChar()">Switch Character</button>
   </div>`;
+  if(imgData){h+=`<div style="margin-top:4px"><button class="reset-btn" style="font-size:10px" onclick="removeImg()">Remove Portrait</button></div>`}
 
   // Level up banner
   const ti=getTierInfo(c.level);
@@ -959,88 +976,14 @@ function renderSheet(){
 
   // ── SIDEBAR ──
   h+=`<div class="sheet-sidebar">`;
-
-  // Rules Quick Reference (sidebar)
-  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-rules')"><span class="sidebar-card-title">Rules Reference</span><span class="sidebar-card-toggle">expand</span></div>
-    <div class="sidebar-card-body" id="sb-rules">
-
-    <div class="primer-category"><div class="primer-cat-label">Making a Roll</div>
-    <div class="primer-term">Roll <strong>2d12</strong> (one Hope die, one Fear die) + your <strong>Trait modifier</strong>. Compare total to the Difficulty.</div>
-    <div class="primer-term"><strong>Hope result:</strong> Hope die is higher. You succeed, and you gain a Hope.</div>
-    <div class="primer-term"><strong>Fear result:</strong> Fear die is higher. You succeed, but the GM gains a Fear.</div>
-    <div class="primer-term"><strong>Failure:</strong> Total is below the Difficulty. GM may also gain a Fear.</div>
-    <div class="primer-term"><strong>Critical Success:</strong> Both dice match and you succeed. Double damage or enhanced effect.</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Attacks & Damage</div>
-    <div class="primer-term">Roll 2d12 + weapon's <strong>Trait modifier</strong> vs. target's <strong>Difficulty</strong>.</div>
-    <div class="primer-term">On a hit, roll your weapon's <strong>damage dice</strong>.</div>
-    <div class="primer-term">Compare damage to your target's <strong>damage thresholds</strong>:</div>
-    <div class="primer-term" style="padding-left:8px">Below Minor = no HP marked</div>
-    <div class="primer-term" style="padding-left:8px">Minor+ = mark 1 HP</div>
-    <div class="primer-term" style="padding-left:8px">Major+ = mark 2 HP</div>
-    <div class="primer-term" style="padding-left:8px">Severe+ = mark 3 HP</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Taking Damage</div>
-    <div class="primer-term">Enemy attacks target your <strong>Evasion</strong> (that's your Difficulty).</div>
-    <div class="primer-term">If hit, compare damage to your thresholds and <strong>mark HP</strong> accordingly.</div>
-    <div class="primer-term"><strong>Armor Slots:</strong> Spend a slot to reduce incoming damage before comparing to thresholds.</div>
-    <div class="primer-term">When all HP are marked, you're <strong>down</strong>. One more hit = <strong>death door</strong>.</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Hope</div>
-    <div class="primer-term">Gain Hope on a <strong>Hope result</strong> (your Hope die was higher).</div>
-    <div class="primer-term"><strong>Spend 1 Hope</strong> to: use an Experience (+modifier to a roll), help an ally's roll, or activate Hope-cost abilities.</div>
-    <div class="primer-term"><strong>Spend 3 Hope</strong> for your class's Hope Feature (e.g., Make a Scene).</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Stress</div>
-    <div class="primer-term">Mark Stress when abilities or the GM require it.</div>
-    <div class="primer-term">If all Stress slots are full, <strong>mark HP instead</strong>.</div>
-    <div class="primer-term">Clear Stress by: spending Rally Dice, resting, or specific abilities.</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Experiences</div>
-    <div class="primer-term"><strong>Spend 1 Hope</strong> and describe how the Experience applies.</div>
-    <div class="primer-term">Add the <strong>modifier</strong> (+2) to your roll.</div>
-    <div class="primer-term">Each Experience can be used <strong>once per roll</strong>.</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Ranges</div>
-    <div class="primer-term"><strong>Melee:</strong> Right next to you, sword's reach.</div>
-    <div class="primer-term"><strong>Very Close:</strong> A few steps away.</div>
-    <div class="primer-term"><strong>Close:</strong> Across a room, a short sprint.</div>
-    <div class="primer-term"><strong>Far:</strong> Down the street, bowshot.</div>
-    <div class="primer-term"><strong>Very Far:</strong> Edge of visibility.</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Rests</div>
-    <div class="primer-term"><strong>Short Rest:</strong> A brief pause. Clear Armor Slots. Some abilities reset.</div>
-    <div class="primer-term"><strong>Long Rest:</strong> Extended downtime. Clear Armor, reset per-rest abilities (songs, domain cards). Choose a downtime move.</div>
-    </div>
-
-    <div class="primer-category"><div class="primer-cat-label">Domain Cards</div>
-    <div class="primer-term">Casting a spell costs the card's <strong>Recall</strong> in Stress to bring it back after use.</div>
-    <div class="primer-term"><strong>Spellcast Roll:</strong> 2d12 + relevant Trait (usually Instinct or Presence) vs. target Difficulty.</div>
-    </div>
-
-    </div></div>`;
-
-  // Character Image (sidebar)
-  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-img')"><span class="sidebar-card-title">Character</span><span class="sidebar-card-toggle">${imgData?'collapse':'expand'}</span></div>
-    <div class="sidebar-card-body${imgData?' open':''}" id="sb-img">`;
-  if(imgData){
-    h+=`<div class="char-image-container"><img src="${imgData}" alt="${c.name}"><button class="char-image-remove" onclick="removeImg()">remove</button></div>`;
-  }else{
-    h+=`<label class="char-image-upload">Upload Character Image<input type="file" accept="image/*" onchange="uploadImg(this)"></label>`;
-  }
-  h+=`</div></div>`;
+  const sbOpen=(id)=>(state.sidebarState||{})[id]?true:false;
+  const sbCls=(id)=>sbOpen(id)?' open':'';
+  const sbTog=(id)=>sbOpen(id)?'collapse':'expand';
 
   // Campaign Map (sidebar)
   const mapData=getMap();
-  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-map')"><span class="sidebar-card-title">Campaign Map</span><span class="sidebar-card-toggle">${mapData?'collapse':'expand'}</span></div>
-    <div class="sidebar-card-body${mapData?' open':''}" id="sb-map">`;
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-map')"><span class="sidebar-card-title">Campaign Map</span><span class="sidebar-card-toggle">${sbTog('sb-map')}</span></div>
+    <div class="sidebar-card-body${sbCls('sb-map')}" id="sb-map">`;
   if(mapData){
     h+=`<div class="map-container"><img src="${mapData}" class="map-img" onclick="openMapFullscreen()" alt="Campaign Map"><div class="map-hint">Tap to fullscreen</div></div>
     <button class="reset-btn" style="margin-top:6px;font-size:10px" onclick="removeMap()">Remove Map</button>`;
@@ -1051,8 +994,8 @@ function renderSheet(){
 
   // Campaign Primer (sidebar)
   const primer=getPrimer();
-  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-primer')"><span class="sidebar-card-title">Campaign Primer</span><span class="sidebar-card-toggle">${primer?'collapse':'expand'}</span></div>
-    <div class="sidebar-card-body${primer?' open':''}" id="sb-primer">`;
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-primer')"><span class="sidebar-card-title">Campaign Primer</span><span class="sidebar-card-toggle">${sbTog('sb-primer')}</span></div>
+    <div class="sidebar-card-body${sbCls('sb-primer')}" id="sb-primer">`;
   if(primer){
     const extracted=extractPrimerTerms(primer);
     h+=`<div class="primer-tabs">
@@ -1097,8 +1040,8 @@ function renderSheet(){
 
   // Session History (sidebar)
   const hist=state.sessionHistory||[];
-  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-hist')"><span class="sidebar-card-title">Session History (${hist.length})</span><span class="sidebar-card-toggle">expand</span></div>
-    <div class="sidebar-card-body" id="sb-hist">`;
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-hist')"><span class="sidebar-card-title">Session History (${hist.length})</span><span class="sidebar-card-toggle">${sbTog('sb-hist')}</span></div>
+    <div class="sidebar-card-body${sbCls('sb-hist')}" id="sb-hist">`;
   if(hist.length){
     for(const entry of hist){
       const dateLabel=entry.date||'Unknown date';
@@ -1115,6 +1058,43 @@ function renderSheet(){
     h+=`<div style="font-size:12px;color:var(--text-muted);font-family:var(--font-body)">No archived sessions yet. Use "Archive & Start New Session" to save your current notes here.</div>`;
   }
   h+=`</div></div>`;
+
+  // Rules Quick Reference (sidebar - bottom)
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-rules')"><span class="sidebar-card-title">Rules Reference</span><span class="sidebar-card-toggle">${sbTog('sb-rules')}</span></div>
+    <div class="sidebar-card-body${sbCls('sb-rules')}" id="sb-rules">
+    <div class="primer-category"><div class="primer-cat-label">Making a Roll</div>
+    <div class="primer-term">Roll <strong>2d12</strong> (one Hope die, one Fear die) + your <strong>Trait modifier</strong>. Compare total to the Difficulty.</div>
+    <div class="primer-term"><strong>Hope result:</strong> Hope die is higher. You succeed, and you gain a Hope.</div>
+    <div class="primer-term"><strong>Fear result:</strong> Fear die is higher. You succeed, but the GM gains a Fear.</div>
+    <div class="primer-term"><strong>Failure:</strong> Total is below the Difficulty. GM may also gain a Fear.</div>
+    <div class="primer-term"><strong>Critical Success:</strong> Both dice match and you succeed. Double damage or enhanced effect.</div>
+    </div>
+    <div class="primer-category"><div class="primer-cat-label">Attacks & Damage</div>
+    <div class="primer-term">Roll 2d12 + weapon's <strong>Trait modifier</strong> vs. target's <strong>Difficulty</strong>. On a hit, roll <strong>damage dice</strong>.</div>
+    <div class="primer-term" style="padding-left:8px">Below Minor = no HP marked</div>
+    <div class="primer-term" style="padding-left:8px">Minor+ = 1 HP | Major+ = 2 HP | Severe+ = 3 HP</div>
+    </div>
+    <div class="primer-category"><div class="primer-cat-label">Taking Damage</div>
+    <div class="primer-term">Enemy attacks target your <strong>Evasion</strong>. <strong>Armor Slots</strong> reduce incoming damage.</div>
+    <div class="primer-term">All HP marked = <strong>down</strong>. One more hit = <strong>death door</strong>.</div>
+    </div>
+    <div class="primer-category"><div class="primer-cat-label">Hope & Stress</div>
+    <div class="primer-term">Gain Hope on Hope results. <strong>Spend 1</strong> for Experiences or helping allies. <strong>Spend 3</strong> for your Hope Feature.</div>
+    <div class="primer-term">Stress fills from abilities and GM. If full, <strong>mark HP instead</strong>. Clear via Rally Dice or resting.</div>
+    </div>
+    <div class="primer-category"><div class="primer-cat-label">Experiences</div>
+    <div class="primer-term"><strong>Spend 1 Hope</strong>, describe how it applies, add <strong>+modifier</strong> to your roll. Once per roll.</div>
+    </div>
+    <div class="primer-category"><div class="primer-cat-label">Ranges</div>
+    <div class="primer-term"><strong>Melee:</strong> sword's reach | <strong>V. Close:</strong> a few steps | <strong>Close:</strong> across a room | <strong>Far:</strong> bowshot | <strong>V. Far:</strong> edge of visibility</div>
+    </div>
+    <div class="primer-category"><div class="primer-cat-label">Rests</div>
+    <div class="primer-term"><strong>Short:</strong> clear Armor Slots. <strong>Long:</strong> clear Armor, reset per-rest abilities, choose a downtime move.</div>
+    </div>
+    <div class="primer-category"><div class="primer-cat-label">Domain Cards</div>
+    <div class="primer-term"><strong>Recall cost</strong> = Stress to bring a used card back. <strong>Spellcast:</strong> 2d12 + Trait vs. Difficulty.</div>
+    </div>
+    </div></div>`;
 
   h+=`</div>`; // close sheet-sidebar
   h+=`</div>`; // close sheet-grid
@@ -1321,6 +1301,9 @@ function toggleSidebarCard(id){
   if(el)el.classList.toggle('open');
   const btn=el?.previousElementSibling?.querySelector('.sidebar-card-toggle');
   if(btn)btn.textContent=el.classList.contains('open')?'collapse':'expand';
+  if(!state.sidebarState)state.sidebarState={};
+  state.sidebarState[id]=el?.classList.contains('open')||false;
+  saveState();
 }
 
 // ══════════════════════════════════════════════════
