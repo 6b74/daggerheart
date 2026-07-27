@@ -94,6 +94,21 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .thresh-row{margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
 .thresh-label,.thresh-note{font-size:11px;color:var(--text-muted);font-family:var(--font-body)}
 .thresh-note{font-style:italic}
+
+/* Status indicators */
+.status-warn{background:var(--accent-dim);color:var(--accent-bright);padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.1em;margin-top:8px;text-align:center}
+.status-dead{background:var(--hp);color:#fff;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.1em;margin-top:8px;text-align:center}
+.status-info{color:var(--gold);font-size:10px;font-family:var(--font-body);font-style:italic;margin-top:4px}
+.dimmed{opacity:.4;pointer-events:none}
+.domain-card.vaulted{opacity:.5;border-style:dashed}
+.domain-card.vaulted .domain-card-title{text-decoration:line-through;text-decoration-color:var(--text-muted)}
+.vault-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-body);padding:2px 6px;border-radius:4px;margin-left:auto}
+.vault-badge.in-vault{background:var(--used);color:#888}
+.vault-badge.active-card{background:var(--accent-dim);color:var(--accent-bright)}
+.domain-card-actions{display:flex;gap:6px;margin-top:8px}
+.domain-card-actions button{padding:4px 10px;border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;font-family:var(--font-body);border:none}
+.domain-card-actions .use-btn{background:var(--accent-dim);color:var(--accent-bright)}
+.domain-card-actions .recall-btn{background:var(--gold-dim);color:var(--gold)}
 .hope-row{display:flex;align-items:center;gap:8px;justify-content:center}
 .hope-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .hope-btn:disabled{opacity:.3;cursor:default}
@@ -345,7 +360,7 @@ const TRAIT_ACTIONS = {Agility:['Sprint','Leap','Maneuver'],Strength:['Lift','Sm
 let CHAR = null, state = {};
 function storageKey(){return 'dh-'+(CHAR?.name||'x').toLowerCase().replace(/\s+/g,'-')}
 function defaultState(){
-  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,goldHandfuls:1,goldBags:0,goldChest:false,tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false,sessionHistory:[],currentSessionDate:new Date().toISOString().slice(0,10),sidebarState:{'sb-map':true,'sb-primer':false,'sb-hist':false,'sb-rules':false}};
+  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,goldHandfuls:1,goldBags:0,goldChest:false,tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false,sessionHistory:[],currentSessionDate:new Date().toISOString().slice(0,10),sidebarState:{'sb-map':true,'sb-primer':false,'sb-hist':false,'sb-rules':false},vaultedCards:{}};
 }
 function saveState(){try{localStorage.setItem(storageKey(),JSON.stringify(state))}catch(e){}}
 function loadState(){
@@ -868,19 +883,26 @@ function renderSheet(){
   // Trackers
   h+=`<section class="section"><h2 class="section-title">Trackers</h2><div class="tracker-grid">`;
   // HP
-  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Hit Points</span><span class="tracker-count">${mc(state.hp)} / ${c.maxHP}</span></div>
+  const hpMarked=mc(state.hp);
+  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Hit Points</span><span class="tracker-count">${hpMarked} / ${c.maxHP}</span></div>
     <div class="slot-row">${state.hp.map((_,i)=>`<button class="slot${state.hp[i]?' marked-hp':''}" onclick="toggleSlot('hp',${i})">${state.hp[i]?'✕':''}</button>`).join('')}</div>
-    <div class="thresh-row"><span class="thresh-label">Minor (1 HP): ${threshMinor}+</span><span class="thresh-label">Major (2 HP): ${threshMajor}+</span><span class="thresh-label">Severe: 3 HP</span></div></div>`;
+    <div class="thresh-row"><span class="thresh-label">Minor (1 HP): ${threshMinor}+</span><span class="thresh-label">Major (2 HP): ${threshMajor}+</span><span class="thresh-label">Severe: 3 HP</span></div>
+    ${hpMarked>=c.maxHP?'<div class="status-dead">You are DOWN. Next hit = Death Door.</div>':''}
+    </div>`;
   // Stress
-  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Stress</span><span class="tracker-count">${mc(state.stress)} / ${c.maxStress||6}</span></div>
+  const stressMarked=mc(state.stress);
+  const stressFull=stressMarked>=(c.maxStress||6);
+  h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Stress</span><span class="tracker-count">${stressMarked} / ${c.maxStress||6}</span></div>
     <div class="slot-row">${state.stress.map((_,i)=>`<button class="slot${state.stress[i]?' marked-stress':''}" onclick="toggleSlot('stress',${i})">${state.stress[i]?'✕':''}</button>`).join('')}</div>
-    <div class="thresh-row"><span class="thresh-note">If out of Stress, mark HP instead</span></div></div>`;
+    ${stressFull?'<div class="status-warn">Stress Full. Any new Stress marks HP instead.</div>':'<div class="thresh-row"><span class="thresh-note">If out of Stress, mark HP instead</span></div>'}
+    </div>`;
   // Hope
+  const hopeHint=state.hope===0?'No Hope. Gain from Hope results or Heartbreaking Song.':state.hope<3?'Spend 1 for Experiences or to help an ally. Need 3 for Hope Feature.':'Spend 1 for Experiences or help. Spend 3 for Hope Feature.';
   h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Hope</span><span class="tracker-count">${state.hope} / ${c.maxHope}</span></div>
     <div class="hope-row"><button class="hope-btn" onclick="adjHope(-1)"${state.hope===0?' disabled':''}>-</button>
     <div class="diamonds">${Array(c.maxHope).fill(0).map((_,i)=>`<div class="diamond${i<state.hope?' filled':''}"></div>`).join('')}</div>
     <button class="hope-btn" onclick="adjHope(1)"${state.hope>=c.maxHope?' disabled':''}>+</button></div>
-    <div class="thresh-row"><span class="thresh-note">Spend to use an Experience or help an ally</span></div></div>`;
+    <div class="thresh-row"><span class="thresh-note">${hopeHint}</span></div></div>`;
   // Armor slots
   if((c.armorScore||0)>0){
     h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Armor Slots</span><span class="tracker-count">${mc(state.armorSlots)} / ${c.armorScore}</span></div>
@@ -934,17 +956,43 @@ function renderSheet(){
 
   // Experiences
   if(c.experiences?.length){
-    h+=`<section class="section"><h2 class="section-title">Experiences</h2><div class="card-grid">${c.experiences.map(e=>`<div class="exp-card"><div class="exp-header"><span class="exp-name">${e.name}</span><span class="exp-mod">+${e.modifier}</span></div>${e.description?`<div class="exp-desc">${e.description}</div>`:''}</div>`).join('')}</div><div class="exp-reminder">Spend a Hope to add the modifier to an action or reaction roll</div></section>`;
+    h+=`<section class="section"><h2 class="section-title">Experiences</h2><div class="card-grid">${c.experiences.map(e=>`<div class="exp-card${state.hope<1?' dimmed':''}"><div class="exp-header"><span class="exp-name">${e.name}</span><span class="exp-mod">+${e.modifier}</span></div>${e.description?`<div class="exp-desc">${e.description}</div>`:''}</div>`).join('')}</div>
+    <div class="exp-reminder">${state.hope<1?'Need at least 1 Hope to use an Experience':'Spend a Hope to add the modifier to an action or reaction roll'}</div></section>`;
   }
 
   // Domain Cards
   if(c.domainCards?.length){
-    h+=`<section class="section"><h2 class="section-title">Domain Cards</h2><div class="domain-grid">${c.domainCards.map((dc,i)=>`<div class="domain-card" onclick="toggleDomain(${i})"><div class="domain-card-header"><span class="domain-badge">${dc.domain||'?'}</span><span class="domain-level">Lvl ${dc.level||1}</span><span class="recall-cost">Recall: ${dc.recallCost||0}</span></div><div class="domain-card-title">${dc.name}</div><div class="domain-card-text collapsed" id="dc-${i}">${dc.text||''}${dc.additionalSpells?.length?`<div class="additional-spells">${dc.additionalSpells.map(s=>`<div class="spell-line">${s}</div>`).join('')}</div>`:''}</div><div class="expand-hint" id="dh-${i}">tap to expand</div></div>`).join('')}</div></section>`;
+    if(!state.vaultedCards)state.vaultedCards={};
+    h+=`<section class="section"><h2 class="section-title">Domain Cards</h2><div class="domain-grid">${c.domainCards.map((dc,i)=>{
+      const isVaulted=state.vaultedCards[i]||false;
+      const recallBlocked=stressFull&&(dc.recallCost||0)>0;
+      const cardClass=isVaulted?'domain-card vaulted':'domain-card';
+      return`<div class="${cardClass}">
+        <div class="domain-card-header" onclick="toggleDomain(${i})">
+          <span class="domain-badge">${dc.domain||'?'}</span>
+          <span class="domain-level">Lvl ${dc.level||1}</span>
+          <span class="recall-cost">Recall: ${dc.recallCost||0} Stress</span>
+          <span class="vault-badge ${isVaulted?'in-vault':'active-card'}">${isVaulted?'Vault':'Active'}</span>
+        </div>
+        <div class="domain-card-title">${dc.name}</div>
+        <div class="domain-card-text collapsed" id="dc-${i}">${dc.text||''}${dc.additionalSpells?.length?`<div class="additional-spells">${dc.additionalSpells.map(s=>`<div class="spell-line">${s}</div>`).join('')}</div>`:''}</div>
+        <div class="expand-hint" id="dh-${i}" onclick="toggleDomain(${i})">tap to expand</div>
+        <div class="domain-card-actions">
+          ${isVaulted
+            ?`<button class="recall-btn${recallBlocked?' dimmed':''}" onclick="recallCard(${i},${dc.recallCost||0})">Recall (${dc.recallCost||0} Stress)</button>`
+            :`<button class="use-btn" onclick="vaultCard(${i})">Mark Used</button>`
+          }
+        </div>
+      </div>`}).join('')}</div></section>`;
   }
 
   // Class Features
   if(c.classFeatures?.length){
-    h+=`<section class="section"><h2 class="section-title">Class Features</h2><div class="feature-list">${c.classFeatures.map(f=>`<div class="feature-item"><div class="feature-title">${f.title||'Feature'}</div><div class="feature-text">${f.text||''}</div></div>`).join('')}</div>`;
+    h+=`<section class="section"><h2 class="section-title">Class Features</h2><div class="feature-list">${c.classFeatures.map(f=>{
+      const isHopeFeature=f.text&&f.text.toLowerCase().includes('spend 3 hope');
+      const dimHope=isHopeFeature&&state.hope<3;
+      return`<div class="feature-item${dimHope?' dimmed':''}"><div class="feature-title">${f.title||'Feature'}${dimHope?'<span class="status-info"> (need 3 Hope)</span>':''}</div><div class="feature-text">${f.text||''}</div></div>`;
+    }).join('')}</div>`;
     if(c.subclassFeatures?.length){
       h+=`<div class="sub-section-title">Subclass Features</div><div class="feature-list">${c.subclassFeatures.map(f=>`<div class="feature-item"><div class="feature-title">${f.title||''}${f.tier?`<span class="tier-badge">${f.tier}</span>`:''}</div><div class="feature-text">${f.text||''}</div>${f.sub?`<div class="sub-list">${f.sub.map(s=>`<div class="sub-item">${s}</div>`).join('')}</div>`:''}</div>`).join('')}</div>`;
     }
@@ -1115,8 +1163,32 @@ function adjTide(d){state.tideTokens=Math.max(0,state.tideTokens+d);saveState();
 function adjGold(t,d){if(t==='h')state.goldHandfuls=Math.max(0,Math.min(10,state.goldHandfuls+d));if(t==='b')state.goldBags=Math.max(0,Math.min(10,state.goldBags+d));saveState();renderSheet()}
 function toggleChest(){state.goldChest=!state.goldChest;saveState();renderSheet()}
 function toggleDomain(i){const el=document.getElementById('dc-'+i),h=document.getElementById('dh-'+i);if(!el)return;el.classList.toggle('collapsed');h.textContent=el.classList.contains('collapsed')?'tap to expand':'tap to collapse'}
+function vaultCard(i){
+  if(!state.vaultedCards)state.vaultedCards={};
+  state.vaultedCards[i]=true;
+  saveState();renderSheet();
+}
+function recallCard(i,cost){
+  const stressMarked=state.stress.filter(Boolean).length;
+  const stressOpen=(CHAR.maxStress||6)-stressMarked;
+  if(cost>0&&stressOpen<cost){
+    const hpCost=cost-stressOpen;
+    if(!confirm('Not enough Stress slots. This will mark '+stressOpen+' Stress and '+hpCost+' HP. Continue?'))return;
+    // Fill remaining stress
+    for(let s=0;s<state.stress.length&&cost>0;s++){if(!state.stress[s]){state.stress[s]=true;cost--}}
+    // Overflow to HP
+    for(let h=0;h<state.hp.length&&hpCost>0;h++){if(!state.hp[h]){state.hp[h]=true;hpCost--}}
+  }else if(cost>0){
+    if(!confirm('Recall costs '+cost+' Stress. Mark '+cost+' Stress?'))return;
+    let remaining=cost;
+    for(let s=0;s<state.stress.length&&remaining>0;s++){if(!state.stress[s]){state.stress[s]=true;remaining--}}
+  }
+  if(!state.vaultedCards)state.vaultedCards={};
+  state.vaultedCards[i]=false;
+  saveState();renderSheet();
+}
 function resetSession(){state.rallyUsed=false;for(const k in state.songs)state.songs[k]=false;saveState();renderSheet()}
-function resetRest(type){state.armorSlots=Array(CHAR.armorScore||0).fill(false);if(type==='long'){for(const k in state.songs)state.songs[k]=false}saveState();renderSheet()}
+function resetRest(type){state.armorSlots=Array(CHAR.armorScore||0).fill(false);if(type==='long'){for(const k in state.songs)state.songs[k]=false;state.vaultedCards={}}saveState();renderSheet()}
 function dismissLevelUp(){state.levelUpDismissed=true;saveState();renderSheet()}
 
 // ══════════════════════════════════════════════════
