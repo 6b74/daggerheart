@@ -1043,40 +1043,8 @@ function renderSheet(){
   h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-primer')"><span class="sidebar-card-title">Campaign Primer</span><span class="sidebar-card-toggle">${sbTog('sb-primer')}</span></div>
     <div class="sidebar-card-body${sbCls('sb-primer')}" id="sb-primer">`;
   if(primer){
-    const extracted=extractPrimerTerms(primer);
-    h+=`<div class="primer-tabs">
-      <button class="primer-tab active" onclick="switchPrimerTab('summary',this)">Quick Ref</button>
-      <button class="primer-tab" onclick="switchPrimerTab('full',this)">Full Text</button>
-    </div>`;
-    // Quick Reference tab
-    h+=`<div class="primer-panel active" id="primer-summary">`;
-    if(extracted.locations.length){
-      h+=`<div class="primer-category"><div class="primer-cat-label">Locations</div>`;
-      extracted.locations.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
-      h+=`</div>`;
-    }
-    if(extracted.groups.length){
-      h+=`<div class="primer-category"><div class="primer-cat-label">Groups & Factions</div>`;
-      extracted.groups.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
-      h+=`</div>`;
-    }
-    if(extracted.events.length){
-      h+=`<div class="primer-category"><div class="primer-cat-label">Events & Lore</div>`;
-      extracted.events.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
-      h+=`</div>`;
-    }
-    if(extracted.concepts.length){
-      h+=`<div class="primer-category"><div class="primer-cat-label">Key Terms</div>`;
-      extracted.concepts.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
-      h+=`</div>`;
-    }
-    if(!extracted.locations.length&&!extracted.groups.length&&!extracted.events.length&&!extracted.concepts.length){
-      h+=`<div style="font-size:11px;color:var(--text-muted);font-family:var(--font-body)">No key terms extracted. Try the AI Summary tab for a Claude-powered breakdown.</div>`;
-    }
-    h+=`</div>`;
-    // Full Text tab
-    h+=`<div class="primer-panel" id="primer-full"><div class="primer-text">${esc(primer)}</div></div>`;
-    h+=`<hr class="primer-divider">
+    h+=`<div class="primer-text">${esc(primer)}</div>
+    <hr class="primer-divider">
     <button class="reset-btn" style="font-size:10px" onclick="removePrimer()">Remove Primer</button>`;
   }else{
     h+=`<textarea class="primer-upload" id="primer-input" placeholder="Paste your campaign primer, world lore, or session notes here..."></textarea>
