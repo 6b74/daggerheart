@@ -201,6 +201,20 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .primer-text{font-size:12px;color:var(--text-muted);font-family:var(--font-body);line-height:1.5;max-height:400px;overflow-y:auto;white-space:pre-wrap;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 .primer-upload{width:100%;padding:8px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--font-body);font-size:12px;resize:vertical;min-height:80px}
 
+/* Primer summary */
+.primer-summary{margin-bottom:12px}
+.primer-summary-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-display);color:var(--gold);margin-bottom:6px}
+.primer-category{margin-bottom:8px}
+.primer-cat-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-family:var(--font-body);margin-bottom:3px}
+.primer-term{font-size:11px;font-family:var(--font-body);color:var(--text-muted);line-height:1.4;padding:2px 0}
+.primer-term strong{color:var(--text);font-weight:600}
+.primer-divider{border:none;border-top:1px solid var(--border);margin:8px 0}
+.primer-tabs{display:flex;gap:0;margin-bottom:8px;border-bottom:1px solid var(--border)}
+.primer-tab{padding:6px 12px;font-size:11px;font-family:var(--font-body);font-weight:600;color:var(--text-muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent}
+.primer-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.primer-panel{display:none}
+.primer-panel.active{display:block}
+
 /* Session history */
 .session-entry{border-top:1px solid var(--border);padding:8px 0}
 .session-entry:first-child{border-top:none}
@@ -946,6 +960,73 @@ function renderSheet(){
   // ── SIDEBAR ──
   h+=`<div class="sheet-sidebar">`;
 
+  // Rules Quick Reference (sidebar)
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-rules')"><span class="sidebar-card-title">Rules Reference</span><span class="sidebar-card-toggle">expand</span></div>
+    <div class="sidebar-card-body" id="sb-rules">
+
+    <div class="primer-category"><div class="primer-cat-label">Making a Roll</div>
+    <div class="primer-term">Roll <strong>2d12</strong> (one Hope die, one Fear die) + your <strong>Trait modifier</strong>. Compare total to the Difficulty.</div>
+    <div class="primer-term"><strong>Hope result:</strong> Hope die is higher. You succeed, and you gain a Hope.</div>
+    <div class="primer-term"><strong>Fear result:</strong> Fear die is higher. You succeed, but the GM gains a Fear.</div>
+    <div class="primer-term"><strong>Failure:</strong> Total is below the Difficulty. GM may also gain a Fear.</div>
+    <div class="primer-term"><strong>Critical Success:</strong> Both dice match and you succeed. Double damage or enhanced effect.</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Attacks & Damage</div>
+    <div class="primer-term">Roll 2d12 + weapon's <strong>Trait modifier</strong> vs. target's <strong>Difficulty</strong>.</div>
+    <div class="primer-term">On a hit, roll your weapon's <strong>damage dice</strong>.</div>
+    <div class="primer-term">Compare damage to your target's <strong>damage thresholds</strong>:</div>
+    <div class="primer-term" style="padding-left:8px">Below Minor = no HP marked</div>
+    <div class="primer-term" style="padding-left:8px">Minor+ = mark 1 HP</div>
+    <div class="primer-term" style="padding-left:8px">Major+ = mark 2 HP</div>
+    <div class="primer-term" style="padding-left:8px">Severe+ = mark 3 HP</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Taking Damage</div>
+    <div class="primer-term">Enemy attacks target your <strong>Evasion</strong> (that's your Difficulty).</div>
+    <div class="primer-term">If hit, compare damage to your thresholds and <strong>mark HP</strong> accordingly.</div>
+    <div class="primer-term"><strong>Armor Slots:</strong> Spend a slot to reduce incoming damage before comparing to thresholds.</div>
+    <div class="primer-term">When all HP are marked, you're <strong>down</strong>. One more hit = <strong>death door</strong>.</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Hope</div>
+    <div class="primer-term">Gain Hope on a <strong>Hope result</strong> (your Hope die was higher).</div>
+    <div class="primer-term"><strong>Spend 1 Hope</strong> to: use an Experience (+modifier to a roll), help an ally's roll, or activate Hope-cost abilities.</div>
+    <div class="primer-term"><strong>Spend 3 Hope</strong> for your class's Hope Feature (e.g., Make a Scene).</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Stress</div>
+    <div class="primer-term">Mark Stress when abilities or the GM require it.</div>
+    <div class="primer-term">If all Stress slots are full, <strong>mark HP instead</strong>.</div>
+    <div class="primer-term">Clear Stress by: spending Rally Dice, resting, or specific abilities.</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Experiences</div>
+    <div class="primer-term"><strong>Spend 1 Hope</strong> and describe how the Experience applies.</div>
+    <div class="primer-term">Add the <strong>modifier</strong> (+2) to your roll.</div>
+    <div class="primer-term">Each Experience can be used <strong>once per roll</strong>.</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Ranges</div>
+    <div class="primer-term"><strong>Melee:</strong> Right next to you, sword's reach.</div>
+    <div class="primer-term"><strong>Very Close:</strong> A few steps away.</div>
+    <div class="primer-term"><strong>Close:</strong> Across a room, a short sprint.</div>
+    <div class="primer-term"><strong>Far:</strong> Down the street, bowshot.</div>
+    <div class="primer-term"><strong>Very Far:</strong> Edge of visibility.</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Rests</div>
+    <div class="primer-term"><strong>Short Rest:</strong> A brief pause. Clear Armor Slots. Some abilities reset.</div>
+    <div class="primer-term"><strong>Long Rest:</strong> Extended downtime. Clear Armor, reset per-rest abilities (songs, domain cards). Choose a downtime move.</div>
+    </div>
+
+    <div class="primer-category"><div class="primer-cat-label">Domain Cards</div>
+    <div class="primer-term">Casting a spell costs the card's <strong>Recall</strong> in Stress to bring it back after use.</div>
+    <div class="primer-term"><strong>Spellcast Roll:</strong> 2d12 + relevant Trait (usually Instinct or Presence) vs. target Difficulty.</div>
+    </div>
+
+    </div></div>`;
+
   // Character Image (sidebar)
   h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-img')"><span class="sidebar-card-title">Character</span><span class="sidebar-card-toggle">${imgData?'collapse':'expand'}</span></div>
     <div class="sidebar-card-body${imgData?' open':''}" id="sb-img">`;
@@ -973,8 +1054,41 @@ function renderSheet(){
   h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-primer')"><span class="sidebar-card-title">Campaign Primer</span><span class="sidebar-card-toggle">${primer?'collapse':'expand'}</span></div>
     <div class="sidebar-card-body${primer?' open':''}" id="sb-primer">`;
   if(primer){
-    h+=`<div class="primer-text">${esc(primer)}</div>
-    <button class="reset-btn" style="margin-top:6px;font-size:10px" onclick="removePrimer()">Remove Primer</button>`;
+    const extracted=extractPrimerTerms(primer);
+    h+=`<div class="primer-tabs">
+      <button class="primer-tab active" onclick="switchPrimerTab('summary',this)">Quick Ref</button>
+      <button class="primer-tab" onclick="switchPrimerTab('full',this)">Full Text</button>
+    </div>`;
+    // Quick Reference tab
+    h+=`<div class="primer-panel active" id="primer-summary">`;
+    if(extracted.locations.length){
+      h+=`<div class="primer-category"><div class="primer-cat-label">Locations</div>`;
+      extracted.locations.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
+      h+=`</div>`;
+    }
+    if(extracted.groups.length){
+      h+=`<div class="primer-category"><div class="primer-cat-label">Groups & Factions</div>`;
+      extracted.groups.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
+      h+=`</div>`;
+    }
+    if(extracted.events.length){
+      h+=`<div class="primer-category"><div class="primer-cat-label">Events & Lore</div>`;
+      extracted.events.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
+      h+=`</div>`;
+    }
+    if(extracted.concepts.length){
+      h+=`<div class="primer-category"><div class="primer-cat-label">Key Terms</div>`;
+      extracted.concepts.forEach(t=>{h+=`<div class="primer-term"><strong>${t.name}</strong>${t.context?' - '+t.context:''}</div>`});
+      h+=`</div>`;
+    }
+    if(!extracted.locations.length&&!extracted.groups.length&&!extracted.events.length&&!extracted.concepts.length){
+      h+=`<div style="font-size:11px;color:var(--text-muted);font-family:var(--font-body)">No key terms extracted. Try the AI Summary tab for a Claude-powered breakdown.</div>`;
+    }
+    h+=`</div>`;
+    // Full Text tab
+    h+=`<div class="primer-panel" id="primer-full"><div class="primer-text">${esc(primer)}</div></div>`;
+    h+=`<hr class="primer-divider">
+    <button class="reset-btn" style="font-size:10px" onclick="removePrimer()">Remove Primer</button>`;
   }else{
     h+=`<textarea class="primer-upload" id="primer-input" placeholder="Paste your campaign primer, world lore, or session notes here..."></textarea>
     <button class="reset-btn" style="margin-top:6px" onclick="savePrimer(document.getElementById('primer-input').value);renderSheet()">Save Primer</button>`;
@@ -1032,16 +1146,35 @@ function dismissLevelUp(){state.levelUpDismissed=true;saveState();renderSheet()}
 // ══════════════════════════════════════════════════
 function mapKey(){return storageKey()+'-map'}
 function getMap(){try{return localStorage.getItem(mapKey())}catch(e){return null}}
-function uploadMap(input){
-  const file=input.files[0];if(!file)return;
-  // Warn if file is very large (localStorage has ~5-10MB limit)
-  if(file.size>4*1024*1024){alert('Image is over 4MB. Try a compressed or lower-resolution version.');return}
+
+// Compress image via canvas before storing in localStorage
+function compressImage(file,maxDim,quality,callback){
   const reader=new FileReader();
   reader.onload=function(e){
-    try{localStorage.setItem(mapKey(),e.target.result);renderSheet()}
-    catch(err){alert('Image too large for browser storage. Try a smaller file.')}
+    const img=new Image();
+    img.onload=function(){
+      const canvas=document.createElement('canvas');
+      let w=img.width,h=img.height;
+      if(w>maxDim||h>maxDim){
+        if(w>h){h=Math.round(h*(maxDim/w));w=maxDim}
+        else{w=Math.round(w*(maxDim/h));h=maxDim}
+      }
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      callback(canvas.toDataURL('image/jpeg',quality));
+    };
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+function uploadMap(input){
+  const file=input.files[0];if(!file)return;
+  compressImage(file,1600,0.7,function(dataUrl){
+    try{localStorage.setItem(mapKey(),dataUrl);renderSheet()}
+    catch(err){alert('Image still too large after compression. Try a smaller file.')}
+  });
 }
 function removeMap(){localStorage.removeItem(mapKey());renderSheet()}
 function openMapFullscreen(){
@@ -1065,13 +1198,10 @@ function imgKey(){return storageKey()+'-img'}
 function getImg(){try{return localStorage.getItem(imgKey())}catch(e){return null}}
 function uploadImg(input){
   const file=input.files[0];if(!file)return;
-  if(file.size>4*1024*1024){alert('Image is over 4MB. Try a smaller version.');return}
-  const reader=new FileReader();
-  reader.onload=function(e){
-    try{localStorage.setItem(imgKey(),e.target.result);renderSheet()}
-    catch(err){alert('Image too large for browser storage.')}
-  };
-  reader.readAsDataURL(file);
+  compressImage(file,800,0.8,function(dataUrl){
+    try{localStorage.setItem(imgKey(),dataUrl);renderSheet()}
+    catch(err){alert('Image still too large after compression. Try a smaller file.')}
+  });
 }
 function removeImg(){localStorage.removeItem(imgKey());renderSheet()}
 function openImgFullscreen(){
@@ -1089,6 +1219,78 @@ function primerKey(){return storageKey()+'-primer'}
 function getPrimer(){try{return localStorage.getItem(primerKey())||''}catch(e){return ''}}
 function savePrimer(text){try{localStorage.setItem(primerKey(),text)}catch(e){}}
 function removePrimer(){localStorage.removeItem(primerKey());renderSheet()}
+
+// Tab switching
+function switchPrimerTab(tab,btn){
+  document.querySelectorAll('.primer-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.primer-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panels={summary:'primer-summary',full:'primer-full',ai:'primer-ai'};
+  const el=document.getElementById(panels[tab]);
+  if(el)el.classList.add('active');
+}
+
+// Client-side primer extraction
+function extractPrimerTerms(text){
+  const clean=text.replace(/\*\*([^*]+)\*\*/g,'$1').replace(/\*([^*]+)\*/g,'$1').replace(/_([^_]+)_/g,'$1');
+  const sentences=clean.split(/[.!?]+/).map(s=>s.trim()).filter(s=>s.length>10);
+
+  const locations=[], groups=[], events=[], concepts=[];
+  const seen=new Set();
+
+  // Known fantasy location words
+  const locWords=/\b(Kingdom|City|Capital|Town|Village|Forest|Mountain|Coast|Basin|Frontier|Border|Keep|Ruins|Woods|Steps|Wastes|Sea|Crossing|Port|Outpost|Hollow|Haven)\b/i;
+  const groupWords=/\b(Faith|Order|Tribe|Army|Crown|Church|Guild|Council|People|Forces)\b/i;
+  const eventWords=/\b(Sundering|War|Battle|Siege|Fall|Sacrifice|Age|Era)\b/i;
+
+  // Find "The X" proper noun patterns and standalone capitalized phrases
+  const thePatterns=[...clean.matchAll(/(?:the\s+)([A-Z][a-z]+(?:\s+(?:of\s+(?:the\s+)?)?[A-Z][a-z]+)*)/g)];
+  const standalonePatterns=[...clean.matchAll(/\b([A-Z][a-z]{2,}(?:\s+[A-Z][a-z]+)+)\b/g)];
+
+  const allMatches=[...thePatterns,...standalonePatterns];
+
+  for(const match of allMatches){
+    const name=match[1].trim();
+    if(name.length<4||name.length>50)continue;
+    if(seen.has(name.toLowerCase()))continue;
+    // Skip common English phrases
+    if(/^(They|Then|There|These|Those|This|That|When|What|Where|Some|Many|Most|Every|After|Before|Behind|Between|Through|During|Still|Their|From|Into|Over|Under|About|Each|Other|Another)\b/.test(name))continue;
+    if(/^(No one|In the|At the|On the|For the|And the|But the|With the)\b/i.test(name))continue;
+
+    seen.add(name.toLowerCase());
+
+    // Find context sentence
+    const contextSentence=sentences.find(s=>s.includes(name));
+    let context='';
+    if(contextSentence){
+      // Try to get a short clause about this term
+      const idx=contextSentence.indexOf(name);
+      const after=contextSentence.slice(idx+name.length).trim();
+      const clause=after.match(/^[,:]?\s*(.{10,80}?)(?:[,.]|$)/);
+      if(clause)context=clause[1].trim().replace(/^(is|are|was|were|have|has)\s+/i,(m)=>m.toLowerCase());
+      if(!context&&contextSentence.length<120)context=contextSentence;
+    }
+
+    // Categorize
+    if(locWords.test(name))locations.push({name:'The '+name,context});
+    else if(groupWords.test(name))groups.push({name:'The '+name,context});
+    else if(eventWords.test(name))events.push({name:'The '+name,context});
+    else concepts.push({name,context});
+  }
+
+  // Also find "called the X" / "known as the X" patterns
+  const calledPatterns=[...clean.matchAll(/(?:called|known as|named)\s+the\s+([A-Z][a-z]+(?:\s+(?:of\s+(?:the\s+)?)?[A-Z][a-z]+)*)/gi)];
+  for(const m of calledPatterns){
+    const name=m[1].trim();
+    if(seen.has(name.toLowerCase()))continue;
+    seen.add(name.toLowerCase());
+    const ctx=sentences.find(s=>s.includes(name));
+    const shortCtx=ctx&&ctx.length<120?ctx:'';
+    concepts.push({name,context:shortCtx});
+  }
+
+  return {locations:locations.slice(0,12),groups:groups.slice(0,8),events:events.slice(0,6),concepts:concepts.slice(0,8)};
+}
 
 // ══════════════════════════════════════════════════
 // SESSION HISTORY
