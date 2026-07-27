@@ -64,7 +64,7 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .review-actions .back{background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border)}
 
 /* Sheet (reuse most styles from v1) */
-#sheet{flex-direction:column;max-width:900px;margin:0 auto;padding:0 16px 80px;width:100%}
+#sheet{flex-direction:column;max-width:1280px;margin:0 auto;padding:0 24px 80px;width:100%}
 .header{display:flex;justify-content:space-between;align-items:flex-start;padding:24px 0 20px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap}
 .header-left{flex:1;min-width:200px}
 .char-name{font-size:32px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
@@ -166,21 +166,74 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .map-fullscreen{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;cursor:zoom-out;overflow:auto;-webkit-overflow-scrolling:touch}
 .map-fullscreen img{max-width:100%;max-height:100%;object-fit:contain}
 .map-fullscreen.zoomed img{max-width:none;max-height:none;width:150%}
+
+/* Two-column layout */
+.sheet-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+.sheet-main{min-width:0}
+.sheet-sidebar{display:flex;flex-direction:column;gap:12px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.sheet-sidebar::-webkit-scrollbar{width:4px}
+.sheet-sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Character image */
+.char-image-container{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
+.char-image-container img{width:100%;display:block}
+.char-image-remove{position:absolute;top:6px;right:6px;background:rgba(15,14,18,.8);color:var(--text-muted);border:none;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;font-family:var(--font-body)}
+.char-image-upload{width:100%;padding:24px 16px;border:2px dashed var(--border);border-radius:8px;background:transparent;color:var(--text-muted);font-family:var(--font-body);font-size:12px;cursor:pointer;text-align:center;transition:border-color .15s}
+.char-image-upload:hover{border-color:var(--accent)}
+.char-image-upload input{display:none}
+
+/* Header with image */
+.header-with-image{display:flex;gap:16px;align-items:flex-start}
+.header-portrait{width:80px;height:80px;border-radius:8px;object-fit:cover;border:2px solid var(--border);flex-shrink:0}
+
+/* Sidebar cards */
+.sidebar-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.sidebar-card-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.sidebar-card-header:hover{background:var(--surface-alt)}
+.sidebar-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;font-family:var(--font-display);color:var(--accent)}
+.sidebar-card-toggle{font-size:10px;color:var(--text-muted);font-family:var(--font-body)}
+.sidebar-card-body{padding:0 14px 14px;display:none}
+.sidebar-card-body.open{display:block}
+.sidebar-card-body .map-container{border:none;border-radius:4px}
+.sidebar-card-body .map-img{border-radius:4px}
+
+/* Primer */
+.primer-text{font-size:12px;color:var(--text-muted);font-family:var(--font-body);line-height:1.5;max-height:400px;overflow-y:auto;white-space:pre-wrap;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.primer-upload{width:100%;padding:8px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--font-body);font-size:12px;resize:vertical;min-height:80px}
+
+/* Session history */
+.session-entry{border-top:1px solid var(--border);padding:8px 0}
+.session-entry:first-child{border-top:none}
+.session-entry-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0}
+.session-entry-date{font-size:12px;font-weight:600;font-family:var(--font-body);color:var(--text)}
+.session-entry-toggle{font-size:10px;color:var(--text-muted)}
+.session-entry-body{display:none;font-size:12px;color:var(--text-muted);font-family:var(--font-body);line-height:1.5;white-space:pre-wrap;padding:6px 0}
+.session-entry-body.open{display:block}
+.session-entry-delete{background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;font-family:var(--font-body);opacity:.5}
+.session-entry-delete:hover{opacity:1;color:var(--hp)}
 .level-up-banner{background:var(--gold);color:#1a1a1f;padding:12px 16px;border-radius:8px;margin-top:12px;font-family:var(--font-body);font-size:13px;line-height:1.5;display:none}
 .level-up-banner.visible{display:block}
 .level-up-banner h3{font-size:15px;margin-bottom:4px}
 .level-up-banner ul{margin:6px 0 0 16px}
 
-/* Tablet portrait (iPad ~768px) */
+/* Tablet portrait and below - collapse sidebar */
+@media(max-width:900px){
+  .sheet-grid{grid-template-columns:1fr;gap:0}
+  .sheet-sidebar{position:static;max-height:none;overflow:visible;margin-top:24px}
+}
 @media(max-width:768px){
   .tracker-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
   .card-grid{grid-template-columns:1fr}
   .domain-grid{grid-template-columns:1fr}
   .quick-actions{justify-content:center}
+  .header-portrait{width:60px;height:60px}
 }
-/* Mobile portrait (~480px) */
+/* Mobile portrait */
 @media(max-width:480px){
   .header{flex-direction:column}
+  .header-with-image{flex-direction:column;align-items:center;text-align:center}
+  .header-left{text-align:center}
+  .header-sub{justify-content:center}
   .char-name{font-size:26px}
   .header-right{width:100%;justify-content:space-around}
   .header-right .defense-box{flex:1}
@@ -197,6 +250,7 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
   .exp-header{flex-wrap:wrap;gap:4px}
   .song-grid{flex-direction:column}
   .song-btn{min-width:unset}
+  .header-portrait{width:70px;height:70px}
 }
 </style>
 </head>
@@ -277,7 +331,7 @@ const TRAIT_ACTIONS = {Agility:['Sprint','Leap','Maneuver'],Strength:['Lift','Sm
 let CHAR = null, state = {};
 function storageKey(){return 'dh-'+(CHAR?.name||'x').toLowerCase().replace(/\s+/g,'-')}
 function defaultState(){
-  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,goldHandfuls:1,goldBags:0,goldChest:false,tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false};
+  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,goldHandfuls:1,goldBags:0,goldChest:false,tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false,sessionHistory:[],currentSessionDate:new Date().toISOString().slice(0,10)};
 }
 function saveState(){try{localStorage.setItem(storageKey(),JSON.stringify(state))}catch(e){}}
 function loadState(){
@@ -765,18 +819,24 @@ function renderSheet(){
   const threshMajor=(c.damageThresholds?.major?.base||0)+c.level;
 
   let h='';
+  const imgData=getImg();
 
-  // Header
-  h+=`<header class="header"><div class="header-left">
+  // Header with optional portrait
+  h+=`<header class="header"><div class="header-with-image">`;
+  if(imgData)h+=`<img src="${imgData}" class="header-portrait" alt="${c.name}" onclick="openImgFullscreen()">`;
+  h+=`<div class="header-left">
     <h1 class="char-name">${c.name||'Unnamed'}</h1>
     <div class="header-meta"><span>${c.class||''}</span><span class="dot">&middot;</span><span>${c.subclass||''}</span><span class="dot">&middot;</span><span>Lvl ${c.level||1}</span></div>
     <div class="header-sub">${c.heritage||''}
       <span class="domain-pills">${(c.domains||[]).map(d=>`<span class="domain-pill">${d}</span>`).join('')}</span>
-    </div></div><div class="header-right">
+    </div></div></div><div class="header-right">
     <div class="defense-box"><div class="defense-val">${c.evasion||10}</div><div class="defense-lbl">Evasion</div></div>
     <div class="defense-box"><div class="defense-val">${c.armorScore||0}</div><div class="defense-lbl">Armor</div></div>
     <div class="defense-box"><div class="defense-val">${c.proficiency||1}</div><div class="defense-lbl">Prof</div></div>
   </div></header>`;
+
+  // ── BEGIN TWO-COLUMN GRID ──
+  h+=`<div class="sheet-grid"><div class="sheet-main">`;
 
   // Trackers
   h+=`<section class="section"><h2 class="section-title">Trackers</h2><div class="tracker-grid">`;
@@ -875,19 +935,75 @@ function renderSheet(){
     h+=`<section class="section"><h2 class="section-title">Inventory</h2><div class="inventory-list">${c.inventory.map(i=>`<div class="inventory-item">${i}</div>`).join('')}</div></section>`;
   }
 
-  // Notes
-  h+=`<section class="section"><h2 class="section-title">Session Notes</h2><textarea class="notes-area" oninput="state.notes=this.value;saveState()" placeholder="Jot down anything mid-session...">${state.notes||''}</textarea></section>`;
+  // Session Notes (main column)
+  h+=`<section class="section"><h2 class="section-title">Session Notes</h2>
+    <textarea class="notes-area" oninput="state.notes=this.value;saveState()" placeholder="Jot down anything mid-session...">${state.notes||''}</textarea>
+    <div style="margin-top:8px"><button class="action-btn-gold" onclick="archiveSession()">Archive & Start New Session</button></div>
+  </section>`;
 
-  // Campaign Map
-  const mapData=getMap();
-  h+=`<section class="section"><h2 class="section-title">Campaign Map</h2>`;
-  if(mapData){
-    h+=`<div class="map-container"><img src="${mapData}" class="map-img" onclick="openMapFullscreen()" alt="Campaign Map"><div class="map-hint">Tap to view fullscreen</div></div>
-    <button class="reset-btn" style="margin-top:8px" onclick="removeMap()">Remove Map</button>`;
+  h+=`</div>`; // close sheet-main
+
+  // ── SIDEBAR ──
+  h+=`<div class="sheet-sidebar">`;
+
+  // Character Image (sidebar)
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-img')"><span class="sidebar-card-title">Character</span><span class="sidebar-card-toggle">${imgData?'collapse':'expand'}</span></div>
+    <div class="sidebar-card-body${imgData?' open':''}" id="sb-img">`;
+  if(imgData){
+    h+=`<div class="char-image-container"><img src="${imgData}" alt="${c.name}"><button class="char-image-remove" onclick="removeImg()">remove</button></div>`;
   }else{
-    h+=`<label class="land-btn secondary" style="max-width:260px;font-size:12px;padding:10px 16px">Upload Map Image<input type="file" accept="image/*" onchange="uploadMap(this)" style="display:none"></label>`;
+    h+=`<label class="char-image-upload">Upload Character Image<input type="file" accept="image/*" onchange="uploadImg(this)"></label>`;
   }
-  h+=`</section>`;
+  h+=`</div></div>`;
+
+  // Campaign Map (sidebar)
+  const mapData=getMap();
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-map')"><span class="sidebar-card-title">Campaign Map</span><span class="sidebar-card-toggle">${mapData?'collapse':'expand'}</span></div>
+    <div class="sidebar-card-body${mapData?' open':''}" id="sb-map">`;
+  if(mapData){
+    h+=`<div class="map-container"><img src="${mapData}" class="map-img" onclick="openMapFullscreen()" alt="Campaign Map"><div class="map-hint">Tap to fullscreen</div></div>
+    <button class="reset-btn" style="margin-top:6px;font-size:10px" onclick="removeMap()">Remove Map</button>`;
+  }else{
+    h+=`<label class="char-image-upload">Upload Map Image<input type="file" accept="image/*" onchange="uploadMap(this)"></label>`;
+  }
+  h+=`</div></div>`;
+
+  // Campaign Primer (sidebar)
+  const primer=getPrimer();
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-primer')"><span class="sidebar-card-title">Campaign Primer</span><span class="sidebar-card-toggle">${primer?'collapse':'expand'}</span></div>
+    <div class="sidebar-card-body${primer?' open':''}" id="sb-primer">`;
+  if(primer){
+    h+=`<div class="primer-text">${esc(primer)}</div>
+    <button class="reset-btn" style="margin-top:6px;font-size:10px" onclick="removePrimer()">Remove Primer</button>`;
+  }else{
+    h+=`<textarea class="primer-upload" id="primer-input" placeholder="Paste your campaign primer, world lore, or session notes here..."></textarea>
+    <button class="reset-btn" style="margin-top:6px" onclick="savePrimer(document.getElementById('primer-input').value);renderSheet()">Save Primer</button>`;
+  }
+  h+=`</div></div>`;
+
+  // Session History (sidebar)
+  const hist=state.sessionHistory||[];
+  h+=`<div class="sidebar-card"><div class="sidebar-card-header" onclick="toggleSidebarCard('sb-hist')"><span class="sidebar-card-title">Session History (${hist.length})</span><span class="sidebar-card-toggle">expand</span></div>
+    <div class="sidebar-card-body" id="sb-hist">`;
+  if(hist.length){
+    for(const entry of hist){
+      const dateLabel=entry.date||'Unknown date';
+      const preview=entry.notes.slice(0,60)+(entry.notes.length>60?'...':'');
+      h+=`<div class="session-entry">
+        <div class="session-entry-header" onclick="toggleSessionEntry(${entry.id})">
+          <span class="session-entry-date">${dateLabel}</span>
+          <span><span class="session-entry-toggle">expand</span> <button class="session-entry-delete" onclick="event.stopPropagation();deleteSessionEntry(${entry.id})">delete</button></span>
+        </div>
+        <div class="session-entry-body" id="se-${entry.id}">${esc(entry.notes)}</div>
+      </div>`;
+    }
+  }else{
+    h+=`<div style="font-size:12px;color:var(--text-muted);font-family:var(--font-body)">No archived sessions yet. Use "Archive & Start New Session" to save your current notes here.</div>`;
+  }
+  h+=`</div></div>`;
+
+  h+=`</div>`; // close sheet-sidebar
+  h+=`</div>`; // close sheet-grid
 
   document.getElementById('sheet').innerHTML=h;
 }
@@ -940,6 +1056,69 @@ function openMapFullscreen(){
     overlay.classList.toggle('zoomed',zoomed);
   });
   document.body.appendChild(overlay);
+}
+
+// ══════════════════════════════════════════════════
+// CHARACTER IMAGE
+// ══════════════════════════════════════════════════
+function imgKey(){return storageKey()+'-img'}
+function getImg(){try{return localStorage.getItem(imgKey())}catch(e){return null}}
+function uploadImg(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>4*1024*1024){alert('Image is over 4MB. Try a smaller version.');return}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{localStorage.setItem(imgKey(),e.target.result);renderSheet()}
+    catch(err){alert('Image too large for browser storage.')}
+  };
+  reader.readAsDataURL(file);
+}
+function removeImg(){localStorage.removeItem(imgKey());renderSheet()}
+function openImgFullscreen(){
+  const d=getImg();if(!d)return;
+  const o=document.createElement('div');o.className='map-fullscreen';
+  o.innerHTML=`<img src="${d}" alt="Character">`;
+  o.addEventListener('click',function(e){if(e.target===o)o.remove()});
+  document.body.appendChild(o);
+}
+
+// ══════════════════════════════════════════════════
+// CAMPAIGN PRIMER
+// ══════════════════════════════════════════════════
+function primerKey(){return storageKey()+'-primer'}
+function getPrimer(){try{return localStorage.getItem(primerKey())||''}catch(e){return ''}}
+function savePrimer(text){try{localStorage.setItem(primerKey(),text)}catch(e){}}
+function removePrimer(){localStorage.removeItem(primerKey());renderSheet()}
+
+// ══════════════════════════════════════════════════
+// SESSION HISTORY
+// ══════════════════════════════════════════════════
+function archiveSession(){
+  if(!state.notes||!state.notes.trim())return;
+  const entry={
+    date:state.currentSessionDate||new Date().toISOString().slice(0,10),
+    notes:state.notes.trim(),
+    id:Date.now()
+  };
+  if(!state.sessionHistory)state.sessionHistory=[];
+  state.sessionHistory.unshift(entry);
+  state.notes='';
+  state.currentSessionDate=new Date().toISOString().slice(0,10);
+  saveState();renderSheet();
+}
+function deleteSessionEntry(id){
+  state.sessionHistory=state.sessionHistory.filter(e=>e.id!==id);
+  saveState();renderSheet();
+}
+function toggleSessionEntry(id){
+  const el=document.getElementById('se-'+id);
+  if(el)el.classList.toggle('open');
+}
+function toggleSidebarCard(id){
+  const el=document.getElementById(id);
+  if(el)el.classList.toggle('open');
+  const btn=el?.previousElementSibling?.querySelector('.sidebar-card-toggle');
+  if(btn)btn.textContent=el.classList.contains('open')?'collapse':'expand';
 }
 
 // ══════════════════════════════════════════════════
