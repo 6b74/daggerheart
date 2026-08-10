@@ -1,381 +1,339 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trill</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Georgia,serif;background:#fff;color:#000;padding:12px;font-size:17px;line-height:1.4}
-h1{font-size:26px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:2px}
-h2{font-size:17px;text-transform:uppercase;letter-spacing:.15em;border-bottom:1px solid #888;padding:12px 0 3px;margin-top:12px;margin-bottom:10px}
-h3{font-size:26px;text-transform:uppercase;letter-spacing:.1em;margin:8px 0 4px;color:#444}
-.meta{font-size:26px;color:#555;margin-bottom:8px}
-.portrait{width:60px;height:60px;border-radius:6px;border:1px solid #000;object-fit:cover;float:left;margin-right:8px;margin-bottom:8px}
-.clearfix::after{content:'';display:table;clear:both}
-
-/* Stats row */
-.stats{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
-.stat-box{border:1px solid #000;padding:3px 6px;font-size:15px;text-align:center;flex:1;min-width:45px}
-.stat-box .val{font-size:26px;font-weight:bold}
-.stat-box .lbl{font-size:26px;text-transform:uppercase;letter-spacing:.05em}
-
-/* Traits */
-.trait-row{display:flex;flex-wrap:wrap;gap:3px;margin:4px 0}
-.trait{border:1px solid #000;padding:2px 4px;font-size:17px;text-align:center;flex:1;min-width:40px}
-.trait .tv{font-size:17px;font-weight:bold}
-.trait .tn{font-size:26px;text-transform:uppercase;letter-spacing:.05em}
-
-/* Trackers */
-.tracker{margin:6px 0;padding:10px;border:1px solid #000}
-.tracker-head{display:flex;justify-content:space-between;font-size:26px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-.slots{display:flex;gap:3px;flex-wrap:wrap}
-.slot{width:28px;height:28px;border:2px solid #000;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent;background:#fff}
+body{font-family:serif;background:#fff;color:#000;padding:10px;font-size:17px;line-height:1.5}
+h1{font-size:26px;text-align:center;letter-spacing:3px;text-transform:uppercase;margin:4px 0}
+h2{font-size:19px;text-transform:uppercase;letter-spacing:2px;border-bottom:2px solid #000;padding:6px 0;margin:20px 0 10px}
+h3{font-size:17px;margin:14px 0 6px}
+.meta{text-align:center;font-size:15px;color:#444;margin-bottom:6px}
+.portrait{display:block;width:90px;height:90px;object-fit:cover;border-radius:50%;border:2px solid #000;margin:0 auto 8px}
+.defense-row{display:flex;justify-content:space-around;margin:10px 0;text-align:center}
+.defense-box{border:2px solid #000;padding:6px 14px;min-width:70px}
+.defense-val{font-size:24px;font-weight:bold}
+.defense-lbl{font-size:13px;text-transform:uppercase;letter-spacing:1px}
+.tracker{border:1px solid #888;padding:10px;margin-bottom:8px}
+.tracker-head{display:flex;justify-content:space-between;font-size:15px;font-weight:bold;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.slots{display:flex;gap:8px;flex-wrap:wrap}
+.slot{width:42px;height:42px;border:2px solid #000;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;cursor:pointer;background:#fff}
 .slot.marked{background:#000;color:#fff}
-.hope-ctrl{display:flex;align-items:center;gap:6px;justify-content:center}
-.hope-btn{width:28px;height:28px;border:1px solid #000;background:#fff;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.diamonds{display:flex;gap:3px}
-.dia{width:12px;height:12px;border:1px solid #000;transform:rotate(45deg)}
-.dia.filled{background:#000}
-.tracker-note{font-size:17px;color:#555;font-style:italic;margin-top:3px}
-.status-warn{border:2px solid #000;padding:3px 6px;font-size:15px;font-weight:bold;text-transform:uppercase;text-align:center;margin-top:4px}
-
-/* Toggle buttons */
-.toggle-row{display:flex;gap:3px;flex-wrap:wrap;margin:4px 0}
-.tog{border:1px solid #000;padding:12px 8px;font-size:17px;text-align:center;cursor:pointer;flex:1;min-width:60px;-webkit-tap-highlight-color:transparent}
-.tog.used{background:#000;color:#fff;text-decoration:line-through}
-.tog.ready{background:#fff;color:#000}
-
-/* Domain cards */
-.dcard{border:1px solid #000;padding:10px;margin:4px 0}
-.dcard.vaulted{border-style:dashed;opacity:.6}
-.dcard-head{font-size:15px;margin-bottom:2px}
-.dcard-title{font-size:26px;font-weight:bold}
-.dcard-text{font-size:15px;color:#333;margin-top:2px}
-.dcard-btn{border:1px solid #000;padding:2px 8px;font-size:17px;cursor:pointer;margin-top:4px;background:#fff}
-.dcard-btn.recall{background:#eee}
-
-/* Features */
-.feat{border-left:2px solid #000;padding:2px 0 2px 8px;margin:4px 0}
-.feat-title{font-size:26px;font-weight:bold}
-.feat-text{font-size:15px;color:#333}
-.feat-sub{margin-left:8px;font-size:17px;color:#444}
-.tier{font-size:26px;color:#666;font-style:italic}
-
-/* Weapons */
-.wpn{border:1px solid #000;padding:12px 6px;margin:3px 0;font-size:15px}
-.wpn-name{font-weight:bold;font-size:26px}
-
-/* Inventory & notes */
-.inv-item{font-size:15px;padding:1px 0;border-bottom:1px dotted #ccc}
-.notes-box{width:100%;min-height:100px;border:1px solid #000;padding:10px;font-size:26px;font-family:Georgia,serif;resize:vertical}
-
-/* Map */
-.map-img{width:100%;border:1px solid #000;margin:4px 0}
-
-/* Primer */
-.primer-text{font-size:17px;color:#333;line-height:1.4;max-height:300px;overflow-y:auto;margin:4px 0}
-
-/* Quick actions */
-.actions{display:flex;gap:3px;flex-wrap:wrap;margin:6px 0}
-.act-btn{border:1px solid #000;padding:12px 8px;font-size:17px;cursor:pointer;background:#fff}
-
-/* Collapsible */
-.collapse-head{cursor:pointer;-webkit-tap-highlight-color:transparent}
-.collapse-body{display:none}
-.collapse-body.open{display:block}
+.hint{font-size:14px;color:#555;margin-top:4px;font-style:italic}
+.status-warn{font-size:15px;font-weight:bold;border:2px solid #000;padding:6px;text-align:center;margin-top:6px}
+.hope-row{display:flex;align-items:center;justify-content:center;gap:8px}
+.hope-btn{width:46px;height:46px;border:2px solid #000;background:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.diamonds{display:flex;gap:6px}
+.dia{width:16px;height:16px;border:2px solid #000;transform:rotate(45deg)}
+.dia.on{background:#000}
+.toggle-btn{width:100%;padding:10px;border:2px solid #000;background:#fff;font-size:15px;font-weight:bold;cursor:pointer;text-align:center;margin-bottom:6px}
+.toggle-btn.on{background:#000;color:#fff}
+.song-row{display:flex;gap:8px}
+.song-btn{flex:1;padding:8px;border:2px solid #000;background:#fff;font-size:14px;text-align:center;cursor:pointer;font-weight:bold}
+.song-btn.on{background:#000;color:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.actions button{padding:8px 12px;border:2px solid #000;background:#fff;font-size:14px;cursor:pointer;font-weight:bold}
+.gold-row{display:flex;gap:14px;justify-content:center;font-size:15px;margin:6px 0;align-items:center}
+.gold-btn{width:34px;height:34px;border:2px solid #000;background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.card{border:1px solid #888;padding:8px;margin-bottom:6px}
+.card-label{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#555}
+.card-title{font-size:17px;font-weight:bold}
+.card-stat{font-size:15px;color:#333}
+.card-feat{font-size:14px;color:#555;font-style:italic;margin-top:2px}
+.exp-card{border:1px solid #888;padding:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.exp-name{font-size:16px;font-weight:bold}
+.exp-desc{font-size:14px;color:#555;font-style:italic}
+.exp-mod{font-size:22px;font-weight:bold}
+.dimmed{opacity:0.3}
+.domain-card{border:2px solid #000;padding:10px;margin-bottom:8px}
+.domain-card.vaulted{border-style:dashed;opacity:0.5}
+.dc-head{font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.dc-title{font-size:17px;font-weight:bold}
+.dc-text{font-size:15px;color:#333;margin-top:4px}
+.dc-btn{margin-top:6px;padding:8px 12px;border:2px solid #000;background:#fff;font-size:14px;cursor:pointer;font-weight:bold}
+.feature{border:1px solid #888;padding:8px;margin-bottom:6px}
+.feature b{font-size:16px}
+.feature-text{font-size:15px;color:#333}
+.sub-list{margin-top:4px;padding-left:10px;border-left:3px solid #000}
+.sub-item{font-size:14px;color:#333;margin:3px 0}
+.inv-item{font-size:15px;border-bottom:1px solid #ccc;padding:4px 0}
+.notes-box{width:100%;min-height:100px;border:2px solid #000;padding:8px;font-size:16px;font-family:serif}
+.trait-grid{display:flex;flex-wrap:wrap;gap:6px}
+.trait-card{border:1px solid #000;padding:6px;text-align:center;width:30%;flex-grow:1}
+.trait-val{font-size:22px;font-weight:bold}
+.trait-name{font-size:13px;text-transform:uppercase;letter-spacing:1px}
+.trait-actions{font-size:12px;color:#555}
+.map-entry{margin-bottom:4px;font-size:15px}
+.map-region{font-size:17px;font-weight:bold;margin:12px 0 4px;text-transform:uppercase}
+.backstory{font-size:16px;line-height:1.6;color:#222}
+.backstory p{margin-bottom:10px}
 </style>
 </head>
 <body>
 
-<div class="clearfix">
-<img class="portrait" src="data:image/jpeg;base64,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" alt="Trill">
+<img class="portrait" src="data:image/jpeg;base64,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" alt="Trill">
 <h1>Trill</h1>
-<div class="meta">Bard (Troubadour) | Ribbet, Seaborne | Level 1<br>Domains: Grace, Codex | they/them</div>
+<div class="meta">Bard (Troubadour) | Ribbet, Seaborne | they/them</div>
+<div class="meta">Grace &amp; Codex | Level 1 | Prof 1</div>
+
+<div class="defense-row">
+<div class="defense-box"><div class="defense-val">11</div><div class="defense-lbl">Evasion</div></div>
+<div class="defense-box"><div class="defense-val">3</div><div class="defense-lbl">Armor</div></div>
+<div class="defense-box"><div class="defense-val">1</div><div class="defense-lbl">Prof</div></div>
 </div>
 
-<div class="stats">
-<div class="stat-box"><div class="val" id="evasion-val">11</div><div class="lbl">Evasion</div></div>
-<div class="stat-box"><div class="val">3</div><div class="lbl">Armor</div></div>
-<div class="stat-box"><div class="val">1</div><div class="lbl">Prof</div></div>
-</div>
-
-<div class="trait-row">
-<div class="trait"><div class="tv">0</div><div class="tn">Agi</div></div>
-<div class="trait"><div class="tv">-1</div><div class="tn">Str</div></div>
-<div class="trait"><div class="tv">+1</div><div class="tn">Fin</div></div>
-<div class="trait"><div class="tv">0</div><div class="tn">Ins</div></div>
-<div class="trait"><div class="tv">+2</div><div class="tn">Pre</div></div>
-<div class="trait"><div class="tv">+1</div><div class="tn">Kno</div></div>
-</div>
-
-<!-- TRACKERS -->
 <div id="trackers"></div>
 
-<!-- QUICK ACTIONS -->
-<div class="actions">
-<button class="act-btn" onclick="resetSession()">New Session</button>
-<button class="act-btn" onclick="resetShort()">Short Rest</button>
-<button class="act-btn" onclick="resetLong()">Long Rest</button>
+<h2>Traits</h2>
+<div class="trait-grid">
+<div class="trait-card"><div class="trait-val">0</div><div class="trait-name">AGI</div><div class="trait-actions">Sprint, Leap, Maneuver</div></div>
+<div class="trait-card"><div class="trait-val">-1</div><div class="trait-name">STR</div><div class="trait-actions">Lift, Smash, Grapple</div></div>
+<div class="trait-card"><div class="trait-val">+1</div><div class="trait-name">FIN</div><div class="trait-actions">Control, Hide, Tinker</div></div>
+<div class="trait-card"><div class="trait-val">0</div><div class="trait-name">INS</div><div class="trait-actions">Perceive, Sense, Navigate</div></div>
+<div class="trait-card"><div class="trait-val">+2</div><div class="trait-name">PRE</div><div class="trait-actions">Charm, Perform, Deceive</div></div>
+<div class="trait-card"><div class="trait-val">+1</div><div class="trait-name">KNO</div><div class="trait-actions">Recall, Analyze, Comprehend</div></div>
 </div>
 
-<!-- WEAPONS -->
-<h2>Weapons</h2>
-<div class="wpn"><span class="wpn-name">Crossbow</span> | Finesse, Far | d6+1 phy | One-Handed</div>
-<div class="wpn"><span class="wpn-name">Trumpet-Dagger</span> | Finesse, Melee | d8+1 phy | One-Handed<br><em style="font-size:17px">A small blade welded to the horn's bell</em></div>
-<div class="wpn"><span class="wpn-name">Gambeson Armor</span> | Thresholds 5/11 | Score 3 | Flexible: +1 Evasion</div>
+<h2>Weapons &amp; Armor</h2>
+<div class="card"><div class="card-label">Primary</div><div class="card-title">Crossbow</div><div class="card-stat">Finesse | Far | d6+1 phy | One-Handed</div></div>
+<div class="card"><div class="card-label">Secondary</div><div class="card-title">Trumpet-Dagger</div><div class="card-stat">Finesse | Melee | d8+1 phy | One-Handed</div><div class="card-feat">A small blade welded to the horn's bell</div></div>
+<div class="card"><div class="card-label">Armor</div><div class="card-title">Gambeson Armor</div><div class="card-stat">Thresholds 5/11 | Score 3</div><div class="card-feat">Flexible: +1 to Evasion</div></div>
 
-<!-- EXPERIENCES -->
-<h2>Experiences</h2>
 <div id="exp-section"></div>
 
-<!-- DOMAIN CARDS -->
-<h2>Domain Cards</h2>
 <div id="domain-section"></div>
 
-<!-- FEATURES -->
-<h2 class="collapse-head" onclick="tog('feat-body')">Features &#9662;</h2>
-<div class="collapse-body" id="feat-body">
-<div class="feat"><div class="feat-title">Rally</div><div class="feat-text">Once/session: give party Rally Die (d6). Spend to add to action/reaction/damage roll, or clear Stress equal to result.</div></div>
-<div class="feat"><div class="feat-title">Make a Scene</div><div class="feat-text">Spend 3 Hope: Distract target within Close range, -2 to their Difficulty.</div></div>
-<h3>Troubadour</h3>
-<div class="feat"><div class="feat-title">Gifted Performer</div><div class="feat-text">Three songs, once each per long rest:</div>
-<div class="feat-sub">Relaxing: allies in Close range clear 1 HP</div>
-<div class="feat-sub">Epic: target in Close range becomes Vulnerable</div>
-<div class="feat-sub">Heartbreaking: allies in Close range gain 1 Hope</div></div>
-<div class="feat"><div class="feat-title">Maestro <span class="tier">(Tier 2+)</span></div><div class="feat-text">Rally Die recipient gains Hope or clears Stress.</div></div>
-<div class="feat"><div class="feat-title">Virtuoso <span class="tier">(Tier 3+)</span></div><div class="feat-text">Perform each Gifted Performer song twice/long rest.</div></div>
-<h3>Ancestry & Community</h3>
-<div class="feat"><div class="feat-title">Amphibious</div><div class="feat-text">Breathe and move naturally underwater.</div></div>
-<div class="feat"><div class="feat-title">Long Tongue</div><div class="feat-text">Grab within Close range. Mark Stress to use as Finesse Close weapon: d12 phy.</div></div>
-<div class="feat"><div class="feat-title">Know the Tide (Seaborne)</div><div class="feat-text">When you roll with Fear, place a token on this card.</div></div>
-</div>
+<h2>Class Features</h2>
+<div class="feature"><b>Rally</b><div class="feature-text">Once per session. Give party Rally Dice (d6). Spend to add to any roll or clear Stress equal to result. At level 5, increases to d8.</div></div>
+<div id="hope-feature"></div>
+<div class="feature"><b>Gifted Performer</b><div class="feature-text">3 songs, once each per long rest:</div><div class="sub-list"><div class="sub-item">Relaxing: You and allies in Close clear 1 HP.</div><div class="sub-item">Epic: Close target becomes Vulnerable.</div><div class="sub-item">Heartbreaking: You and allies in Close gain 1 Hope.</div></div></div>
+<div class="feature"><b>Maestro</b> (Tier 2+)<div class="feature-text">When you give a Rally Die to an ally, they can gain a Hope or clear a Stress.</div></div>
+<div class="feature"><b>Virtuoso</b> (Tier 3+)<div class="feature-text">Perform each Gifted Performer song twice per long rest.</div></div>
 
-<!-- INVENTORY -->
-<h2 class="collapse-head" onclick="tog('inv-body')">Inventory &#9662;</h2>
-<div class="collapse-body" id="inv-body">
+<h2>Ancestry &amp; Community</h2>
+<div class="feature"><b>Amphibious</b><div class="feature-text">Breathe and move naturally underwater.</div></div>
+<div class="feature"><b>Long Tongue</b><div class="feature-text">Grab within Close range. Mark a Stress to use as Finesse Close weapon: d12 phy damage.</div></div>
+<div class="feature"><b>Know the Tide (Seaborne)</b><div class="feature-text">When you roll with Fear, gain a token.</div></div>
+
+<h2>Inventory</h2>
 <div class="inv-item">A letter, never opened (from Hopkins)</div>
 <div class="inv-item">Illiat's Songbook (spell vessel)</div>
 <div class="inv-item">Lyre (tavern instrument)</div>
+<div class="inv-item">Crossbow</div>
+<div class="inv-item">Trumpet-Dagger</div>
 <div class="inv-item">Torch, 50 ft rope, basic supplies</div>
 <div class="inv-item">Minor Health Potion</div>
 <div class="inv-item">A feathered hat that has seen better days</div>
-</div>
 
-<!-- MAP REFERENCE -->
-<h2 class="collapse-head" onclick="tog('map-body')">World Map Reference &#9662;</h2>
-<div class="collapse-body" id="map-body">
-<div style="font-size:16px;line-height:1.6">
-
-<b style="font-size:17px">KINGDOM OF VALEDORN</b> (center of Asterra)
-<div style="margin-left:12px;margin-bottom:8px">
-<b>Kingsfall</b> - Capital City. Center of the map. Seat of the Crown. Where Trill was stationed.<br>
-<b>Bramble Hollow</b> - Town west of Kingsfall, along the main road.<br>
-<b>Eastbridge</b> - Town east of Kingsfall.<br>
-<b>Stonefield</b> - Town south-southwest of Kingsfall, edge of the Silvermere Basin.
-</div>
-
-<b style="font-size:17px">THE ASHEN FRONTIER</b> (Northern Borderlands)
-<div style="margin-left:12px;margin-bottom:8px">
-<b>Frostward Keep</b> - Fortress, far north. Northernmost settlement on the map.<br>
-<b>The Ragged Crossing</b> - Fortress, north-central. Where Hopkins vanished.<br>
-<b>The Shattered Woods</b> - Ruins/Ancient Site, northeast. Something terrible lives here.<br>
-<b>Highwatch</b> - Major city, far northeast.
-</div>
-
-<b style="font-size:17px">THE GREENWOOD EXPANSE</b> (Deepwood Forests, northwest)
-<div style="margin-left:12px;margin-bottom:8px">
-<b>Wyrmholt</b> - Town, western edge of the forests.<br>
-<b>The Stagspire Ruins</b> - Ruins/Ancient Site, north of the forests.
-</div>
-
-<b style="font-size:17px">THE SILVERMERE BASIN</b> (Farmland & Lakes, south-central)
-<div style="margin-left:12px;margin-bottom:8px">
-<b>Redmire</b> - Town, southeast edge of the Basin.<br>
-<b>Grayhaven</b> - Fortress, southwest, near the Ironspine Mountains. Home of The Low Lantern, Trill's favorite tavern.
-</div>
-
-<b style="font-size:17px">THE GLASS COAST</b> (Coastal Lands, east)
-<div style="margin-left:12px;margin-bottom:8px">
-<b>Tidecross</b> - Border outpost, far east.<br>
-<b>Seabight</b> - Town, southeast coast.
-</div>
-
-<b style="font-size:17px">SOUTHERN REGIONS</b>
-<div style="margin-left:12px;margin-bottom:8px">
-<b>Sableport</b> - Port city, far southeast. Trill's family sailed from here.<br>
-<b>Sedgemere</b> - Small ribbet settlement up the river from Sableport (not on most maps). Trill's home.<br>
-<b>The Hollow Steps</b> - Ruins/Ancient Site, far south.<br>
-<b>The Thorn Tribes</b> - Southern Wastes. Tribal territory.
-</div>
-
-<b style="font-size:17px">WESTERN & EASTERN BORDERS</b>
-<div style="margin-left:12px;margin-bottom:8px">
-<b>Arkenhold</b> - Western Kingdom, far west. Road leads "to Arkenhold and beyond."<br>
-<b>Selmyr</b> - City States, far east coast.<br>
-<b>The Ironspine Mountains</b> - Southwest. "High and Unforgiving."<br>
-<b>The Forlorn Sea</b> - Far east, off the coast.
-</div>
-
-<b style="font-size:17px">PLACES OF INTEREST</b> (Ruins/Ancient Sites)
-<div style="margin-left:12px;margin-bottom:8px">
-<b>The Silent Bastions</b> - Scattered across Asterra. Ancient purpose unknown.<br>
-<b>The Hollow Steps</b> - Ironspine Mountains.<br>
-<b>The Stagspire Ruins</b> - Greenwood Expanse.<br>
-<b>The Shattered Woods</b> - Northern Borderlands.
-</div>
-
-</div>
-</div>
-
-<!-- PRIMER -->
-<h2 class="collapse-head" onclick="tog('primer-body')">Campaign Primer &#9662;</h2>
-<div class="collapse-body" id="primer-body">
-<h3>Key Reference</h3>
-<div style="font-size:15px;margin-bottom:10px">
-<strong>Setting:</strong> Asterra, a land of kingdoms, hardy folk, and forgotten histories. The Kingdom of Valedorn is the central power, ruled from Kingsfall.<br><br>
-<strong>The First Sundering:</strong> Over 1,000 years ago, tears opened across the world. Through them came the Shreeden, fleeing horrors that erased people from existence. The people of the kingdom fought alongside the Shreeden and sealed the tears. Then the Shreeden disappeared. Nobody knows if the Sundering really happened or is myth.<br><br>
-<strong>The Faith of the Veil:</strong> Oldest religious tradition. Preserves ancient songs, ceremonies, and relics from the Sundering. Respected but quietly doubted.<br><br>
-<strong>The Northern Border:</strong> Fighting along the Ashen Frontier. Soldiers disappear. Villages are abandoned. Strange reports from survivors. The Crown says it's hostile forces. The truth is worse.<br><br>
-<strong>Key Locations:</strong> Kingsfall (capital), The Ashen Frontier (northern border), The Shattered Woods and Ragged Crossing (where things vanish), Silvermere Basin (farmland), Grayhaven (Trill's tavern territory), Sableport (where Trill's family sailed from), The Silent Bastions (ancient ruins, scattered), The Hollow Steps (Ironspine Mountains).<br><br>
-<strong>Open Mysteries:</strong> Are the tears reopening? What happened to the Shreeden? Why are people being erased again? Does the Crown know? Are the old songs the key to sealing the tears?
-</div>
-<hr style="border:none;border-top:1px solid #ccc;margin:6px 0">
-<div class="primer-text">The Tale of the First Sundering
-
-A story every child in the kingdom grows up hearing. No one agrees on exactly how it happened. Some say the stars vanished. Some say the moon turned crimson. Others claim the earth itself cried out. What every version agrees upon is this: Over a thousand years ago, the world nearly ended.
-
-In those ancient days, strange tears opened across the land. The sky split apart as though made of glass, revealing another world beyond. Through those impossible openings came creatures unlike anything the people of the kingdom had ever seen. They were called the Shreeden. Every painting and carving depicts them differently. Some show them as tall, glowing figures with enormous eyes. Others portray them as winged spirits or ghostly beings wrapped in blue light. No one knows which, if any, are accurate.
-
-The old stories insist they were not invaders. They were fleeing. Behind them came horrors from beyond the tears, monsters so terrible that many legends refuse to describe them directly. Some tales say they devoured cities. Others claim they erased people so completely that even their loved ones forgot they had ever existed.
-
-Whatever the truth, the people of the kingdom stood beside the Shreeden. Together they fought a war unlike any before or since. In the end, the enemy was driven back. The tears were sealed. The kingdom was saved. Then the Shreeden disappeared.
-
-From those events grew the Faith of the Veil, one of the oldest religious traditions in the kingdom. Its priests teach that the First Sundering truly happened and that the sacrifice of the Shreeden should never be forgotten.
-
-Today, life goes on. For years, fighting has continued along the northern border. Officially, the crown says hostile forces threaten the frontier, and every season more soldiers are sent to defend the realm. News from the border is often confusing, villages abandoned, patrols disappearing, strange accounts from frightened survivors, but such tales are easily dismissed as exaggerations born from the hardships of war.
-
-If there is any truth to those legends, it has long since been lost to time. Or so everyone believes.</div>
-</div>
-
-<!-- NOTES -->
 <h2>Session Notes</h2>
-<textarea class="notes-box" id="notes-box" oninput="saveNotes()"></textarea>
+<textarea class="notes-box" id="notes-box" onkeyup="saveNotes()"></textarea>
+
+<h2>World Map Reference</h2>
+
+<div class="map-region">Kingdom of Valedorn (center)</div>
+<div class="map-entry"><b>Kingsfall</b> - Capital City. Seat of the Crown. Where Trill was stationed.</div>
+<div class="map-entry"><b>Bramble Hollow</b> - Town west of Kingsfall.</div>
+<div class="map-entry"><b>Eastbridge</b> - Town east of Kingsfall.</div>
+<div class="map-entry"><b>Stonefield</b> - Town south-southwest, edge of Silvermere Basin.</div>
+
+<div class="map-region">The Ashen Frontier (north)</div>
+<div class="map-entry"><b>Frostward Keep</b> - Fortress, far north. Northernmost settlement.</div>
+<div class="map-entry"><b>The Ragged Crossing</b> - Fortress, north-central. Where Hopkins vanished.</div>
+<div class="map-entry"><b>The Shattered Woods</b> - Ruins, northeast. Something terrible here.</div>
+<div class="map-entry"><b>Highwatch</b> - Major city, far northeast.</div>
+
+<div class="map-region">The Greenwood Expanse (northwest)</div>
+<div class="map-entry"><b>Wyrmholt</b> - Town, western edge of the forests.</div>
+<div class="map-entry"><b>The Stagspire Ruins</b> - Ruins, north of the forests.</div>
+
+<div class="map-region">The Silvermere Basin (south-central)</div>
+<div class="map-entry"><b>Redmire</b> - Town, southeast edge of the Basin.</div>
+<div class="map-entry"><b>Grayhaven</b> - Fortress, southwest. Home of The Low Lantern, Trill's favorite tavern.</div>
+
+<div class="map-region">The Glass Coast (east)</div>
+<div class="map-entry"><b>Tidecross</b> - Border outpost, far east.</div>
+<div class="map-entry"><b>Seabight</b> - Town, southeast coast.</div>
+
+<div class="map-region">Southern Regions</div>
+<div class="map-entry"><b>Sableport</b> - Port city, far southeast. Trill's family sailed from here.</div>
+<div class="map-entry"><b>Sedgemere</b> - Small ribbet town up the river from Sableport. Trill's home.</div>
+<div class="map-entry"><b>The Hollow Steps</b> - Ruins, far south.</div>
+<div class="map-entry"><b>The Thorn Tribes</b> - Southern Wastes.</div>
+
+<div class="map-region">Borders</div>
+<div class="map-entry"><b>Arkenhold</b> - Western Kingdom, far west.</div>
+<div class="map-entry"><b>Selmyr</b> - City States, far east coast.</div>
+<div class="map-entry"><b>The Ironspine Mountains</b> - Southwest. High and Unforgiving.</div>
+<div class="map-entry"><b>The Forlorn Sea</b> - Far east, off the coast.</div>
+
+<div class="map-region">Places of Interest (ancient ruins)</div>
+<div class="map-entry"><b>The Silent Bastions</b> - Scattered across Asterra. Purpose unknown.</div>
+<div class="map-entry"><b>The Hollow Steps</b> - Ironspine Mountains.</div>
+<div class="map-entry"><b>The Stagspire Ruins</b> - Greenwood Expanse.</div>
+<div class="map-entry"><b>The Shattered Woods</b> - Northern Borderlands.</div>
+
+<h2>Campaign Primer</h2>
+<div class="backstory">
+<p>The Tale of the First Sundering. A story every child in the kingdom grows up hearing. No one agrees on exactly how it happened. Some say the stars vanished. Some say the moon turned crimson. Others claim the earth itself cried out. What every version agrees upon is this: over a thousand years ago, the world nearly ended.</p>
+<p>In those ancient days, strange tears opened across the land. The sky split apart as though made of glass, revealing another world beyond. Through those impossible openings came creatures unlike anything the people of the kingdom had ever seen. They were called the Shreeden. Every painting and carving depicts them differently. No one knows which, if any, are accurate.</p>
+<p>The old stories insist they were not invaders. They were fleeing. Behind them came horrors from beyond the tears, monsters so terrible that many legends refuse to describe them directly. Some tales say they devoured cities. Others claim they erased people so completely that even their loved ones forgot they had ever existed.</p>
+<p>Whatever the truth, the people of the kingdom stood beside the Shreeden. Together they fought a war unlike any before or since. In the end, the enemy was driven back. The tears were sealed. The kingdom was saved. Then the Shreeden disappeared.</p>
+<p>From those events grew the Faith of the Veil, one of the oldest religious traditions in the kingdom. Its priests teach that the First Sundering truly happened and that the sacrifice of the Shreeden should never be forgotten. They preserve ancient songs, ceremonies, and relics said to date back to that forgotten age.</p>
+<p>Today, life goes on. The kingdom faces more immediate concerns. For years, fighting has continued along the northern border. Officially, the crown says hostile forces threaten the frontier, and every season more soldiers are sent to defend the realm. News from the border is often confusing: villages abandoned, patrols disappearing, strange accounts from frightened survivors.</p>
+<p>If there is any truth to those legends, it has long since been lost to time. Or so everyone believes.</p>
+</div>
+
+<h2>Backstory: Trill</h2>
+<div class="backstory">
+<h3>Sedgemere</h3>
+<p>Trill grew up in Sedgemere, a small Seaborne settlement up the river from Sableport, where the water slows and the banks turn to marsh. Ribbet families clustered along the waterline, living off the river and the trade that floated down from the Basin. Trill's family had been there for generations, and the songs had been there longer: work shanties for the tidal harvest, lullabies for tadpoles still growing their legs, calling-songs for when the fog rolled in and someone needed to find their way home.</p>
+<p>Nobody in the family ever called them anything but songs.</p>
+<p>Trill's family eventually packed up and sailed out from Sableport, chasing a new island, a safer shore. Trill stayed behind. Not out of stubbornness or anger, but because something unnamed held them to the continent, a pull they couldn't explain and didn't try to.</p>
+
+<h3>Kingsfall</h3>
+<p>Trill ended up in the Crown's service, stationed at Kingsfall in the capital city as a Signal-Bearer in the vanguard. Signal-Bearers carry horns, not swords. Their job is to sound warnings, relay coded calls between units, and keep communication lines alive when the dark and the distance swallow everything else. Trill was good at it. Their ribbet ears could pick up vibrations others missed, and their horn carried clean and far.</p>
+<p>On their off time, Trill played taverns. Not for the art. For the free drink, the free meal, and the free bed. Their favorite haunt was The Low Lantern in Grayhaven, a dim, warm, dock-adjacent place where the seafolk came in after long hauls. Seafolk know how to drink, and they tip well.</p>
+
+<h3>Hopkins</h3>
+<p>Trill's signal-bearer partner was a ribbet named Hopkins. Highborne, unlike Trill. Hopkins grew up around the Crown, comfortable in halls and archives Trill would never have been allowed to enter. They were assigned together as a pair, and they became the kind of friends who don't need to explain themselves. Always each other's wingman. Always together.</p>
+<p>Hopkins was curious in a way that made him dangerous. He had access to old records, crown archives, things most soldiers never saw, and he started noticing patterns. He found something: a written note, maybe pulled from a restricted collection, maybe copied from a wall in some ruin nobody was supposed to enter. He sealed it in a letter and passed it to Trill.</p>
+<p>Trill was too afraid to open it. Then Hopkins vanished.</p>
+
+<h3>The Ragged Crossing</h3>
+<p>Trill and Hopkins were on a patrol route near The Ragged Crossing, in the northern borderlands along the Ashen Frontier. Something came out of the dark. It wasn't a soldier. It wasn't anything Trill could name. It made no sound at all.</p>
+<p>Hopkins vanished. Not killed. Not captured. Erased. When Trill returned and tried to report it, the officers insisted Hopkins had never existed. No records. No name on the rolls. No one who remembered him.</p>
+
+<h3>The Desertion</h3>
+<p>Trill grabbed their trumpet-horn and slipped away into the night. They headed south, back toward the warmer waters, to hide in plain sight as a quiet, lazy tavern musician who plays lyre and guitar to block out the silence.</p>
+<p>Buy Trill a drink and you'll get three songs and a good story. Buy them three drinks and they'll make you feel like the most important person alive. Just don't ask about the trumpet, and don't ask about the letter in the inside pocket of the coat.</p>
+
+<h3>The Songs</h3>
+<p>Trill carries Illiat's Songbook. It belonged to their great-grandmother, and it's old. The pages are water-stained and written in a dialect Trill only partially understands.</p>
+<p>Trill can't read the songs out of the book. Not reliably. But sometimes, under pressure, under fear, when something primal and familial rises up from a place deeper than memory, the songs come anyway. A melody Trill doesn't remember learning. A vibration in the throat that wasn't there a moment ago.</p>
+<p>What Trill doesn't know: these aren't just songs. The calling-song that reaches across fog and water to find someone isn't folk tradition. The stage presence that locks a room's attention and drowns out every other sound isn't just charisma. The night Hopkins vanished near The Ragged Crossing, something saved Trill: a fragment of an old family melody, hummed under their breath out of terror. Trill doesn't know why it worked. They just know it did.</p>
+
+<h3>The Letter</h3>
+<p>Hopkins's letter is still sealed. As long as it stays closed, Hopkins is real. He existed. He wrote something, and it's here, in Trill's hands, physical proof that a person named Hopkins once lived and thought and cared enough to write something down.</p>
+<p>So it stays sealed. For now.</p>
+</div>
+
+<h2>Rules Reference</h2>
+<div class="feature"><b>Making a Roll</b><div class="feature-text">Roll 2d12 (one Hope die, one Fear die) + Trait modifier vs. Difficulty. Hope die higher = succeed + gain Hope. Fear die higher = succeed + GM gains Fear. Below Difficulty = failure. Both match + succeed = critical (double damage).</div></div>
+<div class="feature"><b>Attacks</b><div class="feature-text">Roll 2d12 + weapon Trait vs. Difficulty. On hit, roll damage dice. Below Minor = 0 HP. Minor+ = 1 HP. Major+ = 2 HP. Severe+ = 3 HP.</div></div>
+<div class="feature"><b>Taking Damage</b><div class="feature-text">Enemy attacks vs. your Evasion. Armor Slots reduce incoming damage. All HP marked = DOWN. Next hit = Death Door.</div></div>
+<div class="feature"><b>Hope</b><div class="feature-text">Spend 1 for Experiences (+2 to roll) or helping allies. Spend 3 for Make a Scene.</div></div>
+<div class="feature"><b>Stress</b><div class="feature-text">Mark when abilities or GM require. If full, mark HP instead. Clear via Rally Dice or resting.</div></div>
+<div class="feature"><b>Ranges</b><div class="feature-text">Melee = sword's reach. Very Close = a few steps. Close = across a room. Far = bowshot. Very Far = edge of visibility.</div></div>
+<div class="feature"><b>Rests</b><div class="feature-text">Short: clear Armor Slots. Long: clear Armor, reset per-rest abilities (songs, domain cards), choose a downtime move.</div></div>
+<div class="feature"><b>Domain Cards</b><div class="feature-text">Recall cost = Stress to bring a used card back. Spellcast: 2d12 + Trait vs. Difficulty.</div></div>
 
 <script>
-// State
-var S;
-try{S=JSON.parse(localStorage.getItem('trill-kindle'))||{}}catch(e){S={}}
-if(!S.hp)S.hp=[0,0,0,0,0];
-if(!S.stress)S.stress=[0,0,0,0,0,0];
-if(S.hope===undefined)S.hope=2;
-if(!S.armor)S.armor=[0,0,0];
-if(S.rally===undefined)S.rally=0;
-if(!S.songs)S.songs={Relaxing:0,Epic:0,Heartbreaking:0};
-if(S.tide===undefined)S.tide=0;
-if(!S.vault)S.vault={};
-if(!S.notes)S.notes='';
-
-function save(){try{localStorage.setItem('trill-kindle',JSON.stringify(S))}catch(e){}}
-function tog(id){var e=document.getElementById(id);e.classList.toggle('open')}
-function mc(a){var c=0;for(var i=0;i<a.length;i++)if(a[i])c++;return c}
+var D={hp:[false,false,false,false,false],stress:[false,false,false,false,false,false],hope:2,armor:[false,false,false],rally:false,songs:{Relaxing:false,Epic:false,Heartbreaking:false},vault:{0:false,1:false},goldH:1,goldB:0,tide:0,notes:''};
+try{var s=localStorage.getItem('trill-kindle');if(s){D=JSON.parse(s)}}catch(e){}
+function sv(){try{localStorage.setItem('trill-kindle',JSON.stringify(D))}catch(e){}}
+function mc(a){var c=0;for(var i=0;i<a.length;i++){if(a[i])c++}return c}
 
 function render(){
-  var h='';
-  var hpM=mc(S.hp),stM=mc(S.stress),stFull=stM>=6;
+var h='';
+var hpM=mc(D.hp);
+var stM=mc(D.stress);
+var stFull=stM>=6;
 
-  // HP
-  h+='<div class="tracker"><div class="tracker-head"><span>Hit Points</span><span>'+hpM+' / 5</span></div><div class="slots">';
-  for(var i=0;i<5;i++)h+='<div class="slot'+(S.hp[i]?' marked':'')+'" onclick="tSlot(\'hp\','+i+')">'+( S.hp[i]?'X':'')+'</div>';
-  h+='</div><div style="font-size:17px;margin-top:2px">Minor: 6+ (1HP) | Major: 12+ (2HP) | Severe (3HP)</div>';
-  if(hpM>=5)h+='<div class="status-warn">DOWN. Next hit = Death Door.</div>';
-  h+='</div>';
+h+='<h2>Trackers</h2>';
 
-  // Stress
-  h+='<div class="tracker"><div class="tracker-head"><span>Stress</span><span>'+stM+' / 6</span></div><div class="slots">';
-  for(var i=0;i<6;i++)h+='<div class="slot'+(S.stress[i]?' marked':'')+'" onclick="tSlot(\'stress\','+i+')">'+(S.stress[i]?'X':'')+'</div>';
-  h+='</div>';
-  if(stFull)h+='<div class="status-warn">Stress Full. New Stress marks HP.</div>';
-  else h+='<div class="tracker-note">If full, mark HP instead</div>';
-  h+='</div>';
+h+='<div class="tracker"><div class="tracker-head"><span>Hit Points</span><span>'+hpM+'/5</span></div><div class="slots">';
+for(var i=0;i<5;i++){h+='<div class="slot'+(D.hp[i]?' marked':'')+'" onclick="D.hp['+i+']=!D.hp['+i+'];sv();render()">'+(D.hp[i]?'X':'')+'</div>'}
+h+='</div><div class="hint">Minor: 6+ (1HP) | Major: 12+ (2HP) | Severe (3HP)</div>';
+if(hpM>=5){h+='<div class="status-warn">DOWN. Next hit = Death Door.</div>'}
+h+='</div>';
 
-  // Hope
-  var hopeHint=S.hope<1?'No Hope.':S.hope<3?'Spend 1 for Exp/help. Need 3 for Hope Feature.':'Spend 1 for Exp. Spend 3 for Hope Feature.';
-  h+='<div class="tracker"><div class="tracker-head"><span>Hope</span><span>'+S.hope+' / 6</span></div>';
-  h+='<div class="hope-ctrl"><button class="hope-btn" onclick="adjH(-1)">-</button><div class="diamonds">';
-  for(var i=0;i<6;i++)h+='<div class="dia'+(i<S.hope?' filled':'')+'"></div>';
-  h+='</div><button class="hope-btn" onclick="adjH(1)">+</button></div>';
-  h+='<div class="tracker-note">'+hopeHint+'</div></div>';
+h+='<div class="tracker"><div class="tracker-head"><span>Stress</span><span>'+stM+'/6</span></div><div class="slots">';
+for(var i=0;i<6;i++){h+='<div class="slot'+(D.stress[i]?' marked':'')+'" onclick="D.stress['+i+']=!D.stress['+i+'];sv();render()">'+(D.stress[i]?'X':'')+'</div>'}
+h+='</div>';
+if(stFull){h+='<div class="status-warn">Stress Full. New stress marks HP.</div>'}
+else{h+='<div class="hint">If full, mark HP instead</div>'}
+h+='</div>';
 
-  // Armor
-  h+='<div class="tracker"><div class="tracker-head"><span>Armor</span><span>'+mc(S.armor)+' / 3</span></div><div class="slots">';
-  for(var i=0;i<3;i++)h+='<div class="slot'+(S.armor[i]?' marked':'')+'" onclick="tSlot(\'armor\','+i+')">'+(S.armor[i]?'X':'')+'</div>';
-  h+='</div></div>';
+var hh=D.hope<1?'No Hope available.':D.hope<3?'1 for Experiences. Need 3 for Make a Scene.':'1 for Experiences. 3 for Make a Scene.';
+h+='<div class="tracker"><div class="tracker-head"><span>Hope</span><span>'+D.hope+'/6</span></div>';
+h+='<div class="hope-row"><div class="hope-btn" onclick="if(D.hope>0){D.hope--;sv();render()}">-</div><div class="diamonds">';
+for(var i=0;i<6;i++){h+='<div class="dia'+(i<D.hope?' on':'')+'"></div>'}
+h+='</div><div class="hope-btn" onclick="if(D.hope<6){D.hope++;sv();render()}">+</div></div>';
+h+='<div class="hint">'+hh+'</div></div>';
 
-  // Rally & Songs
-  h+='<div class="tracker"><div class="tracker-head"><span>Rally & Songs</span></div>';
-  h+='<div class="toggle-row"><div class="tog '+(S.rally?'used':'ready')+'" onclick="S.rally=S.rally?0:1;save();render()">Rally d6 '+(S.rally?'USED':'READY')+'</div></div>';
-  h+='<div class="toggle-row">';
-  var sk=['Relaxing','Epic','Heartbreaking'];
-  for(var i=0;i<sk.length;i++){var k=sk[i];h+='<div class="tog '+(S.songs[k]?'used':'ready')+'" onclick="tSong(\''+k+'\')">'+k+'</div>'}
-  h+='</div>';
-  h+='<div style="font-size:17px;margin-top:2px">Tide Tokens: <button class="hope-btn" style="width:20px;height:20px;font-size:26px;display:inline-flex" onclick="S.tide=Math.max(0,S.tide-1);save();render()">-</button> <strong>'+S.tide+'</strong> <button class="hope-btn" style="width:20px;height:20px;font-size:26px;display:inline-flex" onclick="S.tide++;save();render()">+</button></div>';
-  h+='</div>';
+h+='<div class="tracker"><div class="tracker-head"><span>Armor Slots</span><span>'+mc(D.armor)+'/3</span></div><div class="slots">';
+for(var i=0;i<3;i++){h+='<div class="slot'+(D.armor[i]?' marked':'')+'" onclick="D.armor['+i+']=!D.armor['+i+'];sv();render()">'+(D.armor[i]?'X':'')+'</div>'}
+h+='</div></div>';
 
-  document.getElementById('trackers').innerHTML=h;
+h+='<div class="tracker"><div class="tracker-head"><span>Rally &amp; Songs</span></div>';
+h+='<div class="toggle-btn'+(D.rally?' on':'')+'" onclick="D.rally=!D.rally;sv();render()">Rally (d6) '+(D.rally?'USED':'READY')+'</div>';
+h+='<div class="song-row">';
+var sk=['Relaxing','Epic','Heartbreaking'];
+for(var i=0;i<sk.length;i++){h+='<div class="song-btn'+(D.songs[sk[i]]?' on':'')+'" onclick="D.songs[\''+sk[i]+'\']=!D.songs[\''+sk[i]+'\'];sv();render()">'+sk[i]+'</div>'}
+h+='</div></div>';
 
-  // Experiences
-  var eh='';
-  var exps=[{n:'Call and Response',d:'Sensing/reacting by sound and vibration before fully revealed.'},{n:'Never Bought My Own Drink',d:'Tavern charm. Working a crowd for favors and goodwill.'}];
-  for(var i=0;i<exps.length;i++){
-    eh+='<div class="feat'+(S.hope<1?' " style="opacity:.4':'')+'"><div class="feat-title">'+exps[i].n+' <strong>+2</strong></div><div class="feat-text">'+exps[i].d+'</div></div>';
-  }
-  if(S.hope<1)eh+='<div class="tracker-note">Need 1 Hope to use</div>';
-  document.getElementById('exp-section').innerHTML=eh;
+h+='<div class="tracker"><div class="tracker-head"><span>Tokens &amp; Gold</span></div>';
+h+='<div class="gold-row">Tide: <div class="gold-btn" onclick="if(D.tide>0){D.tide--;sv();render()}">-</div> <b>'+D.tide+'</b> <div class="gold-btn" onclick="D.tide++;sv();render()">+</div></div>';
+h+='<div class="gold-row">Handfuls: <div class="gold-btn" onclick="if(D.goldH>0){D.goldH--;sv();render()}">-</div> <b>'+D.goldH+'</b> <div class="gold-btn" onclick="D.goldH++;sv();render()">+</div>';
+h+='&nbsp; Bags: <div class="gold-btn" onclick="if(D.goldB>0){D.goldB--;sv();render()}">-</div> <b>'+D.goldB+'</b> <div class="gold-btn" onclick="D.goldB++;sv();render()">+</div></div>';
+h+='</div>';
 
-  // Domain Cards
-  var dh='';
-  var cards=[
-    {dom:'Grace',name:'Enrapture',rc:1,text:'Spellcast vs Close target. On success: Enraptured (attention fixed on you, drowns out other sound). Once/rest on success: mark Stress to force target to mark Stress.'},
-    {dom:'Codex',name:"Illiat's Songbook",rc:2,text:'Telepathy (1 Hope): mental link with visible target until rest. Also: Slumber, Arcane Barrage.'}
-  ];
-  for(var i=0;i<cards.length;i++){
-    var c=cards[i],v=S.vault[i]||false;
-    dh+='<div class="dcard'+(v?' vaulted':'')+'">';
-    dh+='<div class="dcard-head">'+c.dom+' | Recall: '+c.rc+' Stress</div>';
-    dh+='<div class="dcard-title">'+c.name+(v?' [VAULT]':'')+'</div>';
-    dh+='<div class="dcard-text">'+c.text+'</div>';
-    if(v)dh+='<button class="dcard-btn recall" onclick="recallCard('+i+','+c.rc+')">Recall ('+c.rc+' Stress)</button>';
-    else dh+='<button class="dcard-btn" onclick="vaultCard('+i+')">Mark Used</button>';
-    dh+='</div>';
-  }
-  document.getElementById('domain-section').innerHTML=dh;
+h+='<div class="actions">';
+h+='<button onclick="D.rally=false;D.songs={Relaxing:false,Epic:false,Heartbreaking:false};sv();render()">New Session</button>';
+h+='<button onclick="D.armor=[false,false,false];sv();render()">Short Rest</button>';
+h+='<button onclick="D.armor=[false,false,false];D.songs={Relaxing:false,Epic:false,Heartbreaking:false};D.vault={0:false,1:false};sv();render()">Long Rest</button>';
+h+='</div>';
 
-  document.getElementById('notes-box').value=S.notes;
+document.getElementById('trackers').innerHTML=h;
+
+var eh='<h2>Experiences</h2>';
+eh+='<div class="exp-card'+(D.hope<1?' dimmed':'')+'"><div><div class="exp-name">Call and Response</div><div class="exp-desc">Sensing danger, mood, or pattern by sound and vibration.</div></div><div class="exp-mod">+2</div></div>';
+eh+='<div class="exp-card'+(D.hope<1?' dimmed':'')+'"><div><div class="exp-name">Never Bought My Own Drink</div><div class="exp-desc">Tavern charm and hustle. Working a crowd for favors.</div></div><div class="exp-mod">+2</div></div>';
+eh+='<div class="hint">'+(D.hope<1?'Need 1 Hope to use':'Spend 1 Hope to add +2 to a roll')+'</div>';
+document.getElementById('exp-section').innerHTML=eh;
+
+var dh='<h2>Domain Cards</h2>';
+var cards=[{id:0,dom:'Grace',name:'Enrapture',rc:1,txt:'Spellcast vs Close target. On success, Enraptured: attention fixed on you. Once/rest, mark Stress to force target to mark Stress.'},{id:1,dom:'Codex',name:'Book of Illiat',rc:2,txt:'Telepathy (1 Hope): Mental link with visible target until rest. Also: Slumber (Very Close, Asleep until damaged). Arcane Barrage (1/rest, spend Hope for d6s magic damage).'}];
+for(var i=0;i<cards.length;i++){
+var c=cards[i];
+var v=D.vault[c.id];
+dh+='<div class="domain-card'+(v?' vaulted':'')+'">';
+dh+='<div class="dc-head">'+c.dom+' | Recall: '+c.rc+' Stress | '+(v?'VAULT':'ACTIVE')+'</div>';
+dh+='<div class="dc-title">'+c.name+'</div>';
+dh+='<div class="dc-text">'+c.txt+'</div>';
+if(v){dh+='<div class="dc-btn" onclick="doRecall('+c.id+','+c.rc+')">Recall ('+c.rc+' Stress)</div>'}
+else{dh+='<div class="dc-btn" onclick="D.vault['+c.id+']=true;sv();render()">Mark Used</div>'}
+dh+='</div>';
+}
+document.getElementById('domain-section').innerHTML=dh;
+
+var hf='<div class="feature'+(D.hope<3?' dimmed':'')+'"><b>Make a Scene</b>'+(D.hope<3?' (need 3 Hope)':'')+'<div class="feature-text">Spend 3 Hope. Distract a Close target, -2 to their Difficulty.</div></div>';
+document.getElementById('hope-feature').innerHTML=hf;
+
+document.getElementById('notes-box').value=D.notes||'';
 }
 
-function tSlot(k,i){S[k][i]=S[k][i]?0:1;save();render()}
-function adjH(d){S.hope=Math.max(0,Math.min(6,S.hope+d));save();render()}
-function tSong(k){S.songs[k]=S.songs[k]?0:1;save();render()}
-function vaultCard(i){S.vault[i]=1;save();render()}
-function recallCard(i,cost){
-  var stOpen=6-mc(S.stress);
-  if(stOpen<cost){
-    if(!confirm('Not enough Stress. Will mark HP too. Continue?'))return;
-    var rem=cost;
-    for(var s=0;s<6&&rem>0;s++){if(!S.stress[s]){S.stress[s]=1;rem--}}
-    for(var h=0;h<5&&rem>0;h++){if(!S.hp[h]){S.hp[h]=1;rem--}}
-  }else{
-    if(!confirm('Recall costs '+cost+' Stress. Continue?'))return;
-    var rem=cost;
-    for(var s=0;s<6&&rem>0;s++){if(!S.stress[s]){S.stress[s]=1;rem--}}
-  }
-  S.vault[i]=0;save();render();
+function doRecall(id,cost){
+var stM=mc(D.stress);
+var open=6-stM;
+if(cost>0&&open<cost){
+var hpCost=cost-open;
+if(!confirm('Not enough Stress. Will mark '+open+' Stress and '+hpCost+' HP. Continue?')){return}
+for(var i=0;i<D.stress.length;i++){if(!D.stress[i]&&cost>0){D.stress[i]=true;cost--}}
+for(var i=0;i<D.hp.length;i++){if(!D.hp[i]&&hpCost>0){D.hp[i]=true;hpCost--}}
+}else if(cost>0){
+if(!confirm('Recall costs '+cost+' Stress. Mark it?')){return}
+var r=cost;
+for(var i=0;i<D.stress.length;i++){if(!D.stress[i]&&r>0){D.stress[i]=true;r--}}
 }
-function saveNotes(){S.notes=document.getElementById('notes-box').value;save()}
-function resetSession(){S.rally=0;S.songs={Relaxing:0,Epic:0,Heartbreaking:0};save();render()}
-function resetShort(){S.armor=[0,0,0];save();render()}
-function resetLong(){S.armor=[0,0,0];S.songs={Relaxing:0,Epic:0,Heartbreaking:0};S.vault={};save();render()}
+D.vault[id]=false;
+sv();
+render();
+}
+
+function saveNotes(){D.notes=document.getElementById('notes-box').value;sv()}
 
 render();
 </script>
