@@ -230,7 +230,7 @@ h3{font-size:17px;margin:14px 0 6px}
 <div class="feature"><b>Domain Cards</b><div class="feature-text">Recall cost = Stress to bring a used card back. Spellcast: 2d12 + Trait vs. Difficulty.</div></div>
 
 <script>
-var D={hp:[false,false,false,false,false],stress:[false,false,false,false,false,false],hope:2,armor:[false,false,false],rally:false,songs:{Relaxing:false,Epic:false,Heartbreaking:false},vault:{0:false,1:false},goldH:1,goldB:0,tide:0,notes:''};
+var D={hp:[false,false,false,false,false],stress:[false,false,false,false,false,false],hope:2,armor:[false,false,false],rally:false,songs:{Relaxing:false,Epic:false,Heartbreaking:false},vault:{0:false,1:false},gold:'1 handful',tide:0,notes:''};
 try{var s=localStorage.getItem('trill-kindle');if(s){D=JSON.parse(s)}}catch(e){}
 function sv(){try{localStorage.setItem('trill-kindle',JSON.stringify(D))}catch(e){}}
 function mc(a){var c=0;for(var i=0;i<a.length;i++){if(a[i])c++}return c}
@@ -275,9 +275,8 @@ for(var i=0;i<sk.length;i++){h+='<div class="song-btn'+(D.songs[sk[i]]?' on':'')
 h+='</div></div>';
 
 h+='<div class="tracker"><div class="tracker-head"><span>Tokens &amp; Gold</span></div>';
-h+='<div class="gold-row">Tide: <div class="gold-btn" onclick="if(D.tide>0){D.tide--;sv();render()}">-</div> <b>'+D.tide+'</b> <div class="gold-btn" onclick="D.tide++;sv();render()">+</div></div>';
-h+='<div class="gold-row">Handfuls: <div class="gold-btn" onclick="if(D.goldH>0){D.goldH--;sv();render()}">-</div> <b>'+D.goldH+'</b> <div class="gold-btn" onclick="D.goldH++;sv();render()">+</div>';
-h+='&nbsp; Bags: <div class="gold-btn" onclick="if(D.goldB>0){D.goldB--;sv();render()}">-</div> <b>'+D.goldB+'</b> <div class="gold-btn" onclick="D.goldB++;sv();render()">+</div></div>';
+h+='<div class="gold-row">Tide Tokens (Know the Tide - mark on Fear rolls): <div class="gold-btn" onclick="if(D.tide>0){D.tide--;sv();render()}">-</div> <b>'+D.tide+'</b> <div class="gold-btn" onclick="D.tide++;sv();render()">+</div></div>';
+h+='<div style="margin-top:6px"><b>Gold:</b> <input type="text" id="gold-box" value="'+(D.gold||'')+'" onkeyup="D.gold=document.getElementById(\'gold-box\').value;sv()" style="width:80%;padding:6px;font-size:16px;border:2px solid #000;font-family:serif"></div>';
 h+='</div>';
 
 h+='<div class="actions">';
