@@ -12,27 +12,51 @@
   "traits": {
     "Agility": {
       "value": 1,
-      "actions": ["Sprint", "Leap", "Maneuver"]
+      "actions": [
+        "Sprint",
+        "Leap",
+        "Maneuver"
+      ]
     },
     "Strength": {
       "value": -1,
-      "actions": ["Lift", "Smash", "Grapple"]
+      "actions": [
+        "Lift",
+        "Smash",
+        "Grapple"
+      ]
     },
     "Finesse": {
       "value": 1,
-      "actions": ["Control", "Hide", "Tinker"]
+      "actions": [
+        "Control",
+        "Hide",
+        "Tinker"
+      ]
     },
     "Instinct": {
       "value": 1,
-      "actions": ["Perceive", "Sense", "Navigate"]
+      "actions": [
+        "Perceive",
+        "Sense",
+        "Navigate"
+      ]
     },
     "Presence": {
       "value": 2,
-      "actions": ["Charm", "Perform", "Deceive"]
+      "actions": [
+        "Charm",
+        "Perform",
+        "Deceive"
+      ]
     },
     "Knowledge": {
       "value": 1,
-      "actions": ["Recall", "Analyze", "Comprehend"]
+      "actions": [
+        "Recall",
+        "Analyze",
+        "Comprehend"
+      ]
     }
   },
   "evasion": 11,
@@ -66,7 +90,9 @@
       "range": "Far",
       "damage": "d6+2 phy",
       "burden": "One-Handed",
-      "feature": null
+      "feature": null,
+      "damageDie": "d6",
+      "damageType": "phy"
     },
     "secondary": {
       "name": "Trumpet-Dagger",
@@ -74,7 +100,9 @@
       "range": "Melee",
       "damage": "d8+2 phy",
       "burden": "One-Handed",
-      "feature": "A small blade welded to the horn's bell"
+      "feature": "A small blade welded to the horn's bell",
+      "damageDie": "d8",
+      "damageType": "phy"
     }
   },
   "armor": {

@@ -881,7 +881,8 @@ function renderSheet(){
 }
 
 function weaponCard(label,w){
-  return`<div class="card"><div class="card-label">${label}</div><div class="card-title">${w.name}</div><div class="stat-row"><span>${w.trait||''}</span><span>${w.range||''}</span><span class="damage-text">${w.damage||''}</span></div><div class="card-meta">${w.burden||''}</div>${w.feature?`<div class="card-feature">${w.feature}</div>`:''}</div>`;
+  const dmg=w.damageDie?(w.damageDie+'+'+(CHAR.proficiency||1)+' '+(w.damageType||'phy')):w.damage||'';
+  return`<div class="card"><div class="card-label">${label}</div><div class="card-title">${w.name}</div><div class="stat-row"><span>${w.trait||''}</span><span>${w.range||''}</span><span class="damage-text">${dmg}</span></div><div class="card-meta">${w.burden||''}</div>${w.feature?`<div class="card-feature">${w.feature}</div>`:''}</div>`;
 }
 
 // ══════════════════════════════════════════════════
