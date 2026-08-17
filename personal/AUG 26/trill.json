@@ -115,17 +115,17 @@
     {
       "name": "Call and Response",
       "modifier": 2,
-      "description": "Ribbet acoustic sensitivity honed by years of watching for signals. Sensing, reading, or reacting to danger, mood, or pattern by sound and vibration before it is fully revealed."
+      "description": "Sensing vibrations, reading a room, reacting to sound or rhythm before it reveals itself. Approaching threats, shifting moods, repeating patterns, something wrong in the silence."
     },
     {
       "name": "Never Bought My Own Drink",
       "modifier": 2,
-      "description": "Years of tavern charm and hustle. Talking a room into buying in, working a crowd for favors, free drinks, a place to crash, or just goodwill, long before anyone learns what Trill is actually running from."
+      "description": "Charm, hustle, fast-talk. Working a crowd, getting a favor, talking your way into (or out of) anything. Persuasion, deception, flirtation, disarming someone with a smile."
     },
     {
       "name": "Hard-Boiled",
       "modifier": 2,
-      "description": "Won a tightrope egg-in-a-spoon contest and seduced the competition while doing it. Applies to feats of absurd dexterity, showmanship under pressure, or charming someone mid-chaos."
+      "description": "Locked in. Steady hands, steady nerves. Finesse under pressure, disarming traps, ignoring distractions, threading needles. When everything around you is chaos and you just need to focus."
     }
   ],
   "classFeatures": [
@@ -212,5 +212,11 @@
     "Relaxing",
     "Epic",
     "Heartbreaking"
-  ]
+  ],
+  "advancementsTaken": {
+    "tier2": {
+      "traits": 1,
+      "stress": 1
+    }
+  }
 }
