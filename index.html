@@ -134,7 +134,19 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .exp-mod{font-size:20px;font-weight:700;color:var(--gold);font-family:var(--font-body)}
 .exp-reminder{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:8px;font-family:var(--font-body)}
 .domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
-.domain-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer}
+.domain-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px}
+.domain-card.vaulted{opacity:.5;border-style:dashed}
+.domain-card.vaulted .domain-card-title{text-decoration:line-through;text-decoration-color:var(--text-muted)}
+.domain-card.reserve{opacity:.4;border-color:var(--border)}
+.domain-card-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.domain-card-actions button{padding:5px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font-body);border:1px solid var(--border);background:var(--surface-alt);color:var(--text-muted)}
+.domain-card-actions .btn-use{background:var(--accent-dim);color:var(--accent-bright);border-color:var(--accent-dim)}
+.domain-card-actions .btn-recall{background:var(--gold-dim);color:var(--gold);border-color:var(--gold-dim)}
+.domain-card-actions .btn-activate{background:var(--accent-dim);color:var(--accent-bright);border-color:var(--accent-dim)}
+.card-state-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-body);padding:2px 6px;border-radius:4px;margin-left:auto}
+.card-state-badge.active{background:var(--accent-dim);color:var(--accent-bright)}
+.card-state-badge.vaulted{background:var(--used);color:#888}
+.card-state-badge.reserve{background:var(--surface-alt);color:var(--text-muted)}
 .domain-card-header{display:flex;gap:8px;align-items:center;margin-bottom:6px}
 .domain-badge{background:var(--accent-dim);color:var(--text);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-family:var(--font-body)}
 .domain-level{font-size:11px;color:var(--text-muted);font-family:var(--font-body)}
@@ -246,7 +258,7 @@ const TRAIT_ACTIONS = {Agility:['Sprint','Leap','Maneuver'],Strength:['Lift','Sm
 let CHAR = null, state = {};
 function storageKey(){return 'dh-'+(CHAR?.name||'x').toLowerCase().replace(/\s+/g,'-')}
 function defaultState(){
-  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,gold:'1 handful',tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false,sessionHistory:[],currentSessionDate:new Date().toISOString().slice(0,10),sidebarState:{'sb-map':true,'sb-primer':false,'sb-hist':false,'sb-rules':false},vaultedCards:{}};
+  return {hp:Array(CHAR.maxHP).fill(false),stress:Array(CHAR.maxStress||6).fill(false),hope:CHAR.startingHope||2,armorSlots:Array(CHAR.armorScore||0).fill(false),rallyUsed:false,gold:'1 handful',tideTokens:0,songs:(CHAR.songs||[]).reduce((o,s)=>{o[s]=false;return o},{}),notes:'',levelUpDismissed:false,sessionHistory:[],currentSessionDate:new Date().toISOString().slice(0,10),sidebarState:{'sb-map':true,'sb-primer':false,'sb-hist':false,'sb-rules':false},vaultedCards:{},cardStates:{}};
 }
 function saveState(){try{localStorage.setItem(storageKey(),JSON.stringify(state))}catch(e){}}
 function loadState(){
@@ -816,7 +828,27 @@ function renderSheet(){
 
   // Domain Cards
   if(c.domainCards?.length){
-    h+=`<section class="section"><h2 class="section-title">Domain Cards</h2><div class="domain-grid">${c.domainCards.map((dc,i)=>`<div class="domain-card" onclick="toggleDomain(${i})"><div class="domain-card-header"><span class="domain-badge">${dc.domain||'?'}</span><span class="domain-level">Lvl ${dc.level||1}</span><span class="recall-cost">Recall: ${dc.recallCost||0}</span></div><div class="domain-card-title">${dc.name}</div><div class="domain-card-text collapsed" id="dc-${i}">${dc.text||''}${dc.additionalSpells?.length?`<div class="additional-spells">${dc.additionalSpells.map(s=>`<div class="spell-line">${s}</div>`).join('')}</div>`:''}</div><div class="expand-hint" id="dh-${i}">tap to expand</div></div>`).join('')}</div></section>`;
+    h+=`<section class="section"><h2 class="section-title">Domain Cards</h2><div class="domain-grid">${c.domainCards.map((dc,i)=>{
+      if(!state.cardStates)state.cardStates={};
+      var cs=state.cardStates[i]||'active';
+      var recallBlocked=stressFull&&(dc.recallCost||0)>0;
+      var cardClass='domain-card'+(cs==='vaulted'?' vaulted':cs==='reserve'?' reserve':'');
+      return`<div class="${cardClass}">
+        <div class="domain-card-header" onclick="toggleDomain(${i})">
+          <span class="domain-badge">${dc.domain||'?'}</span>
+          <span class="domain-level">Lvl ${dc.level||1}</span>
+          <span class="recall-cost">Recall: ${dc.recallCost||0}</span>
+          <span class="card-state-badge ${cs}">${cs==='active'?'Active':cs==='vaulted'?'Vault':'Reserve'}</span>
+        </div>
+        <div class="domain-card-title">${dc.name}</div>
+        <div class="domain-card-text collapsed" id="dc-${i}">${dc.text||''}${dc.additionalSpells?.length?`<div class="additional-spells">${dc.additionalSpells.map(s=>`<div class="spell-line">${s}</div>`).join('')}</div>`:''}</div>
+        <div class="expand-hint" id="dh-${i}" onclick="toggleDomain(${i})">tap to expand</div>
+        <div class="domain-card-actions">
+          ${cs==='active'?`<button class="btn-use" onclick="setCardState(${i},'vaulted')">Mark Used</button><button onclick="setCardState(${i},'reserve')">Bench</button>`:''}
+          ${cs==='vaulted'?`<button class="btn-recall${recallBlocked?' dimmed':''}" onclick="recallCard(${i},${dc.recallCost||0})">Recall (${dc.recallCost||0} Stress)</button><button onclick="setCardState(${i},'reserve')">Bench</button>`:''}
+          ${cs==='reserve'?`<button class="btn-activate" onclick="activateFromReserve(${i})">Activate</button>`:''}
+        </div>
+      </div>`}).join('')}</div></section>`;
   }
 
   // Class Features
@@ -861,8 +893,42 @@ function toggleSong(k){state.songs[k]=!state.songs[k];saveState();renderSheet()}
 function adjTide(d){state.tideTokens=Math.max(0,state.tideTokens+d);saveState();renderSheet()}
 function toggleChest(){}
 function toggleDomain(i){const el=document.getElementById('dc-'+i),h=document.getElementById('dh-'+i);if(!el)return;el.classList.toggle('collapsed');h.textContent=el.classList.contains('collapsed')?'tap to expand':'tap to collapse'}
+function setCardState(i,newState){if(!state.cardStates)state.cardStates={};state.cardStates[i]=newState;saveState();renderSheet()}
+function recallCard(i,cost){
+  const stressMarked=state.stress.filter(Boolean).length;
+  const stressOpen=(CHAR.maxStress||6)-stressMarked;
+  if(cost>0&&stressOpen<cost){
+    var hpCost=cost-stressOpen;
+    if(!confirm('Not enough Stress slots. This will mark '+stressOpen+' Stress and '+hpCost+' HP. Continue?'))return;
+    for(var s=0;s<state.stress.length&&cost>0;s++){if(!state.stress[s]){state.stress[s]=true;cost--}}
+    for(var h=0;h<state.hp.length&&hpCost>0;h++){if(!state.hp[h]){state.hp[h]=true;hpCost--}}
+  }else if(cost>0){
+    if(!confirm('Recall costs '+cost+' Stress. Mark it?'))return;
+    var r=cost;for(var s=0;s<state.stress.length&&r>0;s++){if(!state.stress[s]){state.stress[s]=true;r--}}
+  }
+  if(!state.cardStates)state.cardStates={};
+  state.cardStates[i]='active';saveState();renderSheet();
+}
+function activateFromReserve(i){
+  var choice=confirm('Activate during a rest (OK) or mark a Stress to swap now (Cancel)?');
+  if(choice){
+    if(!state.cardStates)state.cardStates={};
+    state.cardStates[i]='active';saveState();renderSheet();
+  }else{
+    var stressMarked=state.stress.filter(Boolean).length;
+    if(stressMarked>=(CHAR.maxStress||6)){
+      if(!confirm('Stress is full. This will mark 1 HP instead. Continue?'))return;
+      for(var h=0;h<state.hp.length;h++){if(!state.hp[h]){state.hp[h]=true;break}}
+    }else{
+      if(!confirm('Mark 1 Stress to activate this card now?'))return;
+      for(var s=0;s<state.stress.length;s++){if(!state.stress[s]){state.stress[s]=true;break}}
+    }
+    if(!state.cardStates)state.cardStates={};
+    state.cardStates[i]='active';saveState();renderSheet();
+  }
+}
 function resetSession(){state.rallyUsed=false;for(const k in state.songs)state.songs[k]=false;saveState();renderSheet()}
-function resetRest(type){state.armorSlots=Array(CHAR.armorScore||0).fill(false);if(type==='long'){for(const k in state.songs)state.songs[k]=false}saveState();renderSheet()}
+function resetRest(type){state.armorSlots=Array(CHAR.armorScore||0).fill(false);if(type==='long'){for(const k in state.songs)state.songs[k]=false;state.cardStates={}}saveState();renderSheet()}
 function dismissLevelUp(){state.levelUpDismissed=true;saveState();renderSheet()}
 
 // ══════════════════════════════════════════════════
