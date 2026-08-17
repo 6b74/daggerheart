@@ -4,66 +4,42 @@
   "heritage": "Ribbet, Seaborne",
   "class": "Bard",
   "subclass": "Troubadour",
-  "level": 1,
+  "level": 2,
   "domains": [
     "Grace",
     "Codex"
   ],
   "traits": {
     "Agility": {
-      "value": 0,
-      "actions": [
-        "Sprint",
-        "Leap",
-        "Maneuver"
-      ]
+      "value": 1,
+      "actions": ["Sprint", "Leap", "Maneuver"]
     },
     "Strength": {
       "value": -1,
-      "actions": [
-        "Lift",
-        "Smash",
-        "Grapple"
-      ]
+      "actions": ["Lift", "Smash", "Grapple"]
     },
     "Finesse": {
       "value": 1,
-      "actions": [
-        "Control",
-        "Hide",
-        "Tinker"
-      ]
+      "actions": ["Control", "Hide", "Tinker"]
     },
     "Instinct": {
-      "value": 0,
-      "actions": [
-        "Perceive",
-        "Sense",
-        "Navigate"
-      ]
+      "value": 1,
+      "actions": ["Perceive", "Sense", "Navigate"]
     },
     "Presence": {
       "value": 2,
-      "actions": [
-        "Charm",
-        "Perform",
-        "Deceive"
-      ]
+      "actions": ["Charm", "Perform", "Deceive"]
     },
     "Knowledge": {
       "value": 1,
-      "actions": [
-        "Recall",
-        "Analyze",
-        "Comprehend"
-      ]
+      "actions": ["Recall", "Analyze", "Comprehend"]
     }
   },
   "evasion": 11,
   "armorScore": 3,
-  "proficiency": 1,
+  "proficiency": 2,
   "maxHP": 5,
-  "maxStress": 6,
+  "maxStress": 7,
   "maxHope": 6,
   "startingHope": 2,
   "damageThresholds": {
@@ -88,7 +64,7 @@
       "name": "Crossbow",
       "trait": "Finesse",
       "range": "Far",
-      "damage": "d6+1 phy",
+      "damage": "d6+2 phy",
       "burden": "One-Handed",
       "feature": null
     },
@@ -96,7 +72,7 @@
       "name": "Trumpet-Dagger",
       "trait": "Finesse",
       "range": "Melee",
-      "damage": "d8+1 phy",
+      "damage": "d8+2 phy",
       "burden": "One-Handed",
       "feature": "A small blade welded to the horn's bell"
     }
@@ -117,6 +93,11 @@
       "name": "Never Bought My Own Drink",
       "modifier": 2,
       "description": "Years of tavern charm and hustle. Talking a room into buying in, working a crowd for favors, free drinks, a place to crash, or just goodwill, long before anyone learns what Trill is actually running from."
+    },
+    {
+      "name": "Hard-Boiled",
+      "modifier": 2,
+      "description": "Won a tightrope egg-in-a-spoon contest and seduced the competition while doing it. Applies to feats of absurd dexterity, showmanship under pressure, or charming someone mid-chaos."
     }
   ],
   "classFeatures": [
@@ -168,6 +149,13 @@
         "Slumber: Spellcast Roll vs target within Very Close range. On success, they're Asleep until they take damage or the GM spends a Fear.",
         "Arcane Barrage: Once per rest, spend any number of Hope. Shoot magical projectiles at a target within Close range. Roll d6s equal to Hope spent as magic damage."
       ]
+    },
+    {
+      "domain": "Grace",
+      "name": "Troublemaker",
+      "level": 2,
+      "recallCost": 2,
+      "text": "When you taunt or provoke a target within Far range, make a Presence Roll against them. Once per rest on a success, roll a number of d4s equal to your Proficiency. The target must mark Stress equal to the highest result rolled."
     }
   ],
   "ancestryFeatures": [
