@@ -741,6 +741,7 @@ function renderSheet(){
   const mc=a=>a.filter(Boolean).length;
   const threshMinor=(c.damageThresholds?.minor?.base||0)+c.level;
   const threshMajor=(c.damageThresholds?.major?.base||0)+c.level;
+  const stressFull=mc(state.stress)>=(c.maxStress||6);
 
   let h='';
 
