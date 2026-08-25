@@ -4,7 +4,7 @@
   "heritage": "Ribbet, Seaborne",
   "class": "Bard",
   "subclass": "Troubadour",
-  "level": 2,
+  "level": 3,
   "domains": [
     "Grace",
     "Codex"
@@ -59,7 +59,7 @@
       ]
     }
   },
-  "evasion": 11,
+  "evasion": 12,
   "armorScore": 3,
   "proficiency": 2,
   "maxHP": 5,
@@ -70,39 +70,39 @@
     "minor": {
       "label": "Minor",
       "hpCost": 1,
-      "base": 5
+      "automatic": true
     },
     "major": {
       "label": "Major",
       "hpCost": 2,
-      "base": 11
+      "base": 5
     },
     "severe": {
       "label": "Severe",
       "hpCost": 3,
-      "base": null
+      "base": 11
     }
   },
   "weapons": {
     "primary": {
-      "name": "Crossbow",
+      "name": "Crossbow-Lute",
       "trait": "Finesse",
       "range": "Far",
-      "damage": "d6+2 phy",
-      "burden": "One-Handed",
-      "feature": null,
+      "damage": "2d6+1 phy",
       "damageDie": "d6",
-      "damageType": "phy"
+      "damageType": "phy",
+      "burden": "One-Handed",
+      "feature": null
     },
     "secondary": {
       "name": "Trumpet-Dagger",
       "trait": "Finesse",
       "range": "Melee",
-      "damage": "d8+2 phy",
-      "burden": "One-Handed",
-      "feature": "A small blade welded to the horn's bell",
+      "damage": "2d8+1 phy",
       "damageDie": "d8",
-      "damageType": "phy"
+      "damageType": "phy",
+      "burden": "One-Handed",
+      "feature": "A small blade welded to the horn's bell"
     }
   },
   "armor": {
@@ -141,6 +141,7 @@
   "subclassFeatures": [
     {
       "title": "Gifted Performer (Foundation)",
+      "status": "Unlocked",
       "text": "Play three different songs, once each per long rest:",
       "sub": [
         "Relaxing Song: You and all allies within Close range clear a Hit Point.",
@@ -150,11 +151,13 @@
     },
     {
       "title": "Maestro (Specialization)",
+      "status": "Unlocked",
       "text": "When you give a Rally Die to an ally, they can gain a Hope or clear a Stress.",
       "tier": "Tier 2+"
     },
     {
       "title": "Virtuoso (Mastery)",
+      "status": "Locked",
       "text": "You can perform each Gifted Performer song twice per long rest.",
       "tier": "Tier 3+"
     }
@@ -184,6 +187,13 @@
       "level": 2,
       "recallCost": 2,
       "text": "When you taunt or provoke a target within Far range, make a Presence Roll against them. Once per rest on a success, roll a number of d4s equal to your Proficiency. The target must mark Stress equal to the highest result rolled."
+    },
+    {
+      "domain": "Codex",
+      "name": "Book of Korvax",
+      "level": 3,
+      "recallCost": 2,
+      "text": "Levitation: Make a Spellcast Roll to lift a target you can see into the air and move them within Close range of their original position. Fireball: Unleash a burst of area-of-effect flame damage at range against a group of targets."
     }
   ],
   "ancestryFeatures": [
@@ -203,6 +213,7 @@
   "inventory": [
     "A letter, never opened (from Hopkins)",
     "Illiat's Songbook (spell vessel)",
+    "Book of Korvax",
     "Lyre (tavern performance instrument)",
     "Torch, 50 ft rope, basic supplies",
     "Minor Health Potion",
@@ -216,7 +227,9 @@
   "advancementsTaken": {
     "tier2": {
       "traits": 1,
-      "stress": 1
+      "stress": 1,
+      "evasion": 1,
+      "subclassSpecialization": 1
     }
   }
 }

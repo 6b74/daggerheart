@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Daggerheart Sheet</title>
 <style>
-:root{--bg:#1a1a1f;--surface:#242429;--surface-alt:#2c2c33;--border:#3a3a44;--text:#e8e6e1;--text-muted:#9a9890;--accent:#4a9e8e;--accent-dim:#2a6b5e;--gold:#c4933f;--hp:#c45454;--stress:#8b6cc4;--armor-c:#5488a8;--used:#555;--font-display:'Georgia','Times New Roman',serif;--font-body:-apple-system,'Helvetica Neue',Arial,sans-serif}
+:root{--bg:#1a1a1f;--surface:#242429;--surface-alt:#2c2c33;--border:#3a3a44;--text:#e8e6e1;--text-muted:#9a9890;--accent:#4a9e8e;--accent-dim:#2a6b5e;--accent-bright:#62c4b1;--gold:#c4933f;--gold-dim:#5a431c;--hp:#c45454;--stress:#8b6cc4;--armor-c:#5488a8;--used:#555;--font-display:'Georgia','Times New Roman',serif;--font-body:-apple-system,'Helvetica Neue',Arial,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font-display);background:var(--bg);color:var(--text);line-height:1.5;-webkit-text-size-adjust:100%}
 
@@ -25,7 +25,7 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .land-btn input[type=file]{display:none}
 .error-msg{color:var(--hp);font-size:13px;font-family:var(--font-body);margin-top:8px;min-height:20px}
 
-/* Paste modal */
+/* Paste modal & generic modals */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.active{display:flex}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
@@ -35,6 +35,7 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .modal-actions button{flex:1;padding:10px;border-radius:6px;border:none;font-family:var(--font-body);font-weight:600;cursor:pointer;font-size:13px}
 .modal-actions .confirm{background:var(--accent);color:#fff}
 .modal-actions .cancel{background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border)}
+.modal-actions .danger{background:var(--hp);color:#fff}
 
 /* Review form */
 #review{flex-direction:column;padding:16px;max-width:700px;margin:0 auto;width:100%}
@@ -60,7 +61,7 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .review-actions .confirm{background:var(--accent);color:#fff}
 .review-actions .back{background:var(--surface-alt);color:var(--text-muted);border:1px solid var(--border)}
 
-/* Sheet (reuse most styles from v1) */
+/* Sheet */
 #sheet{flex-direction:column;max-width:900px;margin:0 auto;padding:0 16px 80px;width:100%}
 .header{display:flex;justify-content:space-between;align-items:flex-start;padding:24px 0 20px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap}
 .header-left{flex:1;min-width:200px}
@@ -106,14 +107,9 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .song-btn.ready{background:var(--accent-dim);color:var(--text)}
 .song-btn.used{background:var(--surface-alt);color:#777}
 .song-status{font-size:9px;opacity:.7}
-.gold-row{display:flex;gap:16px;justify-content:center;align-items:flex-start}
-.gold-label{font-size:11px;color:var(--text-muted);text-align:center;font-family:var(--font-body);display:flex;flex-direction:column;align-items:center;gap:4px}
-.gold-num{font-size:16px;font-weight:700;color:var(--gold);min-width:20px;text-align:center}
-.tide-count{font-size:20px;font-weight:700;color:var(--accent);min-width:30px;text-align:center}
-.chest-btn{padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text-muted);font-size:11px;cursor:pointer}
-.chest-btn.full{background:var(--gold);color:#1a1a1f;border-color:var(--gold);font-weight:700}
 .quick-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .reset-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text-muted);font-size:11px;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent}
+.action-btn-dmg{padding:6px 14px;border-radius:6px;border:1px solid var(--hp);background:var(--hp);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-body)}
 .action-btn-gold{padding:6px 14px;border-radius:6px;border:1px solid var(--gold);background:transparent;color:var(--gold);font-size:11px;cursor:pointer;font-family:var(--font-body)}
 .action-btn-danger{padding:6px 14px;border-radius:6px;border:1px solid var(--hp);background:transparent;color:var(--hp);font-size:11px;cursor:pointer;font-family:var(--font-body);margin-left:auto}
 .trait-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
@@ -192,6 +188,11 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
 .level-up-banner h3{font-size:15px;margin-bottom:4px}
 .level-up-banner ul{margin:6px 0 0 16px}
 
+/* Damage Modal Specifics */
+.dmg-summary{background:var(--bg);border-radius:6px;padding:10px 12px;margin-top:12px;font-family:var(--font-body);font-size:13px}
+.dmg-summary div{margin-bottom:4px}
+.dmg-calc-highlight{font-weight:700;color:var(--hp)}
+
 @media(max-width:480px){
   .header{flex-direction:column}
   .char-name{font-size:26px}
@@ -244,6 +245,27 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);line
   </div>
 </div>
 
+<!-- ══════ DAMAGE MODAL ══════ -->
+<div id="dmg-modal" class="modal-overlay">
+  <div class="modal">
+    <h2>Input Incoming Damage</h2>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-family:var(--font-body);display:block;margin-bottom:4px">Incoming Damage Number</label>
+      <input type="number" id="dmg-input" min="0" value="0" style="width:100%;padding:10px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;font-size:16px;font-weight:700" oninput="updateDamageCalculation()">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-family:var(--font-body);display:block;margin-bottom:4px">Spend Armor Slots? (Armor Score: <span id="dmg-armor-score">0</span>)</label>
+      <select id="dmg-armor-select" style="width:100%;padding:8px 10px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font-body)" onchange="updateDamageCalculation()">
+      </select>
+    </div>
+    <div id="dmg-calculation-preview" class="dmg-summary"></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeModal('dmg-modal')">Cancel</button>
+      <button class="danger" onclick="applyDamageCalculation()">Apply Damage</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════ REVIEW FORM ══════ -->
 <div id="review" class="screen"></div>
 
@@ -290,7 +312,7 @@ function loadState(){
 function saveChar(){try{localStorage.setItem(storageKey()+'-char',JSON.stringify(CHAR))}catch(e){}}
 
 // ══════════════════════════════════════════════════
-// SCREENS
+// SCREENS & MODALS
 // ══════════════════════════════════════════════════
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function openModal(id){document.getElementById(id).classList.add('active')}
@@ -311,7 +333,27 @@ function loadCharacter(json){
   if(!CHAR.maxStress)CHAR.maxStress=6;if(!CHAR.maxHope)CHAR.maxHope=6;if(!CHAR.startingHope)CHAR.startingHope=2;
   if(!CHAR.traits){CHAR.traits={};TRAIT_NAMES.forEach(t=>{CHAR.traits[t]={value:0,actions:TRAIT_ACTIONS[t]}})}
   TRAIT_NAMES.forEach(t=>{if(CHAR.traits[t]&&!CHAR.traits[t].actions)CHAR.traits[t].actions=TRAIT_ACTIONS[t]});
+  migrateDamageThresholds(CHAR);
   loadState();saveChar();renderSheet();showScreen('sheet');
+}
+
+// One-time fix-up for characters saved by an earlier version of this sheet, which
+// stored a Major/Severe armor pair (e.g. Gambeson "5 / 11") as minor.base=5,
+// major.base=11, severe.base=null. Detect that exact signature and shift the
+// values into the correct slots: major.base=old minor.base, severe.base=old
+// major.base, and drop minor.base entirely (Minor is automatic, see calc code).
+function migrateDamageThresholds(char){
+  const dt=char.damageThresholds;
+  if(!dt)return;
+  const hadMinorBase=dt.minor&&typeof dt.minor.base==='number'&&dt.minor.base>0;
+  const missingSevere=!dt.severe||!dt.severe.base;
+  if(hadMinorBase&&missingSevere){
+    const oldMinor=dt.minor.base;
+    const oldMajor=(dt.major&&dt.major.base)||0;
+    dt.major={label:'Major',hpCost:2,base:oldMinor};
+    dt.severe={label:'Severe',hpCost:3,base:oldMajor};
+    dt.minor={label:'Minor',hpCost:1,automatic:true};
+  }
 }
 
 function exportJson(){
@@ -322,6 +364,90 @@ function exportJson(){
 }
 
 function loadNewChar(){CHAR=null;state={};showScreen('landing')}
+
+// ══════════════════════════════════════════════════
+// DAMAGE RESOLUTION MODAL LOGIC
+// ══════════════════════════════════════════════════
+function openDamageModal(){
+  if(!CHAR)return;
+  const armorScore = CHAR.armorScore || 0;
+  const availableSlots = state.armorSlots.filter(s => !s).length;
+  document.getElementById('dmg-input').value = '0';
+  document.getElementById('dmg-armor-score').textContent = armorScore;
+
+  let selectHtml = `<option value="0">0 slots (Reduce 0)</option>`;
+  for(let i=1; i<=availableSlots; i++){
+    selectHtml += `<option value="${i}">${i} slot${i>1?'s':''} (Reduce -${i * armorScore})</option>`;
+  }
+  document.getElementById('dmg-armor-select').innerHTML = selectHtml;
+  updateDamageCalculation();
+  openModal('dmg-modal');
+}
+
+function updateDamageCalculation(){
+  const incoming = parseInt(document.getElementById('dmg-input').value) || 0;
+  const slotsToSpend = parseInt(document.getElementById('dmg-armor-select').value) || 0;
+  const armorScore = CHAR.armorScore || 0;
+  const reduction = slotsToSpend * armorScore;
+  const finalDamage = Math.max(0, incoming - reduction);
+
+  // Daggerheart RAW: only Major and Severe are set numbers (from class + armor).
+  // "Minor" is not its own threshold -- any damage that lands (>0) and doesn't
+  // reach Major is automatically a Minor hit. There is no minor.base to configure.
+  const threshMajor = (CHAR.damageThresholds?.major?.base || 0) + (CHAR.level || 1);
+  const threshSevere = (CHAR.damageThresholds?.severe?.base || 0) + (CHAR.level || 1);
+
+  let hpLoss = 0;
+  let bracket = "No Damage";
+
+  if (finalDamage > 0) {
+    hpLoss = 1;
+    bracket = "Minor Hit (1 HP)";
+  }
+  if (finalDamage >= threshMajor) {
+    hpLoss = 2;
+    bracket = "Major Hit (2 HP)";
+  }
+  // Severe hit: only evaluated when a severe threshold has actually been set,
+  // so an unset (0) severe base doesn't fire on every hit above major.
+  if (CHAR.damageThresholds?.severe?.base && finalDamage >= threshSevere) {
+    hpLoss = 3;
+    bracket = "Severe Hit (3 HP)";
+  }
+
+  let previewHtml = `<div><b>Final Damage:</b> ${incoming} - ${reduction} = <span class="dmg-calc-highlight">${finalDamage}</span></div>`;
+  previewHtml += `<div><b>Threshold Hit:</b> ${bracket}</div>`;
+  previewHtml += `<div><b>HP to Mark:</b> <span class="dmg-calc-highlight">${hpLoss} HP</span></div>`;
+  previewHtml += `<div><b>Armor Slots to Mark:</b> ${slotsToSpend}</div>`;
+  document.getElementById('dmg-calculation-preview').innerHTML = previewHtml;
+
+  window._currentDamageCalc = { hpLoss, slotsToSpend };
+}
+
+function applyDamageCalculation(){
+  if(!window._currentDamageCalc)return;
+  let { hpLoss, slotsToSpend } = window._currentDamageCalc;
+
+  // Mark armor slots
+  for(let i=0; i<state.armorSlots.length && slotsToSpend > 0; i++){
+    if(!state.armorSlots[i]){
+      state.armorSlots[i] = true;
+      slotsToSpend--;
+    }
+  }
+
+  // Mark HP slots
+  for(let i=0; i<state.hp.length && hpLoss > 0; i++){
+    if(!state.hp[i]){
+      state.hp[i] = true;
+      hpLoss--;
+    }
+  }
+
+  closeModal('dmg-modal');
+  saveState();
+  renderSheet();
+}
 
 // ══════════════════════════════════════════════════
 // PARSER
@@ -335,36 +461,29 @@ function parseSummary(){
 }
 
 function extractFromText(rawText){
-  // Strip markdown formatting for cleaner matching
   const strip=s=>s.replace(/\*\*([^*]+)\*\*/g,'$1').replace(/\*([^*]+)\*/g,'$1').replace(/_([^_]+)_/g,'$1').replace(/`([^`]+)`/g,'$1');
   const t=strip(rawText);
   const tl=t.toLowerCase();
   const p={};
 
-  // Name - handle "Name: X" with possible markdown, TBD, or empty
   const nm=t.match(/(?:^|\n)\s*name\s*[:=]\s*(.+)/i);
   if(nm){const v=nm[1].trim();if(v&&!v.match(/^\(?tbd\)?$/i))p.name=v}
 
-  // Class - look for "Class: Ranger" or "Class: Ranger - Beastbound" patterns first, then fallback to keyword scan
   const clsLine=t.match(/class\s*[:=]\s*([^\n]+)/i);
   if(clsLine){
     const cl=clsLine[1].trim();
     for(const c of CLASS_NAMES){if(cl.toLowerCase().includes(c.toLowerCase())){p.class=c;break}}
-    // Subclass from same line (after dash, em-dash, parens, or comma)
     for(const s of SUBCLASSES){if(cl.toLowerCase().includes(s.toLowerCase())){p.subclass=s;break}}
   }
   if(!p.class){for(const c of CLASS_NAMES){if(tl.includes(c.toLowerCase())){p.class=c;break}}}
   if(!p.subclass){for(const s of SUBCLASSES){if(tl.includes(s.toLowerCase())){p.subclass=s;break}}}
 
-  // Level
   const lv=t.match(/level\s*[:=]?\s*(\d+)/i);
   if(lv)p.level=parseInt(lv[1]);
 
-  // Heritage line - "Heritage: Mixed Ancestry (Human / Elf) - Wildborne"
   const herLine=t.match(/heritage\s*[:=]\s*([^\n]+)/i);
   if(herLine)p.heritageFull=herLine[1].trim();
 
-  // Ancestry - check known list with word boundaries to avoid matching "elf" in "yourself"
   const searchText=p.heritageFull?p.heritageFull+' '+t:t;
   const foundAnc=[];
   for(const a of ANCESTRIES){
@@ -372,28 +491,21 @@ function extractFromText(rawText){
     if(re.test(searchText))foundAnc.push(a);
   }
   if(foundAnc.length)p.ancestry=foundAnc.join(' / ');
-  // Check for "Mixed Ancestry" or "Mixed" keyword
   if(foundAnc.length>1||/mixed\s*(?:ancestry)?/i.test(t))p.ancestryNote='Mixed';
 
-  // Community - word boundary match
   for(const c of COMMUNITIES){
     const re=new RegExp('\\b'+c+'\\b','i');
     if(re.test(searchText)){p.community=c;break}
   }
 
-  // Traits - multiple patterns
   p.traits={};
-  // Pattern 1: "Agility: +2" or "Agility +2" (with optional bold/colon)
   for(const tn of TRAIT_NAMES){
     const tr=t.match(new RegExp(tn+'\\s*[:=]?\\s*([+\\-\u2212]?\\s*\\d+)','i'));
     if(tr)p.traits[tn]=parseInt(tr[1].replace(/[\s\u2212]/g,m=>m==='\u2212'?'-':''));
   }
-  // Pattern 2: Markdown table row with values in order: | +2 | 0 | +1 | +1 | -1 | 0 |
   if(Object.keys(p.traits).length<6){
-    // Check if there's a header row with trait names, then a data row
     const tableHeader=rawText.match(/\|\s*agility\s*\|\s*strength\s*\|\s*finesse\s*\|\s*instinct\s*\|\s*presence\s*\|\s*knowledge\s*\|/i);
     if(tableHeader){
-      // Find the next row with numbers (skip separator row |:---:|)
       const afterHeader=rawText.substring(rawText.indexOf(tableHeader[0])+tableHeader[0].length);
       const dataRow=afterHeader.match(/\|([^|]*\d[^|]*\|){6}/);
       if(dataRow){
@@ -408,43 +520,34 @@ function extractFromText(rawText){
       }
     }
   }
-  // Pattern 3: "A 0, S -1, F +1, I 0, P +2, K +1"
-  const abbrMatch=t.match(/A\s*([+\-]?\d+)\s*[,;]\s*S\s*([+\-]?\d+)\s*[,;]\s*F\s*([+\-]?\d+)\s*[,;]\s*I\s*([+\-]?\d+)\s*[,;]\s*P\s*([+\-]?\d+)\s*[,;]\s*K\s*([+\-]?\d+)/i);
-  if(abbrMatch&&Object.keys(p.traits).length<6){
-    ['Agility','Strength','Finesse','Instinct','Presence','Knowledge'].forEach((n,i)=>{p.traits[n]=parseInt(abbrMatch[i+1])});
-  }
 
-  // Evasion - first standalone mention (not "Companion Evasion")
   const evAll=[...t.matchAll(/(?<!companion\s)evasion\s*[:=]?\s*(\d+)/gi)];
   if(evAll.length)p.evasion=parseInt(evAll[0][1]);
 
-  // Armor Score
   const armSc=t.match(/armor\s*score\s*[:=]?\s*(\d+)/i);
   if(armSc)p.armorScore=parseInt(armSc[1]);
 
-  // HP
   const hp=t.match(/(?:starting\s*)?(?:hp|hit\s*points?)\s*[:=]?\s*(\d+)/i);
   if(hp)p.maxHP=parseInt(hp[1]);
 
-  // Stress (custom values like 7 from human bonus)
   const stressMatch=t.match(/stress\s*[:=]?\s*(\d+)/i);
   if(stressMatch)p.maxStress=parseInt(stressMatch[1]);
 
-  // Proficiency
   const prof=t.match(/proficiency\s*[:=]?\s*(\d+)/i);
   if(prof)p.proficiency=parseInt(prof[1]);
 
-  // Hope starting value
   const hopeMatch=t.match(/hope\s*[:=]?\s*(\d+)/i);
   if(hopeMatch)p.startingHope=parseInt(hopeMatch[1]);
 
-  // Damage Thresholds - "Minor 1 / Major 6 / Severe 13" or "Thresholds 6/13"
+  // Damage/armor thresholds are always a Major/Severe pair in Daggerheart (e.g. Gambeson "5 / 11").
+  // There is no separate "Minor" number -- Minor is automatic (any damage below Major).
+  // Handle an explicitly-labeled 3-number match (rare, homebrew) by taking only the last two numbers.
   const threshFull=t.match(/(?:minor|threshold)\s*[:=]?\s*(\d+)\s*[\/|]\s*(?:major\s*[:=]?\s*)?(\d+)\s*[\/|]\s*(?:severe\s*[:=]?\s*)?(\d+)/i);
-  if(threshFull){p.threshMinorBase=parseInt(threshFull[1]);p.threshMajorBase=parseInt(threshFull[2])}
+  if(threshFull){p.threshMajorBase=parseInt(threshFull[2]);p.threshSevereBase=parseInt(threshFull[3])}
+  // Standard form: "Thresholds: X / Y" -- always Major / Severe
   const threshShort=t.match(/thresholds?\s*[:=]?\s*(\d+)\s*[\/|]\s*(\d+)/i);
   if(threshShort&&!threshFull){p.threshMajorBase=parseInt(threshShort[1]);p.threshSevereBase=parseInt(threshShort[2])}
 
-  // Experiences - "Between Two Worlds +2" or "- Between Two Worlds +2 - description"
   const exps=[];
   const expSection=t.match(/experiences?\s*\n([\s\S]*?)(?=\n\s*(?:#{1,3}\s|---|\n\n\s*#{1,3}))/i);
   const expText=expSection?expSection[1]:t;
@@ -455,27 +558,18 @@ function extractFromText(rawText){
   }
   if(exps.length)p.experiences=exps;
 
-  // Domains - find from "Domain Cards" section header or parenthetical mentions
   const allDomains=['Grace','Codex','Sage','Arcana','Valor','Blade','Bone','Midnight','Splendor'];
   const domSection=t.match(/domain\s*cards?\s*(?:\([^)]*\))?\s*\n([\s\S]*?)(?=\n\s*(?:#{1,3}\s|---\s*\n|equipment|experience))/i);
   const domText=domSection?domSection[1]:t;
-  // Look for domain names in parens: "(Bone, Recall 1)" or "(Sage, Recall 1)"
   const domInParens=[...domText.matchAll(/\(\s*(Grace|Codex|Sage|Arcana|Valor|Blade|Bone|Midnight|Splendor)\b/gi)];
   const foundDomains=[];
   for(const m of domInParens){const d=m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase();if(!foundDomains.includes(d))foundDomains.push(d)}
-  // Fallback: domain names in header like "Domain Cards (Bone & Sage)"
   if(foundDomains.length<2){
     const domHeader=t.match(/domain\s*cards?\s*\(([^)]+)\)/i);
     if(domHeader){for(const d of allDomains){const re=new RegExp('\\b'+d+'\\b','i');if(re.test(domHeader[1])&&!foundDomains.includes(d))foundDomains.push(d)}}
   }
-  // Fallback 2: look for "Domains:" section with domain names on nearby lines
-  if(foundDomains.length<2){
-    const domSec=t.match(/domains?\s*[:=]?\s*\n?([\s\S]{0,300})/i);
-    if(domSec){for(const d of allDomains){const re=new RegExp('\\b'+d+'\\b','i');if(re.test(domSec[1])&&!foundDomains.includes(d))foundDomains.push(d)}}
-  }
   if(foundDomains.length>=2)p.domains=foundDomains.slice(0,2);
 
-  // Weapons - "Primary Weapon: Shortbow - Agility, Far range, d6+3 phy, Two-Handed"
   const wpnPri=t.match(/primary\s*weapon\s*[:=]\s*([^\n]+)/i);
   if(wpnPri){
     const parts=wpnPri[1].split(/\s*[-\u2014\u2013,]\s*/);
@@ -485,32 +579,26 @@ function extractFromText(rawText){
   const wpnSec=t.match(/secondary\s*weapon\s*[:=]\s*([^\n]+)/i);
   if(wpnSec){p.secondaryWeapon=wpnSec[1].trim()}
 
-  // Armor name and details
   const armLine=t.match(/(?:^|\n)\s*armor\s*[:=]\s*([^\n]+)/im);
   if(armLine)p.armorName=armLine[1].trim();
 
-  // ── EXTRACT FREEFORM SECTIONS for textarea pre-population ──
   function extractSection(headerPattern){
     const re=new RegExp('(?:^|\\n)\\s*(?:#{1,3}\\s*)?'+headerPattern+'[^\\n]*\\n([\\s\\S]*?)(?=\\n\\s*(?:#{1,3}\\s|---\\s*$))', 'im');
     const m=rawText.match(re);
     return m?m[1].trim():'';
   }
 
-  // Class features
   const cfSections=[];
   const cfText=extractSection('class\\s*features?');
   if(cfText)cfSections.push(cfText);
   const scfText=extractSection('subclass\\s*features?');
   if(scfText)cfSections.push(scfText);
-  // Also grab hope feature lines
   const hopeFeature=t.match(/hope\s*feature\s*[-\u2014\u2013:]\s*([^\n]+(?:\n(?![-*#\n]).*)*)/i);
   if(hopeFeature)cfSections.push(hopeFeature[0].trim());
   p.featuresText=cfSections.join('\n\n');
 
-  // Domain cards text
   p.domainCardsText=extractSection('domain\\s*cards?');
 
-  // Ancestry & Community features
   const ancParts=[];
   const ancText=extractSection('ancestry');
   if(ancText)ancParts.push(ancText);
@@ -518,7 +606,6 @@ function extractFromText(rawText){
   if(comText)ancParts.push(comText);
   p.ancestryFeaturesText=ancParts.join('\n');
 
-  // Inventory
   const invSection=extractSection('(?:equipment|inventory)');
   if(invSection){
     p.inventoryText=invSection.split('\n')
@@ -526,9 +613,6 @@ function extractFromText(rawText){
       .filter(l=>l&&!l.match(/^#{1,3}\s/))
       .join('\n');
   }
-
-  // Backstory
-  p.backstoryText=extractSection('backstory');
 
   return p;
 }
@@ -543,7 +627,6 @@ function showReviewForm(parsed,rawText){
 
   let h=`<h1>Review & Complete</h1><div class="review-sub">We extracted what we could. Fill in anything missing, then load.</div>`;
 
-  // Identity
   h+=`<div class="form-section"><h3>Identity</h3>
     <div class="form-row">
       <div class="form-field"><label>Name</label><input id="rv-name" value="${esc(p.name||'')}"></div>
@@ -564,7 +647,6 @@ function showReviewForm(parsed,rawText){
     </div>
   </div>`;
 
-  // Stats
   h+=`<div class="form-section"><h3>Stats</h3>
     <div class="form-row">
       <div class="form-field small"><label>Evasion</label><input id="rv-evasion" type="number" value="${p.evasion||ci.evasion||10}"></div>
@@ -576,18 +658,18 @@ function showReviewForm(parsed,rawText){
     <div class="trait-row">${TRAIT_NAMES.map(t=>`<div class="trait-input"><label>${t.slice(0,3).toUpperCase()}</label><input id="rv-trait-${t}" type="number" value="${p.traits[t]!==undefined?p.traits[t]:0}"></div>`).join('')}</div>
   </div>`;
 
-  // Domains
   h+=`<div class="form-section"><h3>Domains</h3>
     <div class="form-row">
       <div class="form-field"><label>Domain 1</label><input id="rv-domain1" value="${(p.domains||ci.domains||[])[0]||''}"></div>
       <div class="form-field"><label>Domain 2</label><input id="rv-domain2" value="${(p.domains||ci.domains||[])[1]||''}"></div>
     </div>
-    <div class="form-row"><div class="form-field small"><label>Thresh Minor</label><input id="rv-thresh-minor" type="number" value="${p.threshMajorBase||0}"></div>
-      <div class="form-field small"><label>Thresh Major</label><input id="rv-thresh-major" type="number" value="${p.threshSevereBase||p.threshMajorBase||0}"></div>
+    <div class="form-row">
+      <div class="form-field small"><label>Thresh Major</label><input id="rv-thresh-major" type="number" value="${p.threshMajorBase||0}"></div>
+      <div class="form-field small"><label>Thresh Severe</label><input id="rv-thresh-severe" type="number" value="${p.threshSevereBase||0}"></div>
     </div>
+    <div class="form-row"><div class="form-field" style="font-size:11px;color:var(--text-muted);font-family:var(--font-body)">Minor isn't entered separately -- any hit that lands and doesn't reach Major is automatically a Minor (1 HP) hit.</div></div>
   </div>`;
 
-  // Weapons
   h+=`<div class="form-section"><h3>Weapons</h3>
     <div class="form-row"><div class="form-field"><label>Primary Name</label><input id="rv-wpn1-name" value="${esc(p.primaryWeapon||'')}"></div><div class="form-field"><label>Trait & Range</label><input id="rv-wpn1-tr" value=""></div><div class="form-field med"><label>Damage</label><input id="rv-wpn1-dmg" value=""></div></div>
     <div class="form-row"><div class="form-field"><label>Primary Feature</label><input id="rv-wpn1-feat" value=""></div><div class="form-field med"><label>Burden</label><input id="rv-wpn1-burden" value="One-Handed"></div></div>
@@ -595,36 +677,30 @@ function showReviewForm(parsed,rawText){
     <div class="form-row"><div class="form-field"><label>Secondary Feature</label><input id="rv-wpn2-feat" value=""></div><div class="form-field med"><label>Burden</label><input id="rv-wpn2-burden" value="One-Handed"></div></div>
   </div>`;
 
-  // Armor
   h+=`<div class="form-section"><h3>Armor</h3>
     <div class="form-row"><div class="form-field"><label>Name</label><input id="rv-armor-name" value="${esc(p.armorName||'')}"></div><div class="form-field"><label>Thresholds</label><input id="rv-armor-thresh" value="" placeholder="e.g. 5 / 11"></div><div class="form-field small"><label>Score</label><input id="rv-armor-score" type="number" value="0"></div></div>
     <div class="form-row"><div class="form-field"><label>Armor Feature</label><input id="rv-armor-feat" value=""></div></div>
   </div>`;
 
-  // Experiences
   h+=`<div class="form-section"><h3>Experiences</h3>
     <div class="form-row"><div class="form-field"><label>Experience 1</label><input id="rv-exp1" value="${esc((p.experiences||[])[0]?.name||'')}"></div><div class="form-field small"><label>Mod</label><input id="rv-exp1-mod" type="number" value="${(p.experiences||[])[0]?.modifier||2}"></div></div>
     <div class="form-row"><div class="form-field"><label>Experience 2</label><input id="rv-exp2" value="${esc((p.experiences||[])[1]?.name||'')}"></div><div class="form-field small"><label>Mod</label><input id="rv-exp2-mod" type="number" value="${(p.experiences||[])[1]?.modifier||2}"></div></div>
   </div>`;
 
-  // Freeform sections
   h+=`<div class="form-section"><h3>Class & Subclass Features</h3>
-    <div class="form-field"><label>Paste or type all class/subclass features (one per line)</label><textarea id="rv-features" rows="6" placeholder="Rally: Once per session...\nMake a Scene: Spend 3 Hope...\nGifted Performer: Play three songs...">${esc(p.featuresText||'')}</textarea></div></div>`;
+    <div class="form-field"><label>Paste or type all class/subclass features</label><textarea id="rv-features" rows="6">${esc(p.featuresText||'')}</textarea></div></div>`;
 
   h+=`<div class="form-section"><h3>Domain Cards</h3>
-    <div class="form-field"><label>Paste or type domain card names and descriptions (one card per paragraph)</label><textarea id="rv-domaincards" rows="6" placeholder="Enrapture (Grace, Lvl 1, Recall 1): Make a Spellcast Roll...">${esc(p.domainCardsText||'')}</textarea></div></div>`;
+    <div class="form-field"><label>Paste or type domain card names and descriptions</label><textarea id="rv-domaincards" rows="6">${esc(p.domainCardsText||'')}</textarea></div></div>`;
 
   h+=`<div class="form-section"><h3>Ancestry & Community Features</h3>
-    <div class="form-field"><label>Paste or type ancestry and community features</label><textarea id="rv-ancfeatures" rows="4" placeholder="Amphibious: You can breathe underwater...\nKnow the Tide: When you roll with Fear...">${esc(p.ancestryFeaturesText||'')}</textarea></div></div>`;
+    <div class="form-field"><label>Paste or type ancestry and community features</label><textarea id="rv-ancfeatures" rows="4">${esc(p.ancestryFeaturesText||'')}</textarea></div></div>`;
 
   h+=`<div class="form-section"><h3>Inventory</h3>
-    <div class="form-field"><label>Items, one per line</label><textarea id="rv-inventory" rows="4" placeholder="Torch\n50 ft rope\nMinor Health Potion">${esc(p.inventoryText||'')}</textarea></div></div>`;
+    <div class="form-field"><label>Items, one per line</label><textarea id="rv-inventory" rows="4">${esc(p.inventoryText||'')}</textarea></div></div>`;
 
   h+=`<div class="form-section"><h3>Per-Rest Trackable Abilities</h3>
-    <div class="form-field"><label>Names of abilities you want tracker buttons for (comma-separated). Bards: Relaxing, Epic, Heartbreaking</label><input id="rv-songs" value="${(ci.songs||[]).join(', ')}"></div></div>`;
-
-  h+=`<div class="form-section"><h3>Raw Summary (reference)</h3>
-    <div class="form-field"><textarea id="rv-raw" rows="4" readonly style="opacity:.6">${esc(rawText)}</textarea></div></div>`;
+    <div class="form-field"><label>Trackable abilities (comma-separated)</label><input id="rv-songs" value="${(ci.songs||[]).join(', ')}"></div></div>`;
 
   h+=`<div class="review-actions"><button class="back" onclick="showScreen('landing')">Back</button><button class="confirm" onclick="buildFromReview()">Load Character Sheet</button></div>`;
 
@@ -654,9 +730,29 @@ function buildFromReview(){
   TRAIT_NAMES.forEach(t=>{traits[t]={value:n('rv-trait-'+t),actions:TRAIT_ACTIONS[t]}});
 
   const cls=v('rv-class')==='Multi'?v('rv-class2')||'Multi':v('rv-class');
-  const parseWpn=(pre)=>{const nm=v(pre+'-name');if(!nm)return null;const tr=v(pre+'-tr').split(',').map(s=>s.trim());return{name:nm,trait:tr[0]||'',range:tr[1]||'',damage:v(pre+'-dmg'),burden:v(pre+'-burden'),feature:v(pre+'-feat')||null}};
+  const parseWpn=(pre)=>{
+    const nm=v(pre+'-name');
+    if(!nm)return null;
+    const tr=v(pre+'-tr').split(',').map(s=>s.trim());
+    const dmgRaw=v(pre+'-dmg');
+    // Split raw damage text like "d6+1 phy" or "2d8+2 phy" into die/type so the
+    // card can recompute damage live from current proficiency + trait, instead
+    // of freezing in whatever modifier was true at build time.
+    const dmgMatch=dmgRaw.match(/(?:\d+)?(d\d+)(?:[+-]\d+)?\s*(phy|mag)?/i);
+    const damageDie=dmgMatch?dmgMatch[1].toLowerCase():null;
+    const damageType=dmgMatch&&dmgMatch[2]?dmgMatch[2].toLowerCase():'phy';
+    return{
+      name:nm,
+      trait:tr[0]||'',
+      range:tr[1]||'',
+      damage:dmgRaw,
+      damageDie:damageDie,
+      damageType:damageType,
+      burden:v(pre+'-burden')||'One-Handed',
+      feature:v(pre+'-feat')||null
+    };
+  };
 
-  // Parse features from freeform text
   const parseFeatureLines=(text)=>{
     if(!text)return[];
     return text.split('\n').filter(l=>l.trim()).map(l=>{
@@ -666,7 +762,6 @@ function buildFromReview(){
     });
   };
 
-  // Parse domain cards
   const parseDomainCards=(text)=>{
     if(!text)return[];
     const cards=[];
@@ -688,7 +783,6 @@ function buildFromReview(){
     return cards;
   };
 
-  // Parse ancestry features
   const parseAncFeatures=(text)=>{
     if(!text)return[];
     return text.split('\n').filter(l=>l.trim()).map(l=>{
@@ -707,7 +801,7 @@ function buildFromReview(){
     domains:[v('rv-domain1'),v('rv-domain2')].filter(Boolean),
     traits,evasion:n('rv-evasion'),armorScore:n('rv-armor-score')||n('rv-armorscore'),proficiency:n('rv-prof')||1,
     maxHP:n('rv-maxhp')||6,maxStress:n('rv-maxstress')||6,maxHope:6,startingHope:2,
-    damageThresholds:{minor:{label:'Minor',hpCost:1,base:n('rv-thresh-minor')},major:{label:'Major',hpCost:2,base:n('rv-thresh-major')},severe:{label:'Severe',hpCost:3,base:null}},
+    damageThresholds:{minor:{label:'Minor',hpCost:1,automatic:true},major:{label:'Major',hpCost:2,base:n('rv-thresh-major')},severe:{label:'Severe',hpCost:3,base:n('rv-thresh-severe')}},
     weapons:{primary:parseWpn('rv-wpn1'),secondary:parseWpn('rv-wpn2')},
     armor:{name:v('rv-armor-name'),thresholds:v('rv-armor-thresh'),score:n('rv-armor-score'),feature:v('rv-armor-feat')},
     experiences:[{name:v('rv-exp1'),modifier:n('rv-exp1-mod')||2},{name:v('rv-exp2'),modifier:n('rv-exp2-mod')||2}].filter(e=>e.name),
@@ -720,7 +814,6 @@ function buildFromReview(){
     songs,
   };
 
-  // Multi-class secondary info
   if(v('rv-class')==='Multi'){
     char.secondaryClass={class:v('rv-class2'),subclass:v('rv-subclass2')};
     char.class=v('rv-class2')||'Multi';
@@ -741,10 +834,8 @@ function levelUp(){
   const profBump=[2,5,8].includes(nextLevel);
   const TNAMES=['Agility','Strength','Finesse','Instinct','Presence','Knowledge'];
 
-  // Advancement limits per tier
   const limits={traits:3,hp:2,stress:2,exp:1,domain:1,evasion:1,subclass:1,profup:1};
 
-  // Track what's been taken this tier
   if(!CHAR.advancementsTaken)CHAR.advancementsTaken={};
   var tierKey='tier'+tier;
   if(!CHAR.advancementsTaken[tierKey])CHAR.advancementsTaken[tierKey]={};
@@ -834,7 +925,6 @@ function confirmLevelUp(){
   if(profBump)CHAR.proficiency=(CHAR.proficiency||1)+1;
   state.levelUpDismissed=false;
 
-  // Track advancements taken
   if(!CHAR.advancementsTaken)CHAR.advancementsTaken={};
   if(!CHAR.advancementsTaken[tierKey])CHAR.advancementsTaken[tierKey]={};
 
@@ -889,8 +979,8 @@ function renderSheet(){
   const c=CHAR;if(!c)return;
   const fmtMod=v=>v>=0?'+'+v:''+v;
   const mc=a=>a.filter(Boolean).length;
-  const threshMinor=(c.damageThresholds?.minor?.base||0)+c.level;
   const threshMajor=(c.damageThresholds?.major?.base||0)+c.level;
+  const threshSevere=(c.damageThresholds?.severe?.base||0)+c.level;
   const stressFull=mc(state.stress)>=(c.maxStress||6);
 
   let h='';
@@ -912,7 +1002,7 @@ function renderSheet(){
   // HP
   h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Hit Points</span><span class="tracker-count">${mc(state.hp)} / ${c.maxHP}</span></div>
     <div class="slot-row">${state.hp.map((_,i)=>`<button class="slot${state.hp[i]?' marked-hp':''}" onclick="toggleSlot('hp',${i})">${state.hp[i]?'✕':''}</button>`).join('')}</div>
-    <div class="thresh-row"><span class="thresh-label">Minor (1 HP): ${threshMinor}+</span><span class="thresh-label">Major (2 HP): ${threshMajor}+</span><span class="thresh-label">Severe: 3 HP</span></div></div>`;
+    <div class="thresh-row"><span class="thresh-label">Minor (1 HP): 1+ (below Major)</span><span class="thresh-label">Major (2 HP): ${threshMajor}+</span><span class="thresh-label">Severe (3 HP): ${(c.damageThresholds?.severe?.base)?threshSevere+'+':'-'}</span></div></div>`;
   // Stress
   h+=`<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">Stress</span><span class="tracker-count">${mc(state.stress)} / ${c.maxStress||6}</span></div>
     <div class="slot-row">${state.stress.map((_,i)=>`<button class="slot${state.stress[i]?' marked-stress':''}" onclick="toggleSlot('stress',${i})">${state.stress[i]?'✕':''}</button>`).join('')}</div>
@@ -942,10 +1032,11 @@ function renderSheet(){
     <div style="display:flex;align-items:center;gap:6px;margin-top:4px;font-family:var(--font-body);font-size:12px;color:var(--text-muted)"><span>Gold:</span>
     <input type="text" value="${state.gold||''}" oninput="state.gold=this.value;saveState()" style="flex:1;padding:4px 8px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:4px;font-family:var(--font-body);font-size:12px"></div>
     </div></div>`;
-  h+=`</div>`; // close tracker-grid
+  h+=`</div>`;
 
   // Quick actions
   h+=`<div class="quick-actions">
+    <button class="action-btn-dmg" onclick="openDamageModal()">Take Damage</button>
     <button class="reset-btn" onclick="resetSession()">New Session</button>
     <button class="reset-btn" onclick="resetRest('short')">Short Rest</button>
     <button class="reset-btn" onclick="resetRest('long')">Long Rest</button>
@@ -1030,8 +1121,22 @@ function renderSheet(){
   document.getElementById('sheet').innerHTML=h;
 }
 
+// Case/whitespace-tolerant trait lookup -- free-text fields (weapon "Trait &
+// Range" input, pasted summaries) may contain "Finesse ", "finesse", etc.
+// which wouldn't match the exact TRAIT_NAMES keys via a raw object lookup.
+function getTraitValue(traits,name){
+  if(!traits||!name)return 0;
+  const key=Object.keys(traits).find(k=>k.trim().toLowerCase()===String(name).trim().toLowerCase());
+  return key?traits[key].value:0;
+}
+
 function weaponCard(label,w){
-  const dmg=w.damageDie?(w.damageDie+'+'+(CHAR.proficiency||1)+' '+(w.damageType||'phy')):w.damage||'';
+  const prof = CHAR.proficiency || 1;
+  const traitMod = getTraitValue(CHAR.traits, w.trait);
+  const sign = traitMod >= 0 ? '+' : '';
+  const dmg = w.damageDie
+    ? `${prof}${w.damageDie}${sign}${traitMod} ${w.damageType || 'phy'}`
+    : (w.calculatedDamage || w.damage || '');
   return`<div class="card"><div class="card-label">${label}</div><div class="card-title">${w.name}</div><div class="stat-row"><span>${w.trait||''}</span><span>${w.range||''}</span><span class="damage-text">${dmg}</span></div><div class="card-meta">${w.burden||''}</div>${w.feature?`<div class="card-feature">${w.feature}</div>`:''}</div>`;
 }
 
@@ -1043,7 +1148,6 @@ function adjHope(d){state.hope=Math.max(0,Math.min(CHAR.maxHope,state.hope+d));s
 function toggleRally(){state.rallyUsed=!state.rallyUsed;saveState();renderSheet()}
 function toggleSong(k){state.songs[k]=!state.songs[k];saveState();renderSheet()}
 function adjTide(d){state.tideTokens=Math.max(0,state.tideTokens+d);saveState();renderSheet()}
-function toggleChest(){}
 function toggleDomain(i){const el=document.getElementById('dc-'+i),h=document.getElementById('dh-'+i);if(!el)return;el.classList.toggle('collapsed');h.textContent=el.classList.contains('collapsed')?'tap to expand':'tap to collapse'}
 function setCardState(i,newState){if(!state.cardStates)state.cardStates={};state.cardStates[i]=newState;saveState();renderSheet()}
 function recallCard(i,cost){
@@ -1092,7 +1196,6 @@ function dismissLevelUp(){state.levelUpDismissed=true;saveState();renderSheet()}
     if(lastKey){const raw=localStorage.getItem(lastKey+'-char');if(raw){CHAR=JSON.parse(raw);loadState();renderSheet();showScreen('sheet');return}}
   }catch(e){}
 })();
-// Override saveChar to track last loaded
 const _origSaveChar=saveChar;
 saveChar=function(){_origSaveChar();try{localStorage.setItem('dh-last-char',storageKey())}catch(e){}}
 </script>
